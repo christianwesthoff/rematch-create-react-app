@@ -25,7 +25,7 @@ const cntState:any = {
 	effects: {},
 }
 
-const createLoadingAction = (converter: (b:any) => any, i: number) => (
+const createLoadingAction = (converter: any, i: any) => (
 	state: any,
 	{ name, action }: any
 ) => {
