@@ -2,14 +2,11 @@ import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { RootState, RootDispatch } from 'app/store'
 
-import { fetchIssuesCount } from 'features/repoSearch/repoDetailsSlice'
-
 import { IssuesPageHeader } from './IssuesPageHeader'
 import { IssuesList } from './IssuesList'
 import { IssuePagination, OnPageChangeCallback } from './IssuePagination'
 import { GetIssuePayload, GetIssuesPayload } from 'models/issues'
 import { GetRepoDetailsPayload } from 'models/repoDetails'
-import { getRepoDetails } from 'api/githubAPI'
 
 const mapState = (state: RootState) => ({
   issues: state.issues,

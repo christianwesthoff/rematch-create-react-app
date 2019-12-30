@@ -1,5 +1,5 @@
 import { init } from '@rematch/core'
-import { RematchRootDispatch, RematchRootState } from 'models/util'
+import { RematchRootDispatch, RematchRootState } from 'extensions/util'
 import * as models from 'models'
 import immerPlugin from '@rematch/immer'
 

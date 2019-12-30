@@ -1,6 +1,5 @@
 import { RootDispatch } from 'app/store'
 import { RepoDetails, getRepoDetails } from 'api/githubAPI'
-import { Links } from 'parse-link-header'
 
 export type RepoDetailsState = {
     openIssuesCount: number
