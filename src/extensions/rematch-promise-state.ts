@@ -7,9 +7,8 @@ export type LoadingStateEntry = {
 
 export interface LoadingConfig {
 	name?: string
-	whitelist?: string[]
-	blacklist?: string[]
-	asNumber?: boolean
+	// whitelist?: string[]
+	// blacklist?: string[]
 }
 
 export interface LoadingState<M extends Models> {
@@ -24,7 +23,7 @@ export interface LoadingState<M extends Models> {
 }
 
 
-const createAction = (isLoading: boolean, error?: string) => (
+const createAction = (isLoading: boolean, error: string|null = null) => (
 	state: any,
 	{ name, action }: any
 ) => {
@@ -53,25 +52,24 @@ const validateConfig = (config:any) => {
 	if (config.name && typeof config.name !== 'string') {
 		throw new Error('loading plugin config name must be a string')
 	}
-	if (config.asNumber && typeof config.asNumber !== 'boolean') {
-		throw new Error('loading plugin config asNumber must be a boolean')
-	}
-	if (config.whitelist && !Array.isArray(config.whitelist)) {
-		throw new Error(
-			'loading plugin config whitelist must be an array of strings'
-		)
-	}
-	if (config.blacklist && !Array.isArray(config.blacklist)) {
-		throw new Error(
-			'loading plugin config blacklist must be an array of strings'
-		)
-	}
-	if (config.whitelist && config.blacklist) {
-		throw new Error(
-			'loading plugin config cannot have both a whitelist & a blacklist'
-		)
-	}
+	// if (config.whitelist && !Array.isArray(config.whitelist)) {
+	// 	throw new Error(
+	// 		'loading plugin config whitelist must be an array of strings'
+	// 	)
+	// }
+	// if (config.blacklist && !Array.isArray(config.blacklist)) {
+	// 	throw new Error(
+	// 		'loading plugin config blacklist must be an array of strings'
+	// 	)
+	// }
+	// if (config.whitelist && config.blacklist) {
+	// 	throw new Error(
+	// 		'loading plugin config cannot have both a whitelist & a blacklist'
+	// 	)
+	// }
 }
+
+const isAsyncFunc = (func: Object):boolean => func.constructor.name === "AsyncFunction";
 
 export default (config: LoadingConfig = {}): Plugin => {
 	validateConfig(config);
@@ -86,24 +84,24 @@ export default (config: LoadingConfig = {}): Plugin => {
 			error: (state:any, payload:any) => createAction(false, payload.error)(state, payload)
 		},
 		state: {
-			...cntState,
+			...cntState
 		},
 	}
 
 	return {
 		config: {
 			models: {
-				loading,
+				loading
 			},
 		},
 		onModel({ name }: Model) {
 			// do not run dispatch on "loading" model
 			if (name === loadingModelName) {
-				return
+				return;
 			}
 
 			cntState.models[name] = { error: null, isLoading: false };
-			loading.state.models[name] =  cntState.models[name];
+			loading.state.models[name] = cntState.models[name];
 			loading.state.effects[name] = {};
 			const modelActions = (<any>this.dispatch)[name];
 
@@ -116,20 +114,25 @@ export default (config: LoadingConfig = {}): Plugin => {
 				cntState.effects[name][action] = { error: null, isLoading: false };
 				loading.state.effects[name][action] = cntState.effects[name][action];
 
-				const actionType = `${name}/${action}`;
+				// const actionType = `${name}/${action}`;
 
-				// ignore items not in whitelist
-				if (config.whitelist && !config.whitelist.includes(actionType)) {
-					return;;
-				}
+				// // ignore items not in whitelist
+				// if (config.whitelist && !config.whitelist.includes(actionType)) {
+				// 	return;
+				// }
 
-				// ignore items in blacklist
-				if (config.blacklist && config.blacklist.includes(actionType)) {
-					return
-				}
+				// // ignore items in blacklist
+				// if (config.blacklist && config.blacklist.includes(actionType)) {
+				// 	return;
+				// }
 
 				// copy orig effect pointer
 				const origEffect = (<any>this.dispatch)[name][action];
+
+				// only execute on async effects
+				if (!origEffect || !isAsyncFunc(origEffect)) {
+					return;
+				}
 
 				// create function with pre & post loading calls
 				const effectWrapper: any = async (...props:any) => {
