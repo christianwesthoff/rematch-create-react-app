@@ -1,21 +1,15 @@
-import { configureStore, Action } from '@reduxjs/toolkit'
-import { ThunkAction } from 'redux-thunk'
+import { init } from '@rematch/core'
+import { RematchRootDispatch, RematchRootState } from 'models/util'
+import * as models from 'models'
+import immerPlugin from '@rematch/immer'
 
-import rootReducer, { RootState } from './rootReducer'
+const immer = immerPlugin()
 
-const store = configureStore({
-  reducer: rootReducer
+export const store = init({
+	models,
+	plugins: [immer],
 })
 
-if (process.env.NODE_ENV === 'development' && module.hot) {
-  module.hot.accept('./rootReducer', () => {
-    const newRootReducer = require('./rootReducer').default
-    store.replaceReducer(newRootReducer)
-  })
-}
+export type RootState = RematchRootState<typeof models>
 
-export type AppDispatch = typeof store.dispatch
-
-export type AppThunk = ThunkAction<void, RootState, null, Action<string>>
-
-export default store
+export type RootDispatch = RematchRootDispatch<typeof models>
