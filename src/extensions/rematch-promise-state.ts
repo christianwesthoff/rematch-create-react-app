@@ -29,9 +29,9 @@ const createLoadingAction = (converter: any, i: any) => (
 	state: any,
 	{ name, action }: any
 ) => {
-	cntState.global += i
-	cntState.models[name] += i
-	cntState.effects[name][action] += i
+	cntState.global += i;
+	cntState.models[name] += i;
+	cntState.effects[name][action] += i;
 
 	return {
 		...state,
@@ -47,7 +47,7 @@ const createLoadingAction = (converter: any, i: any) => (
 				[action]: converter(cntState.effects[name][action]),
 			},
 		},
-	}
+	};
 }
 
 const validateConfig = (config:any) => {
@@ -75,9 +75,9 @@ const validateConfig = (config:any) => {
 }
 
 export default (config: LoadingConfig = {}): Plugin => {
-	validateConfig(config)
+	validateConfig(config);
 
-	const loadingModelName = config.name || 'loading'
+	const loadingModelName = config.name || 'loading';
 
 	const converter =
 		config.asNumber === true ? (cnt: number) => cnt : (cnt: number) => cnt > 0
@@ -94,7 +94,7 @@ export default (config: LoadingConfig = {}): Plugin => {
 	}
 
 	cntState.global = 0
-	loading.state.global = converter(cntState.global)
+	loading.state.global = converter(cntState.global);
 
 	return {
 		config: {
@@ -108,27 +108,25 @@ export default (config: LoadingConfig = {}): Plugin => {
 				return
 			}
 
-			cntState.models[name] = 0
-			loading.state.models[name] = converter(cntState.models[name])
-			loading.state.effects[name] = {}
-			const modelActions = (<any>this.dispatch)[name]
+			cntState.models[name] = 0;
+			loading.state.models[name] = converter(cntState.models[name]);
+			loading.state.effects[name] = {};
+			const modelActions = (<any>this.dispatch)[name];
 
 			// map over effects within models
 			Object.keys(modelActions).forEach((action: string) => {
 				if ((<any>this.dispatch)[name][action].isEffect !== true) {
-					return
+					return;
 				}
 
-				cntState.effects[name][action] = 0
-				loading.state.effects[name][action] = converter(
-					cntState.effects[name][action]
-				)
+				cntState.effects[name][action] = 0;
+				loading.state.effects[name][action] = converter(cntState.effects[name][action]);
 
-				const actionType = `${name}/${action}`
+				const actionType = `${name}/${action}`;
 
 				// ignore items not in whitelist
 				if (config.whitelist && !config.whitelist.includes(actionType)) {
-					return
+					return;;
 				}
 
 				// ignore items in blacklist
@@ -137,18 +135,18 @@ export default (config: LoadingConfig = {}): Plugin => {
 				}
 
 				// copy orig effect pointer
-				const origEffect = (<any>this.dispatch)[name][action]
+				const origEffect = (<any>this.dispatch)[name][action];
 
 				// create function with pre & post loading calls
 				const effectWrapper: any = async (...props:any) => {
 					try {
-						(<any>this.dispatch).loading.show({ name, action })
+						(<any>this.dispatch).loading.show({ name, action });
 						// waits for dispatch function to finish before calling "hide"
-						const effectResult = await origEffect(...props)
-						(<any>this.dispatch).loading.hide({ name, action })
+						const effectResult = await origEffect(...props);
+						(<any>this.dispatch).loading.hide({ name, action });
 						return effectResult
 					} catch (error) {
-						(<any>this.dispatch).loading.hide({ name, action })
+						(<any>this.dispatch).loading.hide({ name, action });
 						throw error
 					}
 				}
@@ -156,7 +154,7 @@ export default (config: LoadingConfig = {}): Plugin => {
 				effectWrapper.isEffect = true;
 
 				// replace existing effect with new wrapper
-				(<any>this.dispatch)[name][action] = effectWrapper
+				(<any>this.dispatch)[name][action] = effectWrapper;
 			})
 		},
 	}
