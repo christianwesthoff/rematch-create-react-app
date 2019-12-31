@@ -1,5 +1,3 @@
-import { RootDispatch } from "app/store"
-
 export interface CurrentDisplay {
     displayType: 'issues' | 'comments'
     issueId: number | null
@@ -47,7 +45,5 @@ export const issuesDisplay = {
             state.issueId = issueId;
             return state;
         }
-    },
-    effects: (dispatch: RootDispatch) => ({
-	}),
+    }
 }

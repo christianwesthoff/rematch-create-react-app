@@ -10,7 +10,7 @@ type ModelSelect<RootState = any> = {
 export type ModelConfig<S = any, RS = any> = {
 	state: S
 	reducers: ModelReducers<S>
-	effects: (dispatch: any) => ModelEffects<RS>
+	effects?: (dispatch: any) => ModelEffects<RS>
 	selectors?: (slice: any) => ModelSelect<RS>
 }
 export type Models<M = any> = {
