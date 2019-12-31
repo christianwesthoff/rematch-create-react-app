@@ -1,50 +1,42 @@
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
-import { RootState } from './rootReducer'
-
 import { RepoSearchForm } from 'features/repoSearch/RepoSearchForm'
 import { IssuesListPage } from 'features/issuesList/IssuesListPage'
 import { IssueDetailsPage } from 'features/issueDetails/IssueDetailsPage'
-
-import {
-  displayRepo,
-  setCurrentDisplayType,
-  setCurrentPage
-} from 'features/issuesDisplay/issuesDisplaySlice'
+import { CurrentRepo, CurrentDisplayPayload } from 'models/issuesDisplay'
+import { RootDispatch, RootState } from './store'
 
 import './App.css'
 
-type CurrentDisplay =
-  | {
-      type: 'issues'
-    }
-  | {
-      type: 'comments'
-      issueId: number
-    }
+const mapDispatch = (dispatch: RootDispatch) => ({
+  displayRepo: (payload:CurrentRepo) => dispatch.issuesDisplay.displayRepo(payload),
+  setCurrentDisplayType: (payload:CurrentDisplayPayload) => dispatch.issuesDisplay.setCurrentDisplayType(payload),
+  setCurrentPage: (page:number) => dispatch.issuesDisplay.setCurrentPage(page)
+})
 
 const App: React.FC = () => {
-  const dispatch = useDispatch()
-
+  const dispatch: RootDispatch = useDispatch()
+  const { displayRepo, setCurrentDisplayType, setCurrentPage } = mapDispatch(dispatch);
+  
   const { org, repo, displayType, page, issueId } = useSelector(
     (state: RootState) => state.issuesDisplay
   )
 
   const setOrgAndRepo = (org: string, repo: string) => {
-    dispatch(displayRepo({ org, repo }))
+    displayRepo({ org, repo });
   }
 
   const setJumpToPage = (page: number) => {
-    dispatch(setCurrentPage(page))
+    setCurrentPage(page);
   }
 
   const showIssuesList = () => {
-    dispatch(setCurrentDisplayType({ displayType: 'issues' }))
+    setCurrentDisplayType({ displayType: 'issues' });
   }
 
   const showIssueComments = (issueId: number) => {
-    dispatch(setCurrentDisplayType({ displayType: 'comments', issueId }))
+    setCurrentDisplayType({ displayType: 'comments', issueId });
   }
 
   let content

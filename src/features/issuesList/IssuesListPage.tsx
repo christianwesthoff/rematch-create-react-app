@@ -8,11 +8,6 @@ import { IssuePagination, OnPageChangeCallback } from './IssuePagination'
 import { GetIssuePayload, GetIssuesPayload } from 'models/issues'
 import { GetRepoDetailsPayload } from 'models/repoDetails'
 
-const mapState = (state: RootState) => ({
-  issues: state.issues,
-  openIssueCount: state.repoDetails.openIssuesCount
-})
-
 const mapDispatch = (dispatch: RootDispatch) => ({
   getIssue: (payload:GetIssuePayload) => dispatch.issues.getIssue(payload),
   getIssues: (payload:GetIssuesPayload) => dispatch.issues.getIssues(payload),
@@ -34,12 +29,9 @@ export const IssuesListPage = ({
   setJumpToPage,
   showIssueComments
 }: ILProps) => {
-  const { issues, openIssueCount } = useSelector(mapState);
+  const issues = useSelector((state: RootState) => state.issues);
+  const openIssueCount = useSelector((state: RootState) => state.repoDetails.openIssuesCount);
   const dispatch: RootDispatch = useDispatch();
-	const {
-    getIssues,
-    getRepoDetails
-  } = mapDispatch(dispatch);
   
   const {
     currentPageIssues,
@@ -55,6 +47,12 @@ export const IssuesListPage = ({
   )
 
   useEffect(() => {
+
+    const {
+      getIssues,
+      getRepoDetails
+    } = mapDispatch(dispatch);
+
     getIssues({ org, repo, page });
     getRepoDetails({ org, repo });
   }, [org, repo, page, dispatch])

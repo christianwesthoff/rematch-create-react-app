@@ -19,8 +19,9 @@ export type GetRepoDetailsPayload = {
 export const repoDetails = {
 	state: repoDetailsInitialState,
 	reducers: {
-        getRepoDetailsSuccess(state: RepoDetailsState, repoDetails: RepoDetails) {
-            state.openIssuesCount = repoDetails.open_issues_count;
+        getRepoDetailsSuccess(state: RepoDetailsState, payload: RepoDetails) {
+			const { open_issues_count } = payload;
+            state.openIssuesCount = open_issues_count;
 			state.error = null;
 			return state;
         },

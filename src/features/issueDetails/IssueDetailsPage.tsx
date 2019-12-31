@@ -5,15 +5,15 @@ import classnames from 'classnames'
 
 import { insertMentionLinks } from 'utils/stringUtils'
 import { IssueLabels } from 'components/IssueLabels'
-import { RootState } from 'app/rootReducer'
-import { fetchIssue } from 'features/issuesList/issuesSlice'
 
 import { IssueMeta } from './IssueMeta'
 import { IssueComments } from './IssueComments'
-import { fetchComments } from './commentsSlice'
 
 import styles from './IssueDetailsPage.module.css'
 import './IssueDetailsPage.css'
+import { RootState, RootDispatch } from 'app/store'
+import { Issue } from 'api/githubAPI'
+import { GetIssuePayload } from 'models/issues'
 
 interface IDProps {
   org: string
@@ -22,13 +22,18 @@ interface IDProps {
   showIssuesList: () => void
 }
 
+const mapDispatch = (dispatch: RootDispatch) => ({
+  getIssue: (payload:GetIssuePayload) => dispatch.issues.getIssue(payload),
+  getComments: (payload:Issue) => dispatch.comments.getComments(payload)
+})
+
 export const IssueDetailsPage = ({
   org,
   repo,
   issueId,
   showIssuesList
 }: IDProps) => {
-  const dispatch = useDispatch()
+  const dispatch: RootDispatch = useDispatch()
 
   const issue = useSelector(
     (state: RootState) => state.issues.issuesByNumber[issueId]
@@ -46,8 +51,11 @@ export const IssueDetailsPage = ({
   )
 
   useEffect(() => {
+
+    const { getIssue } = mapDispatch(dispatch);
+
     if (!issue) {
-      dispatch(fetchIssue(org, repo, issueId))
+      getIssue({ org, repo, number: issueId });
     }
 
     // Since we may have the issue already, ensure we're scrolled to the top
@@ -55,8 +63,11 @@ export const IssueDetailsPage = ({
   }, [org, repo, issueId, issue, dispatch])
 
   useEffect(() => {
+
+    const { getComments } = mapDispatch(dispatch);
+
     if (issue) {
-      dispatch(fetchComments(issue))
+      getComments(issue);
     }
   }, [issue, dispatch])
 
