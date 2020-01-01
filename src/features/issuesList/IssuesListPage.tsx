@@ -5,11 +5,10 @@ import { RootState, RootDispatch } from 'app/store'
 import { IssuesPageHeader } from './IssuesPageHeader'
 import { IssuesList } from './IssuesList'
 import { IssuePagination, OnPageChangeCallback } from './IssuePagination'
-import { GetIssuePayload, GetIssuesPayload } from 'models/issues'
+import { GetIssuesPayload } from 'models/issues'
 import { GetRepoDetailsPayload } from 'models/repoDetails'
 
 const mapDispatch = (dispatch: RootDispatch) => ({
-  getIssue: (payload:GetIssuePayload) => dispatch.issues.getIssue(payload),
   getIssues: (payload:GetIssuesPayload) => dispatch.issues.getIssues(payload),
   getRepoDetails:(payload:GetRepoDetailsPayload) => dispatch.repoDetails.getRepoDetails(payload)
 })
