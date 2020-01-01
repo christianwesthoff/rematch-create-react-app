@@ -48,7 +48,6 @@ export const comments = {
 			} catch (err) {
 				dispatch.comments.getCommentsFailure(err);
 			} 
-
 		}
 	})
 }
