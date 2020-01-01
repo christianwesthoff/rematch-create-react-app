@@ -20,12 +20,12 @@ const issuesInitialState: IssuesState = {
 	error: null
 }
 
-function startLoading(state: IssuesState):IssuesState {
+function startLoading(state: IssuesState) {
 	state.isLoading = true;
 	return state;
 }
 
-function loadingFailed(state: IssuesState, error: string):IssuesState {
+function loadingFailed(state: IssuesState, error: string) {
 	state.isLoading = false;
 	state.error = error;
 	return state;
