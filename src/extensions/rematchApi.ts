@@ -133,7 +133,6 @@ export default (config: ApiConfig = {}): Plugin => {
 						throw err;
 					}
 				}
-
 				effectWrapper.isEffect = true;
 
 				// replace existing effect with new wrapper
