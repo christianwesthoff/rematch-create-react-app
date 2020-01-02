@@ -87,7 +87,8 @@ export default (config: ApiConfig = {}): Plugin => {
 				api
 			},
 		},
-		onModel({ name }: Model) {
+		onModel(model: Model) {
+			const { name } = model;
 			const skipModels = [pluginModelName];
 			if (skipModels.includes(name)) {
 				return;

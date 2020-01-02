@@ -43,7 +43,6 @@ export const issues = {
 			issues.forEach(issue => {
 				state.issuesByNumber[issue.number] = issue;
 			});
-		
 			state.currentPageIssues = issues.map(issue => issue.number);
 			return state;
 		},
