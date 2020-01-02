@@ -42,8 +42,8 @@ export const IssueDetailsPage = ({
   const { commentsLoading, commentsError, comments } = useSelector(
     (state: RootState) => {
       return {
-        commentsLoading: state.comments.loading,
-        commentsError: state.comments.error,
+        commentsLoading: state.api.effects.comments.getComments.isLoading,
+        commentsError: state.api.effects.comments.getComments.error,
         comments: state.comments.commentsByIssue[issueId]
       }
     },

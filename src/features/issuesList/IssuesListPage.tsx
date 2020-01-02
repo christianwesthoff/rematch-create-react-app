@@ -28,17 +28,26 @@ export const IssuesListPage = ({
   setJumpToPage,
   showIssueComments
 }: ILProps) => {
-  const issues = useSelector((state: RootState) => state.issues);
+
+  const { issuesLoading, issuesError, issues } = useSelector(
+    (state: RootState) => {
+      return {
+        issuesLoading: state.api.effects.issues.getIssues.isLoading,
+        issuesError: state.api.effects.issues.getIssues.error,
+        issues: state.issues,
+      }
+    }
+  )
+
   const openIssueCount = useSelector((state: RootState) => state.repoDetails.openIssuesCount);
   const dispatch: RootDispatch = useDispatch();
   
   const {
     currentPageIssues,
-    isLoading,
-    error: issuesError,
     issuesByNumber,
     pageCount
   } = issues;
+
 
 
   const currentPageIssuesByNumber = currentPageIssues.map(
@@ -67,7 +76,7 @@ export const IssuesListPage = ({
 
   const currentPage = Math.min(pageCount, Math.max(page, 1)) - 1
 
-  let renderedList = isLoading ? (
+  let renderedList = issuesLoading ? (
     <h3>Loading...</h3>
   ) : (
     <IssuesList issues={currentPageIssuesByNumber} showIssueComments={showIssueComments} />

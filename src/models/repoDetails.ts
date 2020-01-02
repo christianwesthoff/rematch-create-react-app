@@ -3,12 +3,10 @@ import { RepoDetails, getRepoDetails } from 'api/githubAPI'
 
 export type RepoDetailsState = {
     openIssuesCount: number
-    error: string | null
 }
 
 const repoDetailsInitialState: RepoDetailsState = {
-    openIssuesCount: -1,
-    error: null
+    openIssuesCount: -1
 }
 
 export type GetRepoDetailsPayload = {
@@ -22,24 +20,13 @@ export const repoDetails = {
         getRepoDetailsSuccess(state: RepoDetailsState, payload: RepoDetails) {
 			const { open_issues_count } = payload;
             state.openIssuesCount = open_issues_count;
-			state.error = null;
 			return state;
         },
-        getRepoDetailsFailed(state: RepoDetailsState, error: string) {
-            state.openIssuesCount = -1;
-			state.error = error;
-			return state;
-        }
 	},
 	effects: (dispatch: RootDispatch) => ({
 		async getRepoDetails(payload:GetRepoDetailsPayload) {
-			try {
-				const repoDetails = await getRepoDetails(payload.org, payload.repo);
-				dispatch.repoDetails.getRepoDetailsSuccess(repoDetails);
-			} catch (err) {
-				dispatch.repoDetails.getRepoDetailsFailed(err);
-			} 
-
+			const repoDetails = await getRepoDetails(payload.org, payload.repo);
+			dispatch.repoDetails.getRepoDetailsSuccess(repoDetails);
 		}
 	}),
 }
