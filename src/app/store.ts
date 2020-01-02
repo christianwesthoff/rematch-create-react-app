@@ -2,12 +2,11 @@ import { init } from '@rematch/core'
 import { RematchRootDispatch, RematchRootState } from 'extensions/util'
 import * as models from 'models'
 import immerPlugin from '@rematch/immer'
-
-const immer = immerPlugin();
+import selectPlugin from '@rematch/select'
 
 export const store = init({
 	models,
-	plugins: [immer],
+	plugins: [immerPlugin(), selectPlugin()],
 });
 
 export type RootState = RematchRootState<typeof models>;
