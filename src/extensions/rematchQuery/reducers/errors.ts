@@ -18,7 +18,7 @@ const queries = (state: State = initialState, action: Action) => {
     case actionTypes.RESET: {
       return {};
     }
-    // case actionTypes.MUTATE_START:
+    case actionTypes.MUTATE_START:
     case actionTypes.REQUEST_START: {
       const { queryKey } = action;
       const newState = { ...state };
@@ -27,7 +27,7 @@ const queries = (state: State = initialState, action: Action) => {
 
       return newState;
     }
-    // case actionTypes.MUTATE_FAILURE:
+    case actionTypes.MUTATE_FAILURE:
     case actionTypes.REQUEST_FAILURE: {
       const { queryKey } = action;
 

@@ -130,126 +130,126 @@ export const requestFailure = ({
   };
 };
 
-// type MutateStartParams = {
-//   body: RequestBody;
-//   meta?: Meta | undefined;
-//   optimisticEntities: Entities;
-//   queryKey: QueryKey;
-//   url: Url;
-// };
+type MutateStartParams = {
+  body: RequestBody;
+  meta?: Meta | undefined;
+  optimisticEntities: Entities;
+  queryKey: QueryKey;
+  url: Url;
+};
 
-// type MutateStartAction = {
-//   type: '@@query/MUTATE_START';
-// } & MutateStartParams;
+type MutateStartAction = {
+  type: '@@query/MUTATE_START';
+} & MutateStartParams;
 
-// export const mutateStart = ({
-//   body,
-//   meta,
-//   optimisticEntities,
-//   queryKey,
-//   url,
-// }: MutateStartParams): MutateStartAction => {
-//   return {
-//     type: actionTypes.MUTATE_START,
-//     url,
-//     body,
-//     optimisticEntities,
-//     queryKey,
-//     meta,
-//   };
-// };
+export const mutateStart = ({
+  body,
+  meta,
+  optimisticEntities,
+  queryKey,
+  url,
+}: MutateStartParams): MutateStartAction => {
+  return {
+    type: actionTypes.MUTATE_START,
+    url,
+    body,
+    optimisticEntities,
+    queryKey,
+    meta,
+  };
+};
 
-// type MutateSuccessParams = {
-//   body: RequestBody;
-//   duration: Duration;
-//   entities: Entities;
-//   meta?: Meta | undefined;
-//   responseBody?: ResponseBody | undefined;
-//   responseHeaders?: ResponseHeaders | undefined;
-//   responseText?: ResponseText | undefined;
-//   queryKey: QueryKey;
-//   status: Status;
-//   url: Url;
-// };
+type MutateSuccessParams = {
+  body: RequestBody;
+  duration: Duration;
+  entities: Entities;
+  meta?: Meta | undefined;
+  responseBody?: ResponseBody | undefined;
+  responseHeaders?: ResponseHeaders | undefined;
+  responseText?: ResponseText | undefined;
+  queryKey: QueryKey;
+  status: Status;
+  url: Url;
+};
 
-// type MutateSuccessAction = {
-//   type: '@@query/MUTATE_SUCCESS';
-//   time: number;
-// } & MutateSuccessParams;
+type MutateSuccessAction = {
+  type: '@@query/MUTATE_SUCCESS';
+  time: number;
+} & MutateSuccessParams;
 
-// export const mutateSuccess = ({
-//   body,
-//   duration,
-//   entities,
-//   meta,
-//   queryKey,
-//   responseBody,
-//   responseHeaders,
-//   responseText,
-//   status,
-//   url,
-// }: MutateSuccessParams): MutateSuccessAction => {
-//   return {
-//     type: actionTypes.MUTATE_SUCCESS,
-//     url,
-//     body,
-//     duration,
-//     status,
-//     responseBody,
-//     responseText,
-//     responseHeaders,
-//     entities,
-//     queryKey,
-//     time: Date.now(),
-//     meta,
-//   };
-// };
+export const mutateSuccess = ({
+  body,
+  duration,
+  entities,
+  meta,
+  queryKey,
+  responseBody,
+  responseHeaders,
+  responseText,
+  status,
+  url,
+}: MutateSuccessParams): MutateSuccessAction => {
+  return {
+    type: actionTypes.MUTATE_SUCCESS,
+    url,
+    body,
+    duration,
+    status,
+    responseBody,
+    responseText,
+    responseHeaders,
+    entities,
+    queryKey,
+    time: Date.now(),
+    meta,
+  };
+};
 
-// type MutateFailureParams = {
-//   body: RequestBody;
-//   duration: Duration;
-//   meta?: Meta | undefined;
-//   responseBody?: ResponseBody | undefined;
-//   responseHeaders?: ResponseHeaders | undefined;
-//   responseText?: ResponseText | undefined;
-//   rolledBackEntities?: Entities | undefined;
-//   queryKey: QueryKey;
-//   status: Status;
-//   url: Url;
-// };
+type MutateFailureParams = {
+  body: RequestBody;
+  duration: Duration;
+  meta?: Meta | undefined;
+  responseBody?: ResponseBody | undefined;
+  responseHeaders?: ResponseHeaders | undefined;
+  responseText?: ResponseText | undefined;
+  rolledBackEntities?: Entities | undefined;
+  queryKey: QueryKey;
+  status: Status;
+  url: Url;
+};
 
-// type MutateFailureAction = {
-//   type: '@@query/MUTATE_FAILURE';
-//   time: number;
-// } & MutateFailureParams;
+type MutateFailureAction = {
+  type: '@@query/MUTATE_FAILURE';
+  time: number;
+} & MutateFailureParams;
 
-// export const mutateFailure = ({
-//   body,
-//   duration,
-//   meta,
-//   queryKey,
-//   responseBody,
-//   responseHeaders,
-//   responseText,
-//   rolledBackEntities,
-//   status,
-//   url,
-// }: MutateFailureParams): MutateFailureAction => {
-//   return {
-//     type: actionTypes.MUTATE_FAILURE,
-//     url,
-//     body,
-//     duration,
-//     status,
-//     responseBody,
-//     responseText,
-//     responseHeaders,
-//     rolledBackEntities,
-//     queryKey,
-//     time: Date.now(),
-//     meta,
-//   };
-// };
+export const mutateFailure = ({
+  body,
+  duration,
+  meta,
+  queryKey,
+  responseBody,
+  responseHeaders,
+  responseText,
+  rolledBackEntities,
+  status,
+  url,
+}: MutateFailureParams): MutateFailureAction => {
+  return {
+    type: actionTypes.MUTATE_FAILURE,
+    url,
+    body,
+    duration,
+    status,
+    responseBody,
+    responseText,
+    responseHeaders,
+    rolledBackEntities,
+    queryKey,
+    time: Date.now(),
+    meta,
+  };
+};
 
 type RequestAsyncAction = {
   type: '@@query/REQUEST_ASYNC';
@@ -288,30 +288,30 @@ type MutateAsyncAction = {
   type: '@@query/MUTATE_ASYNC';
 } & QueryConfig;
 
-// export const mutateAsync = ({
-//   body,
-//   meta,
-//   optimisticUpdate,
-//   options,
-//   queryKey,
-//   rollback,
-//   transform,
-//   update,
-//   url,
-// }: QueryConfig): MutateAsyncAction => {
-//   return {
-//     type: actionTypes.MUTATE_ASYNC,
-//     body,
-//     meta,
-//     optimisticUpdate,
-//     options,
-//     queryKey,
-//     rollback,
-//     transform,
-//     update,
-//     url,
-//   };
-// };
+export const mutateAsync = ({
+  body,
+  meta,
+  optimisticUpdate,
+  options,
+  queryKey,
+  rollback,
+  transform,
+  update,
+  url,
+}: QueryConfig): MutateAsyncAction => {
+  return {
+    type: actionTypes.MUTATE_ASYNC,
+    body,
+    meta,
+    optimisticUpdate,
+    options,
+    queryKey,
+    rollback,
+    transform,
+    update,
+    url,
+  };
+};
 
 type ResetQueryAction = {
   type: '@@query/RESET_QUERY';
@@ -378,7 +378,7 @@ export type Action =
   | RequestStartAction
   | RequestSuccessAction
   | RequestFailureAction
-  // | MutateStartAction
-  // | MutateSuccessAction
-  // | MutateFailureAction
+  | MutateStartAction
+  | MutateSuccessAction
+  | MutateFailureAction
   | ResetQueryAction;

@@ -4,25 +4,41 @@ import idx from 'idx';
 import {
   requestStart,
   requestFailure,
-  requestSuccess
+  requestSuccess,
+  mutateStart,
+  mutateFailure,
+  mutateSuccess,
 } from '../actions';
 import * as actionTypes from '../constants/action-types';
 import httpMethods, { HttpMethod } from '../constants/http-methods';
 import * as statusCodes from '../constants/status-codes';
 import { getQueryKey } from '../lib/query-key';
-import { updateEntities } from '../lib/update';
+import { updateEntities, optimisticUpdateEntities, rollbackEntities } from '../lib/update';
+import { pick } from '../lib/object';
 
 import { Action, PublicAction } from '../actions';
 import {
   ActionPromiseValue,
+  EntitiesSelector,
   NetworkHandler,
+  NetworkInterface,
+  QueriesSelector,
   ResponseBody,
   Status,
   Transform,
-  RequestConfig,
+  Entities,
   QueryMiddlewareConfig,
 } from '../types';
 import { State as QueriesState } from '../reducers/queries';
+
+type Config = {
+  backoff: {
+    maxAttempts: number;
+    minDuration: number;
+    maxDuration: number;
+  };
+  retryableStatusCodes: Array<Status>;
+};
 
 type ReduxStore = {
   dispatch: (action: Action) => any;
@@ -31,7 +47,7 @@ type ReduxStore = {
 
 type Next = (action: PublicAction) => any;
 
-const defaultConfig: RequestConfig = {
+const defaultConfig: Config = {
   backoff: {
     maxAttempts: 5,
     minDuration: 300,
@@ -72,7 +88,7 @@ const queryMiddleware = (
   config: QueryMiddlewareConfig,
 ) => {
   const { networkInterface, queriesSelector, entitiesSelector, customConfig } = config;
-
+  
   const networkHandlersByQueryKey: { [key: string]: NetworkHandler } = {};
 
   const abortQuery = (queryKey: string) => {
@@ -120,10 +136,11 @@ const queryMiddleware = (
 
         const queriesState = queries[queryKey];
         const isPending = idx(queriesState, (_: any) => _.isPending);
+        const isInvalid = idx(queriesState, (_: any) => _.isInvalid);
         const status = idx(queriesState, (_: any) => _.status);
         const hasSucceeded = isStatusOk(status);
 
-        if (force || !queriesState || (retry && !isPending && !hasSucceeded)) {
+        if (force || isInvalid || !queriesState || (retry && !isPending && !hasSucceeded)) {
           returnValue = new Promise<ActionPromiseValue>(resolve => {
             const start = new Date();
             const { method = httpMethods.GET as HttpMethod } = options;
@@ -236,6 +253,146 @@ const queryMiddleware = (
 
         break;
       }
+      case actionTypes.MUTATE_ASYNC: {
+        const {
+          url,
+          transform = defaultTransform,
+          update,
+          rollback,
+          body,
+          optimisticUpdate,
+          options = {},
+          meta,
+        } = action;
+
+        if (!url) {
+          throw new Error('Missing required url field for mutation');
+        }
+
+        const initialState = getState();
+        const initialEntities = entitiesSelector(initialState);
+        let optimisticEntities: Entities;
+
+        if (optimisticUpdate) {
+          optimisticEntities = optimisticUpdateEntities(optimisticUpdate, initialEntities);
+        }
+
+        const queryKey = getQueryKey({
+          queryKey: action.queryKey,
+          url: action.url,
+          body: action.body,
+        });
+
+        if (!queryKey) {
+          throw new Error('Failed to generate queryKey for mutation');
+        }
+
+        returnValue = new Promise<ActionPromiseValue>(resolve => {
+          const start = new Date();
+          const { method = httpMethods.POST as HttpMethod } = options;
+
+          const networkHandler = networkInterface(url, method, {
+            body,
+            headers: options.headers,
+            credentials: options.credentials,
+          });
+
+          networkHandlersByQueryKey[queryKey] = networkHandler;
+
+          // Note: only the entities that are included in `optimisticUpdate` will be passed along in the
+          // `mutateStart` action as `optimisticEntities`
+          dispatch(
+            mutateStart({
+              body,
+              meta,
+              optimisticEntities,
+              queryKey,
+              url,
+            }),
+          );
+
+          networkHandler.execute((err, status, responseBody, responseText, responseHeaders) => {
+            const end = new Date();
+            const duration = +end - +start;
+            const state = getState();
+            const entities = entitiesSelector(state);
+            let transformed;
+            let newEntities;
+
+            if (action.unstable_preDispatchCallback) {
+              action.unstable_preDispatchCallback();
+            }
+
+            if (err || !isStatusOk(status)) {
+              let rolledBackEntities;
+
+              if (optimisticUpdate) {
+                rolledBackEntities = rollbackEntities(
+                  rollback,
+                  pick(initialEntities, Object.keys(optimisticEntities)),
+                  pick(entities, Object.keys(optimisticEntities)),
+                );
+              }
+
+              dispatch(
+                mutateFailure({
+                  body,
+                  duration,
+                  meta,
+                  queryKey,
+                  responseBody,
+                  responseHeaders,
+                  status,
+                  responseText,
+                  rolledBackEntities,
+                  url,
+                }),
+              );
+
+              resolve({
+                body: responseBody,
+                duration,
+                status,
+                text: responseText,
+                headers: responseHeaders,
+              });
+            } else {
+              transformed = transform(responseBody, responseText);
+              newEntities = updateEntities(update, entities, transformed);
+
+              dispatch(
+                mutateSuccess({
+                  url,
+                  body,
+                  duration,
+                  status,
+                  entities: newEntities,
+                  queryKey,
+                  responseBody,
+                  responseText,
+                  responseHeaders,
+                  meta,
+                }),
+              );
+
+              resolve({
+                body: responseBody,
+                duration,
+                status,
+                text: responseText,
+                transformed,
+                entities: newEntities,
+                headers: responseHeaders,
+              });
+            }
+
+            delete networkHandlersByQueryKey[queryKey];
+          });
+        });
+
+        break;
+      }
+      case actionTypes.RESET_QUERY:
       case actionTypes.CANCEL_QUERY: {
         const { queryKey } = action;
 
