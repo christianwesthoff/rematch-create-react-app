@@ -15,25 +15,14 @@ import { updateEntities } from '../lib/update';
 import { Action, PublicAction } from '../actions';
 import {
   ActionPromiseValue,
-  EntitiesSelector,
   NetworkHandler,
-  NetworkInterface,
-  QueriesSelector,
   ResponseBody,
   Status,
   Transform,
-  Entities,
+  RequestConfig,
+  QueryMiddlewareConfig,
 } from '../types';
 import { State as QueriesState } from '../reducers/queries';
-
-type Config = {
-  backoff: {
-    maxAttempts: number;
-    minDuration: number;
-    maxDuration: number;
-  };
-  retryableStatusCodes: Array<Status>;
-};
 
 type ReduxStore = {
   dispatch: (action: Action) => any;
@@ -42,7 +31,7 @@ type ReduxStore = {
 
 type Next = (action: PublicAction) => any;
 
-const defaultConfig: Config = {
+const defaultConfig: RequestConfig = {
   backoff: {
     maxAttempts: 5,
     minDuration: 300,
@@ -80,11 +69,10 @@ const isStatusOk = (status?: Status | undefined): boolean => {
 const defaultTransform: Transform = (body?: ResponseBody | undefined) => body || {};
 
 const queryMiddleware = (
-  networkInterface: NetworkInterface,
-  queriesSelector: QueriesSelector,
-  entitiesSelector: EntitiesSelector,
-  customConfig?: Config | undefined,
+  config: QueryMiddlewareConfig,
 ) => {
+  const { networkInterface, queriesSelector, entitiesSelector, customConfig } = config;
+
   const networkHandlersByQueryKey: { [key: string]: NetworkHandler } = {};
 
   const abortQuery = (queryKey: string) => {

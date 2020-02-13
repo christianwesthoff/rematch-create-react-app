@@ -101,3 +101,19 @@ export type ActionPromiseValue = {
 };
 
 export type Action = PublicAction;
+
+export type RequestConfig = {
+  backoff: {
+    maxAttempts: number;
+    minDuration: number;
+    maxDuration: number;
+  };
+  retryableStatusCodes: Array<Status>;
+};
+
+export type QueryMiddlewareConfig = {
+  networkInterface: NetworkInterface,
+  queriesSelector: QueriesSelector,
+  entitiesSelector: EntitiesSelector,
+  customConfig?: RequestConfig | undefined,
+};

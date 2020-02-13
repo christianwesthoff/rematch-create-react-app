@@ -288,30 +288,30 @@ type MutateAsyncAction = {
   type: '@@query/MUTATE_ASYNC';
 } & QueryConfig;
 
-export const mutateAsync = ({
-  body,
-  meta,
-  optimisticUpdate,
-  options,
-  queryKey,
-  rollback,
-  transform,
-  update,
-  url,
-}: QueryConfig): MutateAsyncAction => {
-  return {
-    type: actionTypes.MUTATE_ASYNC,
-    body,
-    meta,
-    optimisticUpdate,
-    options,
-    queryKey,
-    rollback,
-    transform,
-    update,
-    url,
-  };
-};
+// export const mutateAsync = ({
+//   body,
+//   meta,
+//   optimisticUpdate,
+//   options,
+//   queryKey,
+//   rollback,
+//   transform,
+//   update,
+//   url,
+// }: QueryConfig): MutateAsyncAction => {
+//   return {
+//     type: actionTypes.MUTATE_ASYNC,
+//     body,
+//     meta,
+//     optimisticUpdate,
+//     options,
+//     queryKey,
+//     rollback,
+//     transform,
+//     update,
+//     url,
+//   };
+// };
 
 type ResetQueryAction = {
   type: '@@query/RESET_QUERY';
