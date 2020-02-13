@@ -13,6 +13,7 @@ import {
   Status,
   Update,
   Url,
+  QueryPattern,
 } from '../types';
 
 type RequestStartParams = {
@@ -315,13 +316,13 @@ export const mutateAsync = ({
 
 type ResetQueryAction = {
   type: '@@query/RESET_QUERY';
-  queryKey?: QueryKey | undefined;
+  queryPattern?: QueryPattern | undefined;
 };
 
-export const resetQuery = (queryKey: QueryKey): ResetQueryAction => {
+export const resetQuery = (queryPattern: QueryPattern): ResetQueryAction => {
   return {
     type: actionTypes.RESET_QUERY,
-    queryKey,
+    queryPattern,
   };
 };
 

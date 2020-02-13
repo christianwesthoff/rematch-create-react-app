@@ -27,7 +27,7 @@ import {
   Status,
   Transform,
   Entities,
-  QueryMiddlewareConfig,
+  QueryKey,
 } from '../types';
 import { State as QueriesState } from '../reducers/queries';
 
@@ -62,6 +62,18 @@ const defaultConfig: Config = {
   ],
 };
 
+const getQueryKeys = (queries: QueriesState): QueryKey[] => {
+  const queryKeys: QueryKey[] = [];
+
+  for (const queryKey in queries) {
+    queryKeys.push(queryKey)
+  }
+
+  return queryKeys;
+};
+
+const filterQueriesWildcard = (arr: string[], str: string) => arr.filter(item => new RegExp('^' + str.replace(/\*/g, '.*') + '$').test(item));
+
 const getPendingQueries = (queries: QueriesState): QueriesState => {
   const pendingQueries: QueriesState = {};
 
@@ -85,10 +97,11 @@ const isStatusOk = (status?: Status | undefined): boolean => {
 const defaultTransform: Transform = (body?: ResponseBody | undefined) => body || {};
 
 const queryMiddleware = (
-  config: QueryMiddlewareConfig,
+  networkInterface: NetworkInterface,
+  queriesSelector: QueriesSelector,
+  entitiesSelector: EntitiesSelector,
+  customConfig?: Config | undefined,
 ) => {
-  const { networkInterface, queriesSelector, entitiesSelector, customConfig } = config;
-  
   const networkHandlersByQueryKey: { [key: string]: NetworkHandler } = {};
 
   const abortQuery = (queryKey: string) => {
@@ -392,7 +405,27 @@ const queryMiddleware = (
 
         break;
       }
-      case actionTypes.RESET_QUERY:
+      case actionTypes.RESET_QUERY: {
+        const { queryPattern } = action;
+
+        if (!queryPattern) {
+          throw new Error('Missing required queryPattern field');
+        }
+
+        const state = getState();
+        const queries = queriesSelector(state);
+        const pendingQueries = getPendingQueries(queries);
+        const queryKeys = getQueryKeys(queries);
+
+        for(let match in filterQueriesWildcard(queryKeys, queryPattern)) {
+            if (match in pendingQueries) {
+              abortQuery(queryPattern);
+              returnValue = next(action);
+            }
+        }
+
+        break;
+      }
       case actionTypes.CANCEL_QUERY: {
         const { queryKey } = action;
 

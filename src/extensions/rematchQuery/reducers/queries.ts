@@ -1,7 +1,7 @@
 import * as actionTypes from '../constants/action-types';
 
 import { Action } from '../actions';
-import { ResponseHeaders, Status } from '../types';
+import { ResponseHeaders, Status, QueryKey } from '../types';
 
 export type State = {
   [key: string]: {
@@ -17,6 +17,18 @@ export type State = {
 };
 
 const initialState = {};
+
+const filterStateWildcard = (arr: string[], str: string) => arr.filter(item => new RegExp('^' + str.replace(/\*/g, '.*') + '$').test(item));
+
+const getStateKeys = (queries: State): string[] => {
+  const queryKeys: string[] = [];
+
+  for (const queryKey in queries) {
+    queryKeys.push(queryKey)
+  }
+
+  return queryKeys;
+};
 
 const queries = (state: State = initialState, action: Action): State => {
   switch (action.type) {
@@ -76,17 +88,21 @@ const queries = (state: State = initialState, action: Action): State => {
       return state;
     }
     case actionTypes.RESET_QUERY: {
-      const { queryKey } = action;
+      const { queryPattern } = action;
 
-      if (queryKey) {
+      if (queryPattern) {
 
-        return {
-          ...state,
-          [queryKey]: {
-            ...state[queryKey],
+        const stateKeys = getStateKeys(state);
+        let newState = { ...state };
+
+        for(let match in filterStateWildcard(stateKeys, queryPattern)) {
+           newState = { ...newState, [match]: {
+            ...state[match],
             isInvalid: true,
-          },
-        };
+          } }
+        }
+
+        return newState;
       }
 
       return state;

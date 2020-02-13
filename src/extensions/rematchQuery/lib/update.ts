@@ -1,5 +1,3 @@
-// @flow
-
 import { Update, Entities, OptimisticUpdate, Rollback } from '../types';
 
 export const updateEntities = (

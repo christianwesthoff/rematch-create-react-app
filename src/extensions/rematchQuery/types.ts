@@ -36,6 +36,8 @@ export type Meta = { [key: string]: any };
 
 export type QueryKey = string;
 
+export type QueryPattern = string;
+
 export type ResponseBody = any;
 
 export type ResponseText = string;
@@ -113,7 +115,5 @@ export type RequestConfig = {
 
 export type QueryMiddlewareConfig = {
   networkInterface: NetworkInterface,
-  queriesSelector: QueriesSelector,
-  entitiesSelector: EntitiesSelector,
   customConfig?: RequestConfig | undefined,
 };
