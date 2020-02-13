@@ -30,6 +30,7 @@ import {
   QueryKey,
 } from '../types';
 import { State as QueriesState } from '../reducers/queries';
+import { wildcardFilter } from '../lib/array';
 
 type Config = {
   backoff: {
@@ -71,8 +72,6 @@ const getQueryKeys = (queries: QueriesState): QueryKey[] => {
 
   return queryKeys;
 };
-
-const filterQueriesWildcard = (arr: string[], str: string) => arr.filter(item => new RegExp('^' + str.replace(/\*/g, '.*') + '$').test(item));
 
 const getPendingQueries = (queries: QueriesState): QueriesState => {
   const pendingQueries: QueriesState = {};
@@ -417,7 +416,7 @@ const queryMiddleware = (
         const pendingQueries = getPendingQueries(queries);
         const queryKeys = getQueryKeys(queries);
 
-        for(let match in filterQueriesWildcard(queryKeys, queryPattern)) {
+        for(let match in wildcardFilter(queryKeys, queryPattern)) {
             if (match in pendingQueries) {
               abortQuery(queryPattern);
               returnValue = next(action);

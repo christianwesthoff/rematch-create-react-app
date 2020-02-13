@@ -2,6 +2,7 @@ import * as actionTypes from '../constants/action-types';
 
 import { Action } from '../actions';
 import { ResponseHeaders, Status, QueryKey } from '../types';
+import { wildcardFilter } from '../lib/array';
 
 export type State = {
   [key: string]: {
@@ -17,8 +18,6 @@ export type State = {
 };
 
 const initialState = {};
-
-const filterStateWildcard = (arr: string[], str: string) => arr.filter(item => new RegExp('^' + str.replace(/\*/g, '.*') + '$').test(item));
 
 const getStateKeys = (queries: State): string[] => {
   const queryKeys: string[] = [];
@@ -95,7 +94,7 @@ const queries = (state: State = initialState, action: Action): State => {
         const stateKeys = getStateKeys(state);
         let newState = { ...state };
 
-        for(let match in filterStateWildcard(stateKeys, queryPattern)) {
+        for(let match in wildcardFilter(stateKeys, queryPattern)) {
            newState = { ...newState, [match]: {
             ...state[match],
             isInvalid: true,
