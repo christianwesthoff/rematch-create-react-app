@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
-import store, { getQueries } from './app/store'
+import store from './app/store'
 
 import './index.css'
 

@@ -23,7 +23,6 @@ const queries = (state: State = initialState, action: Action): State => {
     case actionTypes.RESET: {
       return {};
     }
-    case actionTypes.MUTATE_START:
     case actionTypes.REQUEST_START: {
       const { queryKey } = action;
 
@@ -33,14 +32,12 @@ const queries = (state: State = initialState, action: Action): State => {
           isFinished: false,
           isPending: true,
           isInvalid: false,
-          isMutation: action.type === actionTypes.MUTATE_START,
+          isMutation: false,
           queryCount: state[queryKey] ? state[queryKey].queryCount + 1 : 1,
         },
       };
     }
     case actionTypes.REQUEST_SUCCESS:
-    case actionTypes.MUTATE_FAILURE:
-    case actionTypes.MUTATE_SUCCESS:
     case actionTypes.REQUEST_FAILURE: {
       const { queryKey } = action;
 
@@ -77,13 +74,16 @@ const queries = (state: State = initialState, action: Action): State => {
     }
     case actionTypes.RESET_QUERY: {
       const { queryKey } = action;
-      return {
-        ...state,
-        [queryKey]: {
-          ...state[queryKey],
-          isInvalid: true,
-        },
-      };
+      if (queryKey) {
+        return {
+          ...state,
+          [queryKey]: {
+            ...state[queryKey],
+            isInvalid: true,
+          },
+        };
+      }
+      return state;
     }
     default: {
       return state;

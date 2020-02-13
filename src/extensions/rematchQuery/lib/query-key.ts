@@ -1,10 +1,10 @@
-import stringify from 'json-stable-stringify';
+import stringify from 'fast-json-stable-stringify';
 
 import { QueryKeyGetter } from '../types';
 
 export const getQueryKey: QueryKeyGetter = queryConfig => {
   if (!queryConfig) {
-    return null;
+    return undefined;
   }
 
   const { url, body, queryKey } = queryConfig;

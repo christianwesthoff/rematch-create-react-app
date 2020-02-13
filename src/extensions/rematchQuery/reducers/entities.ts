@@ -1,7 +1,7 @@
 import {
-  MUTATE_FAILURE,
-  MUTATE_START,
-  MUTATE_SUCCESS,
+  // MUTATE_FAILURE,
+  // MUTATE_START,
+  // MUTATE_SUCCESS,
   REQUEST_SUCCESS,
   RESET,
   UPDATE_ENTITIES,
@@ -20,17 +20,7 @@ const initialState = {};
 const entities = (state: State = initialState, action: Action) => {
   if (action.type === RESET) {
     return 'entities' in action ? action.entities : initialState;
-  } else if (action.type === MUTATE_START && action.optimisticEntities) {
-    return {
-      ...state,
-      ...action.optimisticEntities,
-    };
-  } else if (action.type === MUTATE_FAILURE && action.rolledBackEntities) {
-    return {
-      ...state,
-      ...action.rolledBackEntities,
-    };
-  } else if (action.type === REQUEST_SUCCESS || action.type === MUTATE_SUCCESS) {
+  } else if (action.type === REQUEST_SUCCESS) {
     return {
       ...state,
       ...action.entities,

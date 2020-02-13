@@ -42,8 +42,8 @@ export const IssueDetailsPage = ({
   const { commentsLoading, commentsError, comments } = useSelector(
     (state: RootState) => {
       return {
-        commentsLoading: state.api.effects.comments.getComments.isLoading,
-        commentsError: state.api.effects.comments.getComments.error,
+        commentsLoading: false,
+        commentsError: null,
         comments: state.comments.commentsByIssue[issueId]
       }
     },
@@ -101,7 +101,7 @@ export const IssueDetailsPage = ({
       renderedComments = (
         <div className="issue-detail--error">
           <h1>Could not load comments for issue #{issueId}</h1>
-          <p>{commentsError.toString()}</p>
+          <p>{commentsError}</p>
         </div>
       )
     }
