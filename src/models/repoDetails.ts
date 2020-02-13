@@ -28,5 +28,5 @@ export const repoDetails = {
 			const repoDetails = await getRepoDetails(payload.org, payload.repo);
 			dispatch.repoDetails.getRepoDetailsSuccess(repoDetails);
 		}
-	}),
+	})
 }

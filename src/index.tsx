@@ -1,8 +1,8 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
-
-import store from './app/store'
+import { Provider as ReduxQueryProvider } from 'redux-query-react';
+import store, { getQueries } from './app/store'
 
 import './index.css'
 
@@ -11,7 +11,9 @@ const render = () => {
 
   ReactDOM.render(
     <Provider store={store}>
-      <App />
+      <ReduxQueryProvider queriesSelector={getQueries}>
+        <App />
+      </ReduxQueryProvider>
     </Provider>,
     document.getElementById('root')
   )

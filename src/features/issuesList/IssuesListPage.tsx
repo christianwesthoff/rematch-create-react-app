@@ -7,6 +7,9 @@ import { IssuesList } from './IssuesList'
 import { IssuePagination, OnPageChangeCallback } from './IssuePagination'
 import { GetIssuesPayload } from 'models/issues'
 import { GetRepoDetailsPayload } from 'models/repoDetails'
+import { getIssuesQuery } from 'queries/issues'
+
+import { useRequest } from 'redux-query-react';
 
 const mapDispatch = (dispatch: RootDispatch) => ({
   getIssues: (payload:GetIssuesPayload) => dispatch.issues.getIssues(payload),
@@ -39,6 +42,10 @@ export const IssuesListPage = ({
     }
   )
 
+  const issues1 = useSelector((state:any) => state.entities.issues1) || [];
+
+  const [{ isPending, status }, refresh] = useRequest<any>(getIssuesQuery(org, repo, page));
+
   const openIssueCount = useSelector((state: RootState) => state.repoDetails.openIssuesCount);
   const dispatch: RootDispatch = useDispatch();
   
@@ -47,8 +54,6 @@ export const IssuesListPage = ({
     issuesByNumber,
     pageCount
   } = issues;
-
-
 
   const currentPageIssuesByNumber = currentPageIssues.map(
     issueNumber => issuesByNumber[issueNumber]
@@ -61,7 +66,7 @@ export const IssuesListPage = ({
       getRepoDetails
     } = mapDispatch(dispatch);
 
-    getIssues({ org, repo, page });
+    // getIssues({ org, repo, page });
     getRepoDetails({ org, repo });
   }, [org, repo, page, dispatch])
 
@@ -89,7 +94,10 @@ export const IssuesListPage = ({
 
   return (
     <div id="issue-list-page">
-      <IssuesPageHeader
+      <div>{JSON.stringify(isPending)}</div>
+      <div>{JSON.stringify(status)}</div>
+      <div>{JSON.stringify(issues1)}</div>
+      {/* <IssuesPageHeader
         openIssuesCount={openIssueCount}
         org={org}
         repo={repo}
@@ -99,7 +107,7 @@ export const IssuesListPage = ({
         currentPage={currentPage}
         pageCount={pageCount}
         onPageChange={onPageChanged}
-      />
+      /> */}
     </div>
   )
 }
