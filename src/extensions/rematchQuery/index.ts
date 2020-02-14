@@ -1,8 +1,8 @@
 import { QueryMiddlewareConfig } from "./types";
 import queryMiddleware from "./middleware/query"
-import { Plugin, Middleware, Model } from '@rematch/core'
-import queries from "./reducers/queries";
-import entities from "./reducers/entities";
+import { Plugin, Middleware } from '@rematch/core'
+import queriesReducer from "./reducers/queries";
+import entitiesReducer from "./reducers/entities";
 import { bindActionCreators } from 'redux'
 import { requestAsync } from './actions'
 
@@ -10,7 +10,7 @@ const queriesModelName = "queries";
 const queriesSelector = (state: any) => state.queries;
 const queriesModel: any = {
 	name: queriesModelName,
-	baseReducer: queries,
+	baseReducer: queriesReducer,
 	effects: (dispatch: any) => bindActionCreators({
 		requestAsync,
 	}, dispatch)
@@ -20,7 +20,7 @@ const entitiesModelName = "entities";
 const entitiesSelector = (state: any) => state.entities;
 const entitiesModel: any = {
 	name: entitiesModelName,
-	baseReducer: entities
+	baseReducer: entitiesReducer
 }
 
 export default (config: QueryMiddlewareConfig): Plugin => {
