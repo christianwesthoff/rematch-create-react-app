@@ -12,7 +12,7 @@ const queryModel: any = {
 	baseReducer: queries,
 	effects: (dispatch: any) => bindActionCreators({
 		requestAsync,
-	  }, dispatch)
+	}, dispatch)
 }
 
 const entitiesSelector = (state: any) => state.entities;
