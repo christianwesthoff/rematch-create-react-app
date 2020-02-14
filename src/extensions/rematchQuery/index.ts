@@ -6,18 +6,20 @@ import entities from "./reducers/entities";
 import { bindActionCreators } from 'redux'
 import { requestAsync } from './actions'
 
+const queriesModelName = "queries";
 const queriesSelector = (state: any) => state.queries;
-const queryModel: any = {
-	name: "queries",
+const queriesModel: any = {
+	name: queriesModelName,
 	baseReducer: queries,
 	effects: (dispatch: any) => bindActionCreators({
 		requestAsync,
 	}, dispatch)
 }
 
+const entitiesModelName = "entities";
 const entitiesSelector = (state: any) => state.entities;
 const entitiesModel: any = {
-	name: "entities",
+	name: entitiesModelName,
 	baseReducer: entities
 }
 
@@ -28,7 +30,7 @@ export default (config: QueryMiddlewareConfig): Plugin => {
 	return {
 		config: {
 			models: {
-				queryModel,
+				queriesModel,
 				entitiesModel
 			},
 		},
