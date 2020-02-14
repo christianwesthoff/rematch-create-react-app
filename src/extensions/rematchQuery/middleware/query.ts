@@ -197,9 +197,9 @@ const queryMiddleware = (
                 let transformed;
                 let newEntities;
 
-                if (action.unstable_preDispatchCallback) {
-                  action.unstable_preDispatchCallback();
-                }
+                // if (action.unstable_preDispatchCallback) {
+                //   action.unstable_preDispatchCallback();
+                // }
 
                 if (err || !isStatusOk(status)) {
                   dispatch(
@@ -331,9 +331,9 @@ const queryMiddleware = (
             let transformed;
             let newEntities;
 
-            if (action.unstable_preDispatchCallback) {
-              action.unstable_preDispatchCallback();
-            }
+            // if (action.unstable_preDispatchCallback) {
+            //   action.unstable_preDispatchCallback();
+            // }
 
             if (err || !isStatusOk(status)) {
               let rolledBackEntities;

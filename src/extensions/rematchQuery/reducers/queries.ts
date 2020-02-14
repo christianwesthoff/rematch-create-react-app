@@ -14,6 +14,9 @@ export type State = {
     lastUpdated?: number;
     queryCount: number;
     status?: Status;
+    results?: {
+      [key: string]: Array<string|number|symbol>
+    }
   };
 };
 
@@ -46,7 +49,8 @@ const queries = (state: State = initialState, action: Action): State => {
           isInvalid: false,
           isMutation: action.type === actionTypes.MUTATE_START,
           queryCount: state[queryKey] ? state[queryKey].queryCount + 1 : 1,
-        },
+          results: state[queryKey] ? state[queryKey].results : undefined
+        }
       };
     }
     case actionTypes.REQUEST_SUCCESS:
@@ -63,7 +67,7 @@ const queries = (state: State = initialState, action: Action): State => {
           isPending: false,
           lastUpdated: action.time,
           status: action.status,
-          headers: action.responseHeaders,
+          headers: action.responseHeaders
         },
       };
     }
@@ -79,7 +83,7 @@ const queries = (state: State = initialState, action: Action): State => {
             ...state[queryKey],
             isFinished: true,
             isPending: false,
-            status: 0,
+            status: 0
           },
         };
       }
