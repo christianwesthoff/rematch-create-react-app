@@ -10,7 +10,7 @@ const cancelTokenFactory = () => {
 const requestFactory = (instance: AxiosInstance, url: string, method: HttpMethod, body: any) => {
     switch (method) {
       case HttpMethods.HEAD:
-        return axios.head(url, body);
+        return instance.head(url, body);
       case HttpMethods.GET:
         return instance.get(url, body);
       case HttpMethods.POST:

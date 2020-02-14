@@ -267,7 +267,7 @@ export const requestAsync = ({
   update,
   url,
   // /* eslint-disable-next-line @typescript-eslint/camelcase */
-  // unstable_preDispatchCallback,
+  unstable_preDispatchCallback,
 }: QueryConfig): RequestAsyncAction => {
   return {
     type: actionTypes.REQUEST_ASYNC,
@@ -281,7 +281,7 @@ export const requestAsync = ({
     update,
     url,
     // /* eslint-disable-next-line @typescript-eslint/camelcase */
-    // unstable_preDispatchCallback,
+    unstable_preDispatchCallback,
   };
 };
 

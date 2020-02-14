@@ -22,7 +22,7 @@ export type QueryConfig = {
   optimisticUpdate?: OptimisticUpdate;
   retry?: boolean;
   rollback?: { [key: string]: (initialValue: any, currentValue: any) => any };
-  // unstable_preDispatchCallback?: () => void;
+  unstable_preDispatchCallback?: () => void;
   url: Url;
   // results?: Update;
 };
