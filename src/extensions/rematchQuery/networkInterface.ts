@@ -26,23 +26,23 @@ const requestFactory = (instance: AxiosInstance, url: string, method: HttpMethod
     }
   };
   
-  const instanceFactory = (baseUrl?: string, headers?: RequestHeaders, withCredentials?: boolean, cancelToken?: CancelToken): AxiosInstance => axios.create({
+const instanceFactory = (baseUrl?: string, headers?: RequestHeaders, withCredentials?: boolean, cancelToken?: CancelToken): AxiosInstance => axios.create({
     baseURL: baseUrl,
     withCredentials: withCredentials,
     headers: headers,
     cancelToken
-  })
+});
 
-  const axiosInterface: NetworkInterface = (
+const axiosInterface: NetworkInterface = (
     url,
     method,
     { body, headers, credentials } = {},
-  ) => {
+) => {
 
     const { token, cancel } = cancelTokenFactory();
     const instance = instanceFactory(undefined, headers, credentials === 'include', token);
     const request = requestFactory(instance, url, method, body);
-  
+
     const execute = (cb: any) =>
     request.then(function (response) {
         const resStatus = (response && response.status) || 0;
@@ -58,11 +58,11 @@ const requestFactory = (instance: AxiosInstance, url: string, method: HttpMethod
       });  
 
     const abort = () => cancel();
-  
+
     return {
       abort,
       execute,
     };
-  };
-  
-  export default axiosInterface;
+};
+
+export default axiosInterface;
