@@ -87,6 +87,8 @@ export type NetworkInterface = (
   networkOptions: NetworkOptions,
 ) => NetworkHandler;
 
+export type AdditionalHeadersSelector = (state: any) => { [key: string]: string };
+
 export type QueriesSelector = (state: any) => QueriesState;
 
 export type EntitiesSelector = (state: any) => EntitiesState;

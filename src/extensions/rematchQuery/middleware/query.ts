@@ -28,6 +28,7 @@ import {
   Transform,
   Entities,
   QueryKey,
+  AdditionalHeadersSelectors
 } from '../types';
 import { State as QueriesState } from '../reducers/queries';
 import { wildcardFilter } from '../lib/array';
@@ -99,8 +100,10 @@ const queryMiddleware = (
   networkInterface: NetworkInterface,
   queriesSelector: QueriesSelector,
   entitiesSelector: EntitiesSelector,
-  customConfig?: Config | undefined,
+  additionalHeadersSelector?: AdditionalHeadersSelector | undefined,
+  customConfig?: Config | undefined
 ) => {
+
   const networkHandlersByQueryKey: { [key: string]: NetworkHandler } = {};
 
   const abortQuery = (queryKey: string) => {
@@ -151,6 +154,8 @@ const queryMiddleware = (
         const isInvalid = idx(queriesState, (_: any) => _.isInvalid);
         const status = idx(queriesState, (_: any) => _.status);
         const hasSucceeded = isStatusOk(status);
+        
+        const additionalHeaders = !!additionalHeadersSelector ?additionalHeadersSelector(state) : {};
 
         if (force || isInvalid || !queriesState || (retry && !isPending && !hasSucceeded)) {
           returnValue = new Promise<ActionPromiseValue>(resolve => {
@@ -165,7 +170,7 @@ const queryMiddleware = (
             const attemptRequest = () => {
               const networkHandler = networkInterface(url, method, {
                 body,
-                headers: options.headers,
+                headers: { ...options.headers, ...additionalHeaders },
                 credentials: options.credentials,
               });
 
@@ -197,9 +202,9 @@ const queryMiddleware = (
                 let transformed;
                 let newEntities;
 
-                // if (action.unstable_preDispatchCallback) {
-                //   action.unstable_preDispatchCallback();
-                // }
+                if (action.unstable_preDispatchCallback) {
+                  action.unstable_preDispatchCallback();
+                }
 
                 if (err || !isStatusOk(status)) {
                   dispatch(
@@ -299,13 +304,15 @@ const queryMiddleware = (
           throw new Error('Failed to generate queryKey for mutation');
         }
 
+        const additionalHeaders = !!additionalHeadersSelector ?additionalHeadersSelector(state) : {};
+
         returnValue = new Promise<ActionPromiseValue>(resolve => {
           const start = new Date();
           const { method = httpMethods.POST as HttpMethod } = options;
 
           const networkHandler = networkInterface(url, method, {
             body,
-            headers: options.headers,
+            headers: { ...options.headers, ...additionalHeaders },
             credentials: options.credentials,
           });
 
@@ -331,9 +338,9 @@ const queryMiddleware = (
             let transformed;
             let newEntities;
 
-            // if (action.unstable_preDispatchCallback) {
-            //   action.unstable_preDispatchCallback();
-            // }
+            if (action.unstable_preDispatchCallback) {
+              action.unstable_preDispatchCallback();
+            }
 
             if (err || !isStatusOk(status)) {
               let rolledBackEntities;
