@@ -14,6 +14,7 @@ import {
   Update,
   Url,
   QueryPattern,
+  Maps,
 } from '../types';
 
 type RequestStartParams = {
@@ -45,6 +46,7 @@ export const requestStart = ({
 type RequestSuccessParams = {
   body: RequestBody;
   duration: Duration;
+  maps: Maps;
   entities: Entities;
   meta?: Meta | undefined;
   responseBody?: ResponseBody | undefined;
@@ -63,6 +65,7 @@ type RequestSuccessAction = {
 export const requestSuccess = ({
   body,
   duration,
+  maps,
   entities,
   meta,
   queryKey,
@@ -78,6 +81,7 @@ export const requestSuccess = ({
     body,
     duration,
     status,
+    maps,
     entities,
     responseBody,
     responseText,
@@ -163,6 +167,7 @@ export const mutateStart = ({
 type MutateSuccessParams = {
   body: RequestBody;
   duration: Duration;
+  maps: Maps;
   entities: Entities;
   meta?: Meta | undefined;
   responseBody?: ResponseBody | undefined;
@@ -181,6 +186,7 @@ type MutateSuccessAction = {
 export const mutateSuccess = ({
   body,
   duration,
+  maps,
   entities,
   meta,
   queryKey,
@@ -199,6 +205,7 @@ export const mutateSuccess = ({
     responseBody,
     responseText,
     responseHeaders,
+    maps,
     entities,
     queryKey,
     time: Date.now(),
@@ -265,6 +272,7 @@ export const requestAsync = ({
   retry,
   transform,
   update,
+  map,
   url,
   // /* eslint-disable-next-line @typescript-eslint/camelcase */
   unstable_preDispatchCallback,
@@ -279,6 +287,7 @@ export const requestAsync = ({
     retry,
     transform,
     update,
+    map,
     url,
     // /* eslint-disable-next-line @typescript-eslint/camelcase */
     unstable_preDispatchCallback,
@@ -298,6 +307,7 @@ export const mutateAsync = ({
   rollback,
   transform,
   update,
+  map,
   url,
 }: QueryConfig): MutateAsyncAction => {
   return {
@@ -310,6 +320,7 @@ export const mutateAsync = ({
     rollback,
     transform,
     update,
+    map,
     url,
   };
 };

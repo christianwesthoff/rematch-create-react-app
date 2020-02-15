@@ -13,7 +13,7 @@ import * as actionTypes from '../constants/action-types';
 import httpMethods, { HttpMethod } from '../constants/http-methods';
 import * as statusCodes from '../constants/status-codes';
 import { getQueryKey } from '../lib/query-key';
-import { updateEntities, optimisticUpdateEntities, rollbackEntities } from '../lib/update';
+import { updateEntities, optimisticUpdateEntities, rollbackEntities, updateMaps } from '../lib/update';
 import { pick } from '../lib/object';
 
 import { Action, PublicAction } from '../actions';
@@ -128,6 +128,7 @@ const queryMiddleware = (
           retry,
           transform = defaultTransform,
           update,
+          map,
           options = {},
           meta,
         } = action;
@@ -201,7 +202,7 @@ const queryMiddleware = (
                 const duration = +end - +start;
                 let transformed;
                 let newEntities;
-
+                let maps;
                 if (action.unstable_preDispatchCallback) {
                   action.unstable_preDispatchCallback();
                 }
@@ -233,7 +234,7 @@ const queryMiddleware = (
                   const entities = entitiesSelector(callbackState);
                   transformed = transform(responseBody, responseText);
                   newEntities = updateEntities(update, entities, transformed);
-
+                  maps = updateMaps(map, transformed);
                   dispatch(
                     requestSuccess({
                       body,
@@ -246,6 +247,7 @@ const queryMiddleware = (
                       status,
                       responseText,
                       url,
+                      maps
                     }),
                   );
 
@@ -275,6 +277,7 @@ const queryMiddleware = (
           url,
           transform = defaultTransform,
           update,
+          map,
           rollback,
           body,
           optimisticUpdate,
@@ -337,6 +340,7 @@ const queryMiddleware = (
             const entities = entitiesSelector(state);
             let transformed;
             let newEntities;
+            let maps;
 
             if (action.unstable_preDispatchCallback) {
               action.unstable_preDispatchCallback();
@@ -378,7 +382,7 @@ const queryMiddleware = (
             } else {
               transformed = transform(responseBody, responseText);
               newEntities = updateEntities(update, entities, transformed);
-
+              maps = updateMaps(map, transformed);
               dispatch(
                 mutateSuccess({
                   url,
@@ -391,6 +395,7 @@ const queryMiddleware = (
                   responseText,
                   responseHeaders,
                   meta,
+                  maps
                 }),
               );
 

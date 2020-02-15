@@ -19,12 +19,12 @@ export type QueryConfig = {
   queryKey?: QueryKey;
   transform?: Transform;
   update?: Update;
+  map?: Map;
   optimisticUpdate?: OptimisticUpdate;
   retry?: boolean;
   rollback?: { [key: string]: (initialValue: any, currentValue: any) => any };
   unstable_preDispatchCallback?: () => void;
   url: Url;
-  // results?: Update;
 };
 
 export type Url = string;
@@ -49,6 +49,8 @@ export type Status = number;
 
 export type Duration = number;
 
+export type Maps = { [key: string]: Array<string|number|symbol> };
+
 export type Entities = { [key: string]: any };
 
 export type Transform = (
@@ -57,6 +59,8 @@ export type Transform = (
 ) => { [key: string]: any };
 
 export type Update = { [key: string]: (prevValue: any, newValue: any) => any };
+
+export type Map = { [key: string]: (value: any) => any };
 
 export type OptimisticUpdate = { [key: string]: (prevValue: any) => any };
 

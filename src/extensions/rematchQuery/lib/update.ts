@@ -1,4 +1,18 @@
-import { Update, Entities, OptimisticUpdate, Rollback } from '../types';
+import { Update, Entities, OptimisticUpdate, Rollback, Map } from '../types';
+
+export const updateMaps = (
+  map: Map = {},
+  transformed: Entities = {},
+): Entities => {
+  // If update is not supplied, then no change to entities will be made
+
+  return Object.keys(transformed).reduce((accum: any, key: string) => {
+    accum[key] = map[key](transformed[key]);
+
+    return accum;
+  }, {});
+};
+
 
 export const updateEntities = (
   update: Update = {},

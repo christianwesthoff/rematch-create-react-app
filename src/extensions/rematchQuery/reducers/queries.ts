@@ -1,7 +1,7 @@
 import * as actionTypes from '../constants/action-types';
 
 import { Action } from '../actions';
-import { ResponseHeaders, Status, QueryKey } from '../types';
+import { ResponseHeaders, Status, QueryKey, Maps } from '../types';
 import { wildcardFilter } from '../lib/array';
 
 export type State = {
@@ -14,9 +14,7 @@ export type State = {
     lastUpdated?: number;
     queryCount: number;
     status?: Status;
-    results?: {
-      [key: string]: Array<string|number|symbol>
-    }
+    maps?: Maps
   };
 };
 
@@ -49,13 +47,27 @@ const queries = (state: State = initialState, action: Action): State => {
           isInvalid: false,
           isMutation: action.type === actionTypes.MUTATE_START,
           queryCount: state[queryKey] ? state[queryKey].queryCount + 1 : 1,
-          results: state[queryKey] ? state[queryKey].results : undefined
         }
       };
     }
     case actionTypes.REQUEST_SUCCESS:
+    case actionTypes.MUTATE_SUCCESS: {
+      const { queryKey } = action;
+
+      return {
+        ...state,
+        [queryKey]: {
+          ...state[queryKey],
+          isFinished: true,
+          isPending: false,
+          lastUpdated: action.time,
+          status: action.status,
+          headers: action.responseHeaders,
+          maps: action.maps
+        },
+      };
+    }
     case actionTypes.MUTATE_FAILURE:
-    case actionTypes.MUTATE_SUCCESS:
     case actionTypes.REQUEST_FAILURE: {
       const { queryKey } = action;
 

@@ -43,13 +43,16 @@ const getIssuesQuery = (
       
 
           return {
-              issues1: response,
+              issues: response,
           };
         },
       update: {
-          issues1: (oldValue: Issue[], newValue: Issue[]) => {
-            return [...newValue];
+          issues: (oldValue: Issue[], newValue: Issue[]) => {
+            return [...oldValue || [] , ...newValue];
           },
+      },
+      map: {
+          issues: (value: Issue[]) => value.map(v => v.id)
       }
   }
 };
@@ -134,7 +137,10 @@ export const IssuesListPage = ({
 
   return (
     <div id="issue-list-page">
-      {/* <div>{JSON.stringify(queries)}</div> */}
+      <strong>Query Information</strong>
+      <div>{JSON.stringify(queries)}</div>
+      <br/>
+      <strong>Query Data</strong>
       <div>{JSON.stringify(entities)}</div>
       <IssuesPageHeader
         openIssuesCount={openIssueCount}
