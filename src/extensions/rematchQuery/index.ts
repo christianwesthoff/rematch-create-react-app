@@ -6,7 +6,6 @@ import entitiesReducer from "./reducers/entities";
 import { bindActionCreators } from 'redux'
 import { requestAsync } from './actions'
 
-const queriesModelName = "queries";
 const buildQueriesSelector = (queriesModelName: string) => (state: any) => state[queriesModelName];
 const buildQueriesModel = (queriesModelName: string): any => { 
 	return {
