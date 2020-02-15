@@ -4,7 +4,7 @@ import { Plugin, Middleware } from '@rematch/core'
 import queriesReducer from "./reducers/queries";
 import entitiesReducer from "./reducers/entities";
 import { bindActionCreators } from 'redux'
-import { requestAsync } from './actions'
+import { requestAsync, resetQuery } from './actions'
 
 const buildQueriesSelector = (queriesModelName: string) => (state: any) => state[queriesModelName];
 const buildQueriesModel = (queriesModelName: string): any => { 
@@ -12,7 +12,8 @@ const buildQueriesModel = (queriesModelName: string): any => {
 		name: queriesModelName,
 		baseReducer: queriesReducer,
 		effects: (dispatch: any) => bindActionCreators({
-			requestAsync
+			requestAsync,
+			resetQuery
 		}, dispatch)
 	};
 }

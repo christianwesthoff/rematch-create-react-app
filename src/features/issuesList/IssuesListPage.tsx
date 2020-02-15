@@ -13,7 +13,8 @@ import { Issue } from 'api/githubAPI'
 const mapDispatch = (dispatch: RootDispatch) => ({
   getIssues: (payload:GetIssuesPayload) => dispatch.issues.getIssues(payload),
   getRepoDetails:(payload:GetRepoDetailsPayload) => dispatch.repoDetails.getRepoDetails(payload),
-  requestAsync:(payload:any) => (dispatch as any).queries.requestAsync(payload)
+  requestAsync:(payload:any) => (dispatch as any).queries.requestAsync(payload),
+  resetQuery:(payload:any) => (dispatch as any).queries.resetQuery(payload)
 })
 
 interface ILProps {
@@ -49,8 +50,7 @@ const getIssuesQuery = (
           issues1: (oldValue: Issue[], newValue: Issue[]) => {
             return [...newValue];
           },
-      },
-      force: true
+      }
   }
 };
 
