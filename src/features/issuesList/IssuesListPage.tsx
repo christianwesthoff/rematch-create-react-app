@@ -50,7 +50,8 @@ const getIssuesQuery = (
           issues1: (oldValue: Issue[], newValue: Issue[]) => {
             return [...newValue];
           },
-      }
+      },
+      force: true
   }
 };
 

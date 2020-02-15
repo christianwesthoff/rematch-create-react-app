@@ -1,6 +1,6 @@
 import { NetworkInterface, RequestConfig, AdditionalHeadersSelector } from "./types";
 import queryMiddleware from "./middleware/query"
-import { Plugin, Middleware, Model } from '@rematch/core'
+import { Plugin, Middleware } from '@rematch/core'
 import queriesReducer from "./reducers/queries";
 import entitiesReducer from "./reducers/entities";
 import { bindActionCreators } from 'redux'
@@ -12,7 +12,7 @@ const buildQueriesModel = (queriesModelName: string): any => {
 		name: queriesModelName,
 		baseReducer: queriesReducer,
 		effects: (dispatch: any) => bindActionCreators({
-			requestAsync,
+			requestAsync
 		}, dispatch)
 	};
 }
