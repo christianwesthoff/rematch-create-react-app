@@ -48,7 +48,7 @@ const axiosInterface: NetworkInterface = (
         const resStatus = (response && response.status) || 0;
         const resBody = (response && response.data) || undefined;
         const resHeaders = (response && response.headers) || undefined;
-        cb(null, resStatus, resBody, null, resHeaders);
+        cb(undefined, resStatus, resBody, undefined, resHeaders);
       })
       .catch(function (error) {
         cb(error);
