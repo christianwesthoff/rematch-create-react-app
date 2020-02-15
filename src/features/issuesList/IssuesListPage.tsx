@@ -48,7 +48,7 @@ const getIssuesQuery = (
         },
       update: {
           issues1: (oldValue: Issue[], newValue: Issue[]) => {
-            return [...oldValue || [], ...newValue];
+            return [...newValue];
           },
       }
   }
@@ -106,7 +106,7 @@ export const IssuesListPage = ({
       getRepoDetails
     } = mapDispatch(dispatch);
 
-    getIssues({ org, repo, page });
+    // getIssues({ org, repo, page });
     getRepoDetails({ org, repo });
   }, [org, repo, page, dispatch])
 
@@ -141,7 +141,7 @@ export const IssuesListPage = ({
         org={org}
         repo={repo}
       />
-      {renderedList}
+      {/* {renderedList} */}
       <IssuePagination
         currentPage={currentPage}
         pageCount={pageCount}

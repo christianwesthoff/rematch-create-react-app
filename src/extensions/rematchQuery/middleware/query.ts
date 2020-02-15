@@ -28,7 +28,7 @@ import {
   Transform,
   Entities,
   QueryKey,
-  AdditionalHeadersSelectors
+  AdditionalHeadersSelector
 } from '../types';
 import { State as QueriesState } from '../reducers/queries';
 import { wildcardFilter } from '../lib/array';
@@ -155,7 +155,7 @@ const queryMiddleware = (
         const status = idx(queriesState, (_: any) => _.status);
         const hasSucceeded = isStatusOk(status);
         
-        const additionalHeaders = !!additionalHeadersSelector ?additionalHeadersSelector(state) : {};
+        const additionalHeaders = !!additionalHeadersSelector ? additionalHeadersSelector(state) : {};
 
         if (force || isInvalid || !queriesState || (retry && !isPending && !hasSucceeded)) {
           returnValue = new Promise<ActionPromiseValue>(resolve => {
@@ -304,7 +304,7 @@ const queryMiddleware = (
           throw new Error('Failed to generate queryKey for mutation');
         }
 
-        const additionalHeaders = !!additionalHeadersSelector ?additionalHeadersSelector(state) : {};
+        const additionalHeaders = !!additionalHeadersSelector ? additionalHeadersSelector(initialState) : {};
 
         returnValue = new Promise<ActionPromiseValue>(resolve => {
           const start = new Date();

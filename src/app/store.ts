@@ -8,7 +8,7 @@ import networkInterface from 'extensions/rematchQuery/networkInterface'
 
 export const store = init({
 	models,
-	plugins: [immerPlugin(), selectPlugin(), queryPlugin({ networkInterface })],
+	plugins: [immerPlugin(), selectPlugin(), queryPlugin({ networkInterface, entitiesModelName: "entities", queriesModelName: "queries" })],
 });
 
 export type RootState = RematchRootState<typeof models>

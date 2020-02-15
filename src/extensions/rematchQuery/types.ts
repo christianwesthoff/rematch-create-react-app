@@ -115,8 +115,3 @@ export type RequestConfig = {
   };
   retryableStatusCodes: Array<Status>;
 };
-
-export type QueryMiddlewareConfig = {
-  networkInterface: NetworkInterface,
-  customConfig?: RequestConfig | undefined,
-};
