@@ -26,7 +26,7 @@ const buildRequest = (instance: AxiosInstance, url: string, method: HttpMethod, 
     }
   };
   
-const buildInstance = (baseUrl?: string, headers?: RequestHeaders, withCredentials?: boolean, cancelToken?: CancelToken): AxiosInstance => axios.create({
+const buildInstance = (headers?: RequestHeaders, withCredentials?: boolean, cancelToken?: CancelToken, baseUrl?: string): AxiosInstance => axios.create({
     baseURL: baseUrl,
     withCredentials: withCredentials,
     headers: headers,
@@ -40,7 +40,7 @@ const axiosInterface: NetworkInterface = (
 ) => {
 
     const { token, cancel } = buildCancelToken();
-    const instance = buildInstance(undefined, headers, credentials === 'include', token);
+    const instance = buildInstance(headers, credentials === 'include', token);
     const request = buildRequest(instance, url, method, body);
 
     const execute = (cb: any) =>

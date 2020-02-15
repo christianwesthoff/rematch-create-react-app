@@ -8,7 +8,6 @@ import { IssuePagination, OnPageChangeCallback } from './IssuePagination'
 import { GetIssuesPayload } from 'models/issues'
 import { GetRepoDetailsPayload } from 'models/repoDetails'
 
-import { requestAsync } from 'extensions/rematchQuery/actions'
 import { Issue } from 'api/githubAPI'
 
 const mapDispatch = (dispatch: RootDispatch) => ({
