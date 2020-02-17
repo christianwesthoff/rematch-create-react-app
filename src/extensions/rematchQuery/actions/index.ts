@@ -325,14 +325,14 @@ export const mutateAsync = ({
   };
 };
 
-type ResetQueryAction = {
-  type: '@@query/RESET_QUERY';
+type InvalidateQueryAction = {
+  type: '@@query/INVALIDATE_QUERY';
   queryPattern?: QueryPattern | undefined;
 };
 
-export const resetQuery = (queryPattern: QueryPattern): ResetQueryAction => {
+export const invalidateQuery = (queryPattern: QueryPattern): InvalidateQueryAction => {
   return {
-    type: actionTypes.RESET_QUERY,
+    type: actionTypes.INVALIDATE_QUERY,
     queryPattern,
   };
 };
@@ -383,7 +383,7 @@ export type PublicAction =
   | CancelQueryAction
   | UpdateEntitiesAction
   | ResetAction
-  | ResetQueryAction;
+  | InvalidateQueryAction;
 
 export type Action =
   | PublicAction
@@ -393,4 +393,4 @@ export type Action =
   | MutateStartAction
   | MutateSuccessAction
   | MutateFailureAction
-  | ResetQueryAction;
+  | InvalidateQueryAction;

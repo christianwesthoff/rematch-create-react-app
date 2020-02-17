@@ -4,7 +4,7 @@ import { Plugin, Middleware } from '@rematch/core'
 import queriesReducer from "./reducers/queries";
 import entitiesReducer from "./reducers/entities";
 import { bindActionCreators } from 'redux'
-import { requestAsync, resetQuery } from './actions'
+import { requestAsync, invalidateQuery } from './actions'
 
 const buildQueriesSelector = (queriesModelName: string) => (state: any) => state[queriesModelName];
 const buildQueriesModel = (queriesModelName: string): any => { 
@@ -13,7 +13,7 @@ const buildQueriesModel = (queriesModelName: string): any => {
 		baseReducer: queriesReducer,
 		effects: (dispatch: any) => bindActionCreators({
 			requestAsync,
-			resetQuery
+			invalidateQuery
 		}, dispatch)
 	};
 }
@@ -34,19 +34,27 @@ export type RematchQueryConfig = {
 	queriesModelName: string
 }
 
+export const rematchQueryConfig = { queriesSelector: (_:any):any => undefined, entitiesSelector: (_:any):any => undefined };
+
 export default (config: RematchQueryConfig): Plugin => {
 	const { networkInterface, customConfig, additionalHeadersSelector, entitiesModelName, queriesModelName } = config;
+	const queriesSelector = buildQueriesSelector(queriesModelName);
+	const entitiesSelector = buildEntitiesSelector(entitiesModelName);
+
+	rematchQueryConfig.queriesSelector = queriesSelector;
+	rematchQueryConfig.entitiesSelector = entitiesSelector;
+
 	const middleware = queryMiddleware(networkInterface, 
-		buildQueriesSelector(queriesModelName), 
-		buildEntitiesSelector(entitiesModelName), 
+		queriesSelector, 
+		entitiesSelector, 
 		additionalHeadersSelector, 
 		customConfig) as Middleware;
 
 	return {
 		config: {
 			models: {
-				queries: buildQueriesModel(queriesModelName),
-				entities: buildEntitiesModel(entitiesModelName)
+				[queriesModelName]: buildQueriesModel(queriesModelName),
+				[entitiesModelName]: buildEntitiesModel(entitiesModelName)
 			},
 		},
 		middleware

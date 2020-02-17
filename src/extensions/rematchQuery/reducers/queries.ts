@@ -102,18 +102,20 @@ const queries = (state: State = initialState, action: Action): State => {
 
       return state;
     }
-    case actionTypes.RESET_QUERY: {
+    case actionTypes.INVALIDATE_QUERY: {
       const { queryPattern } = action;
 
       if (queryPattern) {
 
         const stateKeys = getStateKeys(state);
         let newState = { ...state };
-
-        for(let match in wildcardFilter(stateKeys, queryPattern)) {
-           newState = { ...newState, [match]: {
-            ...state[match],
+        const filtered = wildcardFilter(stateKeys, queryPattern);
+        for(let index in filtered) {
+          let elem = filtered[index];
+          newState = { ...newState, [elem]: {
+            ...state[elem],
             isInvalid: true,
+            maps: {} as Maps
           } }
         }
 

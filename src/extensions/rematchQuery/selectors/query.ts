@@ -2,7 +2,7 @@ import idx from 'idx';
 
 import { State as QueriesState } from '../reducers/queries';
 import { getQueryKey } from '../lib/query-key';
-import { QueryConfig } from '../types';
+import { QueryConfig, Maps } from '../types';
 
 export const isFinished = (
   queriesState: QueriesState,
@@ -28,6 +28,19 @@ export const isInvalid = (
   }
 
   return idx(queriesState, (_: any) => _[queryKey].isInvalid) || false;
+};
+
+export const maps = (
+  queriesState: QueriesState,
+  queryConfig?: QueryConfig | undefined,
+): Maps | undefined => {
+  const queryKey = getQueryKey(queryConfig);
+
+  if (!queryKey) {
+    return undefined;
+  }
+
+  return idx(queriesState, (_: any) => _[queryKey].maps) || false;
 };
 
 export const isPending = (

@@ -12,12 +12,13 @@ import './App.css'
 const mapDispatch = (dispatch: RootDispatch) => ({
   displayRepo: (payload:CurrentRepo) => dispatch.issuesDisplay.displayRepo(payload),
   setCurrentDisplayType: (payload:CurrentDisplayPayload) => dispatch.issuesDisplay.setCurrentDisplayType(payload),
-  setCurrentPage: (page:number) => dispatch.issuesDisplay.setCurrentPage(page)
+  setCurrentPage: (page:number) => dispatch.issuesDisplay.setCurrentPage(page),
+  invalidateQuery:(payload:any) => (dispatch as any).queries.invalidateQuery(payload)
 })
 
 const App: React.FC = () => {
   const dispatch: RootDispatch = useDispatch()
-  const { displayRepo, setCurrentDisplayType, setCurrentPage } = mapDispatch(dispatch);
+  const { displayRepo, setCurrentDisplayType, setCurrentPage , invalidateQuery } = mapDispatch(dispatch);
   
   const { org, repo, displayType, page, issueId } = useSelector(
     (state: RootState) => state.issuesDisplay
@@ -39,6 +40,15 @@ const App: React.FC = () => {
     setCurrentDisplayType({ displayType: 'comments', issueId });
   }
 
+  const setInvalidateQuery = (page: number) => {
+    invalidateQuery(`*https://api.github.com/repos/${org}/${repo}/issues?per_page=25&page=${page}*`)
+  }
+
+  const setInvalidateRepo = () => {
+    invalidateQuery(`*https://api.github.com/repos/${org}/${repo}/issues*`)
+  }
+
+
   let content
 
   if (displayType === 'issues') {
@@ -49,6 +59,8 @@ const App: React.FC = () => {
           repo={repo}
           setOrgAndRepo={setOrgAndRepo}
           setJumpToPage={setJumpToPage}
+          setInvalidateQuery={setInvalidateQuery}
+          setInvalidateRepo={setInvalidateRepo}
         />
         <IssuesListPage
           org={org}

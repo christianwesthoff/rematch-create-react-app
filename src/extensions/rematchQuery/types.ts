@@ -3,9 +3,20 @@ import { PublicAction } from './actions';
 import { State as QueriesState } from './reducers/queries';
 import { State as EntitiesState } from './reducers/entities';
 
-type CredentialOption = 'include' | 'same-origin' | 'omit';
+export type QueryState = {
+  headers?: { [key: string]: any } | undefined,
+  isFinished: boolean,
+  isPending: boolean,
+  isInvalid: boolean,
+  lastUpdated?: number | undefined,
+  queryCount: number,
+  status?: number | undefined,
+  maps?: Maps | undefined
+};
 
-type QueryOptions = {
+export type CredentialOption = 'include' | 'same-origin' | 'omit';
+
+export type QueryOptions = {
   credentials?: CredentialOption;
   method?: HttpMethod;
   headers?: { [key: string]: any };
@@ -23,7 +34,7 @@ export type QueryConfig = {
   optimisticUpdate?: OptimisticUpdate;
   retry?: boolean;
   rollback?: { [key: string]: (initialValue: any, currentValue: any) => any };
-  unstable_preDispatchCallback?: () => void;
+  unstable_preDispatchCallback?: () => void | undefined;
   url: Url;
 };
 

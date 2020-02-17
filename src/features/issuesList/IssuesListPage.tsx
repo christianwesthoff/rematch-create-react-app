@@ -9,12 +9,12 @@ import { GetIssuesPayload } from 'models/issues'
 import { GetRepoDetailsPayload } from 'models/repoDetails'
 
 import { Issue } from 'api/githubAPI'
+import useRequest from 'extensions/rematchQuery/react/use-request'
 
 const mapDispatch = (dispatch: RootDispatch) => ({
   getIssues: (payload:GetIssuesPayload) => dispatch.issues.getIssues(payload),
   getRepoDetails:(payload:GetRepoDetailsPayload) => dispatch.repoDetails.getRepoDetails(payload),
-  requestAsync:(payload:any) => (dispatch as any).queries.requestAsync(payload),
-  resetQuery:(payload:any) => (dispatch as any).queries.resetQuery(payload)
+  requestAsync:(payload:any) => (dispatch as any).queries.requestAsync(payload)
 })
 
 interface ILProps {
@@ -25,6 +25,13 @@ interface ILProps {
   showIssueComments: (issueId: number) => void
 }
 
+const asRecord = <K extends string|number|symbol, T extends any>(list: Array<T>, selector: (elem:T) => K):Record<K, T> => 
+  list.reduce((acc, curr) => {
+    const key = selector(curr);
+    acc[key] = curr;
+    return acc;
+  }, {} as any);
+
 const getIssuesQuery = (
   org: string,
   repo: string,
@@ -32,7 +39,7 @@ const getIssuesQuery = (
 ) => {
     return {
       url: `https://api.github.com/repos/${org}/${repo}/issues?per_page=25&page=${page}`,
-      transform: (response: any) => {
+      transform: (response: Issue[]) => {
           // The server responded with a JSON body: { "data": "hello" }
           // let pageCount = 0
           // const pageLinks = parseLink(issuesResponse.headers.link)
@@ -40,19 +47,20 @@ const getIssuesQuery = (
           // if (pageLinks !== null) {
           //   pageCount = getPageCount(pageLinks)
           // }
-      
-
+          const issues = asRecord(response, t => t.id);
           return {
-              issues: response,
+            issues,
           };
         },
       update: {
-          issues: (oldValue: Issue[], newValue: Issue[]) => {
-            return [...oldValue || [] , ...newValue];
+          issues: (oldValue: Record<number, Issue>, newValue: Record<number, Issue>) => {
+            return {...oldValue || {}, ...newValue };
           },
       },
       map: {
-          issues: (value: Issue[]) => value.map(v => v.id)
+          issues: (value: Record<number, Issue>) => {
+            return Object.keys(value);
+          }
       }
   }
 };
@@ -75,11 +83,10 @@ export const IssuesListPage = ({
     }
   )
 
-  const queries = useSelector((state: any) => state.queries);
-  const entities = useSelector((state: any) => state.entities);
+  const [query, entities] = useRequest(getIssuesQuery(org, repo, page));
   const openIssueCount = useSelector((state: RootState) => state.repoDetails.openIssuesCount);
   const dispatch: RootDispatch = useDispatch();
-  
+
   const {
     currentPageIssues,
     issuesByNumber,
@@ -92,20 +99,19 @@ export const IssuesListPage = ({
     issueNumber => issuesByNumber[issueNumber]
   )
 
+  // useEffect(() => {
+
+  //   const {
+  //     requestAsync,
+  //   } = mapDispatch(dispatch);
+
+  //   requestAsync(getIssuesQuery(org, repo, page));
+
+  // }, [org, repo, page, dispatch])
+
   useEffect(() => {
 
     const {
-      requestAsync,
-    } = mapDispatch(dispatch);
-
-    requestAsync(getIssuesQuery(org, repo, page));
-
-  }, [org, repo, page, dispatch])
-
-  useEffect(() => {
-
-    const {
-      getIssues,
       getRepoDetails
     } = mapDispatch(dispatch);
 
@@ -138,7 +144,7 @@ export const IssuesListPage = ({
   return (
     <div id="issue-list-page">
       <strong>Query Information</strong>
-      <div>{JSON.stringify(queries)}</div>
+      <div>{JSON.stringify(query)}</div>
       <br/>
       <strong>Query Data</strong>
       <div>{JSON.stringify(entities)}</div>

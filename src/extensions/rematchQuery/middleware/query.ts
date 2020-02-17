@@ -416,7 +416,7 @@ const queryMiddleware = (
 
         break;
       }
-      case actionTypes.RESET_QUERY: {
+      case actionTypes.INVALIDATE_QUERY: {
         const { queryPattern } = action;
 
         if (!queryPattern) {
@@ -427,14 +427,15 @@ const queryMiddleware = (
         const queries = queriesSelector(state);
         const pendingQueries = getPendingQueries(queries);
         const queryKeys = getQueryKeys(queries);
-
-        for(let match in wildcardFilter(queryKeys, queryPattern)) {
-            if (match in pendingQueries) {
+        const filtered = wildcardFilter(queryKeys, queryPattern);
+        for(let index in filtered) {
+            const elem = filtered[index];
+            if (elem in pendingQueries) {
               abortQuery(queryPattern);
-              returnValue = next(action);
             }
         }
 
+        returnValue = next(action);
         break;
       }
       case actionTypes.CANCEL_QUERY: {

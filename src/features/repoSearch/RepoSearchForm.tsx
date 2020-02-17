@@ -8,6 +8,8 @@ interface Props {
   repo: string
   setOrgAndRepo: (org: string, repo: string) => void
   setJumpToPage: (page: number) => void
+  setInvalidateQuery: (page: number) => void
+  setInvalidateRepo: () => void
 }
 
 type InputEvent = ChangeEvent<HTMLInputElement>
@@ -17,7 +19,9 @@ export const RepoSearchForm = ({
   org,
   repo,
   setOrgAndRepo,
-  setJumpToPage
+  setJumpToPage,
+  setInvalidateQuery,
+  setInvalidateRepo
 }: Props) => {
   const [currentOrg, setCurrentOrg] = useState(org)
   const [currentRepo, setCurrentRepo] = useState(repo)
@@ -47,6 +51,15 @@ export const RepoSearchForm = ({
     }
   }
 
+  const onInvalidateQueryClicked = () => {
+    const page = parseInt(currentPageText)
+    setInvalidateQuery(page);
+  };
+
+  const onInvalidateRepoClicked = () => {
+    setInvalidateRepo();
+  };
+
   return (
     <form className="pure-form">
       <div>
@@ -66,6 +79,14 @@ export const RepoSearchForm = ({
         >
           Load Repo
         </button>
+        <button
+          type="button"
+          className="pure-button pure-button-primary"
+          style={{ marginLeft: 5 }}
+          onClick={onInvalidateRepoClicked}
+        >
+          Invalidate repo
+        </button>
       </div>
       <div style={{ marginTop: 5 }}>
         <label htmlFor="jumpToPage" style={{ marginRight: 5 }}>
@@ -83,6 +104,14 @@ export const RepoSearchForm = ({
           onClick={onJumpToPageClicked}
         >
           Jump to Page
+        </button>
+        <button
+          type="button"
+          className="pure-button pure-button-primary"
+          style={{ marginLeft: 5 }}
+          onClick={onInvalidateQueryClicked}
+        >
+          Invalidate query
         </button>
       </div>
     </form>
