@@ -28,8 +28,8 @@ const buildRequest = (instance: AxiosInstance, url: string, method: HttpMethod, 
   
 const buildInstance = (headers?: RequestHeaders, withCredentials?: boolean, cancelToken?: CancelToken, baseUrl?: string): AxiosInstance => axios.create({
     baseURL: baseUrl,
-    withCredentials: withCredentials,
-    headers: headers,
+    withCredentials,
+    headers,
     cancelToken
 });
 

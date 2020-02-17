@@ -112,7 +112,7 @@ const useRequest = (
     }
 
     return () => {
-      // If there is a pending request whenever the component unmounts of the query config
+      // If there is an pending request whenever the component unmounts of the query config
       // changes, cancel the pending request.
       if (isPendingRef.current) {
         const queryKey = getQueryKey(queryConfig);
