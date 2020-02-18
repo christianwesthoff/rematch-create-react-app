@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { requestAsync, cancelQuery } from '../actions';
 import { getQueryKey } from '../lib/query-key';
 import { QueryConfig, QueryKey } from '../types';
@@ -10,20 +10,7 @@ import useQueryState from './use-query-state';
 import useWatch from './use-watch';
 
 import { QueryState } from '../types';
-import { rematchQueryConfig } from '../index'
-
-const getEntitiesFromQuery = (queryState?: QueryState | undefined, queryConfig?: QueryConfig | undefined) => {
-    const { entitiesSelector } = rematchQueryConfig;
-    if (queryState && queryState.maps && queryConfig && queryConfig.map) {
-        return (state: any) => Object.keys(queryState.maps!).reduce((acc: any, curr: string) => {
-            const maps = queryState.maps![curr];
-            acc[curr] = maps.map(p => entitiesSelector(state)[curr][p]);
-            return acc;
-          }, {});
-    }
-
-    return undefined;
-}
+import useEntityState from './use-entity-state';
 
 const useRequest = (
   providedQueryConfig?: QueryConfig | undefined,
@@ -67,9 +54,6 @@ const useRequest = (
   // (e.g.`isPending`, `queryCount`, etc.)
   const queryState = useQueryState(queryConfig);
 
-  // Validation state of the query; only trigger on true
-  const invalidQueryState = useWatch(queryState ? queryState.isInvalid : false, true);
-
   const dispatchRequestToRedux = useConstCallback((queryConfig: QueryConfig) => {
     const promise = reduxDispatch(requestAsync(queryConfig));
 
@@ -97,13 +81,10 @@ const useRequest = (
 //   }, [dispatchRequestToRedux, queryConfig]);
 
 
-  const select = useSelector(state => {
-        const entitySelector = getEntitiesFromQuery(queryState, queryConfig);
-        if (entitySelector) {
-            return entitySelector(state);
-        }
-        return undefined;
-  })
+  const entities = useEntityState(queryState, queryConfig);
+
+  // Trigger change also if query is invalid
+  const hasInvalidQueryState = useWatch(queryState ? queryState.isInvalid : false, true);
 
   React.useEffect(() => {
     // Dispatch `requestAsync` actions whenever the query config (note: memoized based on query
@@ -124,9 +105,9 @@ const useRequest = (
       }
     };
   
-  }, [dispatchCancelToRedux, dispatchRequestToRedux, queryConfig, invalidQueryState]);
+  }, [dispatchCancelToRedux, dispatchRequestToRedux, queryConfig, hasInvalidQueryState]);
 
-  return [queryState, select];
+  return [queryState, entities];
 };
 
 export default useRequest;

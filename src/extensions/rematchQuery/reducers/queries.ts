@@ -1,7 +1,7 @@
 import * as actionTypes from '../constants/action-types';
 
 import { Action } from '../actions';
-import { ResponseHeaders, Status, QueryKey, Maps } from '../types';
+import { ResponseHeaders, Status, Maps } from '../types';
 import { wildcardFilter } from '../lib/array';
 
 export type State = {

@@ -8,9 +8,9 @@ const useWatch = <T>(value: T, expectedValue: T): boolean => {
     const previous = React.useRef(value);
     React.useEffect(() => {
         if ((!previous || previous.current !== value) && value === expectedValue) {
-            setState(!state);
+            setState(state => !state);
         }
-      }, [value]);
+      }, [expectedValue, value]);
     return state;
 }
 

@@ -1,5 +1,5 @@
 function escapeRegExp(str: string){
-  return str.replace(/[.\/+?^${}()|[\]\\]/g, '\\$&');
+  return str.replace(/[./+?^${}()|[\]\\]/g, '\\$&');
 }
 
 export const wildcardFilter = (arr: Array<string>, str: string) => {
