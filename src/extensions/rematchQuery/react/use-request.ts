@@ -7,6 +7,7 @@ import { QueryConfig, QueryKey } from '../types';
 import useConstCallback from './use-const-callback';
 import useMemoizedQueryConfig from './use-memoized-query-config';
 import useQueryState from './use-query-state';
+import useWatch from './use-watch';
 
 import { QueryState } from '../types';
 import { rematchQueryConfig } from '../index'
@@ -66,8 +67,8 @@ const useRequest = (
   // (e.g.`isPending`, `queryCount`, etc.)
   const queryState = useQueryState(queryConfig);
 
-  // Get validation state
-  const invalidQueryState = queryState ? queryState.isInvalid : false;
+  // Validation state of the query; only trigger on true
+  const invalidQueryState = useWatch(queryState ? queryState.isInvalid : false, true);
 
   const dispatchRequestToRedux = useConstCallback((queryConfig: QueryConfig) => {
     const promise = reduxDispatch(requestAsync(queryConfig));
@@ -122,6 +123,7 @@ const useRequest = (
         }
       }
     };
+  
   }, [dispatchCancelToRedux, dispatchRequestToRedux, queryConfig, invalidQueryState]);
 
   return [queryState, select];
