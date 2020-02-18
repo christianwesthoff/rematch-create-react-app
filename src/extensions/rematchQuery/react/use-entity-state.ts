@@ -17,10 +17,8 @@ const getEntitiesFromQuery = (queryState?: QueryState | undefined, queryConfig?:
 
 const useEntityState = (queryState?: QueryState | undefined, queryConfig?: QueryConfig | undefined) => useSelector(state => {
     const entitySelector = getEntitiesFromQuery(queryState, queryConfig);
-    if (entitySelector) {
-        return entitySelector(state);
-    }
-    return undefined;
+    if (!entitySelector) return undefined;
+    return entitySelector(state);
 })
 
 export default useEntityState;

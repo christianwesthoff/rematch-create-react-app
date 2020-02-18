@@ -1,9 +1,10 @@
 import * as React from 'react';
 
 /**
- * Creates a flipflop like variable which can be watched; only triggers change on a certain value
+ * Creates a flipflop like variable which can be watched
+ * and only triggers change on a certain value
  */
-const useWatch = <T>(value: T, expectedValue: T): boolean => {
+const useWatcher = <T>(value: T, expectedValue: T): boolean => {
     const [state, setState] = React.useState(false);
     const previous = React.useRef(value);
     React.useEffect(() => {
@@ -14,4 +15,4 @@ const useWatch = <T>(value: T, expectedValue: T): boolean => {
     return state;
 }
 
-export default useWatch;
+export default useWatcher;

@@ -7,7 +7,7 @@ import { QueryConfig, QueryKey } from '../types';
 import useConstCallback from './use-const-callback';
 import useMemoizedQueryConfig from './use-memoized-query-config';
 import useQueryState from './use-query-state';
-import useWatch from './use-watch';
+import useWatcher from './use-watcher';
 
 import { QueryState } from '../types';
 import useEntityState from './use-entity-state';
@@ -84,7 +84,7 @@ const useRequest = (
   const entities = useEntityState(queryState, queryConfig);
 
   // Trigger change also if query is invalid
-  const hasInvalidQueryState = useWatch(queryState ? queryState.isInvalid : false, true);
+  const invalidQueryStateWatcher = useWatcher(queryState ? queryState.isInvalid : false, true);
 
   React.useEffect(() => {
     // Dispatch `requestAsync` actions whenever the query config (note: memoized based on query
@@ -105,7 +105,7 @@ const useRequest = (
       }
     };
   
-  }, [dispatchCancelToRedux, dispatchRequestToRedux, queryConfig, hasInvalidQueryState]);
+  }, [dispatchCancelToRedux, dispatchRequestToRedux, queryConfig, invalidQueryStateWatcher]);
 
   return [queryState, entities];
 };
