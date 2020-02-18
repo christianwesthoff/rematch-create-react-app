@@ -8,8 +8,8 @@ import { IssuePagination, OnPageChangeCallback } from './IssuePagination'
 import { GetIssuesPayload } from 'models/issues'
 import { GetRepoDetailsPayload } from 'models/repoDetails'
 
-import { Issue } from 'api/githubAPI'
 import useRequest from 'extensions/rematchQuery/react/use-request'
+import { getIssuesQuery } from 'queries/issues'
 
 const mapDispatch = (dispatch: RootDispatch) => ({
   getIssues: (payload:GetIssuesPayload) => dispatch.issues.getIssues(payload),
@@ -24,46 +24,6 @@ interface ILProps {
   setJumpToPage: (page: number) => void
   showIssueComments: (issueId: number) => void
 }
-
-const asRecord = <K extends string|number|symbol, T extends any>(list: Array<T>, selector: (elem:T) => K):Record<K, T> => 
-  list.reduce((acc, curr) => {
-    const key = selector(curr);
-    acc[key] = curr;
-    return acc;
-  }, {} as any);
-
-const getIssuesQuery = (
-  org: string,
-  repo: string,
-  page = 1
-) => {
-    return {
-      url: `https://api.github.com/repos/${org}/${repo}/issues?per_page=25&page=${page}`,
-      transform: (response: Issue[]) => {
-          // The server responded with a JSON body: { "data": "hello" }
-          // let pageCount = 0
-          // const pageLinks = parseLink(issuesResponse.headers.link)
-      
-          // if (pageLinks !== null) {
-          //   pageCount = getPageCount(pageLinks)
-          // }
-          const issues = asRecord(response, t => t.id);
-          return {
-            issues,
-          };
-        },
-      update: {
-          issues: (oldValue: Record<number, Issue>, newValue: Record<number, Issue>) => {
-            return {...oldValue || {}, ...newValue };
-          },
-      },
-      map: {
-          issues: (value: Record<number, Issue>) => {
-            return Object.keys(value);
-          }
-      }
-  }
-};
 
 export const IssuesListPage = ({
   org,
