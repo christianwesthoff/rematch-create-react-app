@@ -410,22 +410,29 @@ const queryMiddleware = (
         break;
       }
       case actionTypes.INVALIDATE_QUERY: {
-        const { queryPattern } = action;
+        const { queryPattern, queryKey } = action;
 
-        if (!queryPattern) {
-          throw new Error('Missing required queryPattern field');
+        if (!queryPattern && !queryKey) {
+          throw new Error('Missing required queryPattern or queryKey field');
         }
 
         const state = getState();
         const queries = queriesSelector(state);
         const pendingQueries = getPendingQueries(queries);
-        const queryKeys = getQueryKeys(queries);
-        const filtered = wildcardFilter(queryKeys, queryPattern);
-        for(let index in filtered) {
-            const elem = filtered[index];
-            if (elem in pendingQueries) {
-              abortQuery(queryPattern);
-            }
+
+        if (queryPattern) {
+          const queryKeys = getQueryKeys(queries);
+          const filtered = wildcardFilter(queryKeys, queryPattern);
+          for(let index in filtered) {
+              const elem = filtered[index];
+              if (elem in pendingQueries) {
+                abortQuery(queryPattern);
+              }
+          }
+        } else if (queryKey) {
+          if (queryKey in pendingQueries) {
+            abortQuery(queryKey);
+          }
         }
 
         returnValue = next(action);

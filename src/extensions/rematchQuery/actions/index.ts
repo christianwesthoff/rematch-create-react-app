@@ -328,9 +328,17 @@ export const mutateAsync = ({
 type InvalidateQueryAction = {
   type: '@@query/INVALIDATE_QUERY';
   queryPattern?: QueryPattern | undefined;
+  queryKey?: QueryKey | undefined;
 };
 
-export const invalidateQuery = (queryPattern: QueryPattern): InvalidateQueryAction => {
+export const invalidateQueryConfig = (queryKey: QueryKey): InvalidateQueryAction => {
+  return {
+    type: actionTypes.INVALIDATE_QUERY,
+    queryKey,
+  };
+};
+
+export const invalidateQueryPattern = (queryPattern: QueryPattern): InvalidateQueryAction => {
   return {
     type: actionTypes.INVALIDATE_QUERY,
     queryPattern,

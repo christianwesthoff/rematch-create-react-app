@@ -103,7 +103,7 @@ const queries = (state: State = initialState, action: Action): State => {
       return state;
     }
     case actionTypes.INVALIDATE_QUERY: {
-      const { queryPattern } = action;
+      const { queryPattern, queryKey } = action;
 
       if (queryPattern) {
 
@@ -120,6 +120,16 @@ const queries = (state: State = initialState, action: Action): State => {
         }
 
         return newState;
+      } else if (queryKey && state[queryKey]) {
+
+        return {
+          ...state,
+          [queryKey]: {
+            ...state[queryKey],
+            isInvalid: true,
+            maps: {} as Maps
+          },
+        };
       }
 
       return state;
