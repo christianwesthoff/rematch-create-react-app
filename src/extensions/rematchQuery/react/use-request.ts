@@ -71,16 +71,6 @@ const useRequest = (
     isPendingRef.current = false;
   });
 
-//   const forceRequest = React.useCallback(() => {
-//     if (queryConfig) {
-//       return dispatchRequestToRedux({
-//         ...queryConfig,
-//         force: true,
-//       });
-//     }
-//   }, [dispatchRequestToRedux, queryConfig]);
-
-
   const entities = useEntityState(queryState, queryConfig);
 
   // Trigger change also if query is invalid
