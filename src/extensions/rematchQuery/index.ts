@@ -34,15 +34,15 @@ export type RematchQueryConfig = {
 	queriesModelName: string
 }
 
-export const rematchQueryConfig = { queriesSelector: (_:any):any => undefined, entitiesSelector: (_:any):any => undefined };
+export const Config = { queriesSelector: (_:any):any => undefined, entitiesSelector: (_:any):any => undefined };
 
 export default (config: RematchQueryConfig): Plugin => {
 	const { networkInterface, customConfig, additionalHeadersSelector, entitiesModelName, queriesModelName } = config;
 	const queriesSelector = buildQueriesSelector(queriesModelName);
 	const entitiesSelector = buildEntitiesSelector(entitiesModelName);
 
-	rematchQueryConfig.queriesSelector = queriesSelector;
-	rematchQueryConfig.entitiesSelector = entitiesSelector;
+	Config.queriesSelector = queriesSelector;
+	Config.entitiesSelector = entitiesSelector;
 
 	const middleware = queryMiddleware(networkInterface, 
 		queriesSelector, 

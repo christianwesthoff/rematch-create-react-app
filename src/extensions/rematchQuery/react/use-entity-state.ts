@@ -1,9 +1,9 @@
-import { rematchQueryConfig } from '../index'
+import { Config } from '../index'
 import { QueryState, QueryConfig } from '../types';
 import { useSelector } from 'react-redux';
 
 const getEntitiesFromQuery = (queryState?: QueryState | undefined, queryConfig?: QueryConfig | undefined) => {
-    const { entitiesSelector } = rematchQueryConfig;
+    const { entitiesSelector } = Config;
     if (queryState && queryState.maps && queryConfig && queryConfig.map) {
         return (state: any) => Object.keys(queryState.maps!).reduce((acc: any, curr: string) => {
             const maps = queryState.maps![curr];

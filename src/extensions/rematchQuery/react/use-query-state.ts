@@ -3,11 +3,11 @@ import { useSelector } from 'react-redux';
 import * as querySelectors from '../selectors/query';
 import { QueryState } from '../types';
 import { QueryConfig } from '../types';
-import { rematchQueryConfig } from '../index'
+import { Config } from '../index'
 
 const useQueryState = (queryConfig?: QueryConfig | undefined): QueryState | undefined=> {
 
-  const { queriesSelector } = rematchQueryConfig;
+  const { queriesSelector } = Config;
 
   const isPending = useSelector(state =>
     querySelectors.isPending(queriesSelector(state), queryConfig),
