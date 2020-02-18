@@ -1,6 +1,7 @@
 import Config from '../config'
 import { QueryState, QueryConfig } from '../types';
 import { useSelector } from 'react-redux';
+import React from 'react';
 
 const getEntitiesFromQuery = (queryState?: QueryState | undefined, queryConfig?: QueryConfig | undefined) => {
     const { entitiesSelector } = Config;
@@ -11,14 +12,23 @@ const getEntitiesFromQuery = (queryState?: QueryState | undefined, queryConfig?:
             return acc;
           }, {});
     }
-
     return undefined;
 }
 
-const useEntityState = (queryState?: QueryState | undefined, queryConfig?: QueryConfig | undefined) => useSelector(state => {
-    const entitySelector = getEntitiesFromQuery(queryState, queryConfig);
-    if (!entitySelector) return undefined;
-    return entitySelector(state);
-})
-
-export default useEntityState;
+const useEntitiyState = (queryState?: QueryState | undefined, queryConfig?: QueryConfig | undefined): any | undefined=> {
+  
+    const selectedEntityState = useSelector(state => {
+        const entitySelector = getEntitiesFromQuery(queryState, queryConfig);
+        if (!entitySelector) return undefined;
+        return entitySelector(state);
+    });;
+  
+    const entityState = React.useMemo(
+      () => selectedEntityState,
+      [selectedEntityState],
+    );
+  
+    return entityState;
+  };
+  
+  export default useEntitiyState;

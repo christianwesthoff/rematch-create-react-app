@@ -41,9 +41,9 @@ const useQueryState = (queryConfig?: QueryConfig | undefined): QueryState | unde
     querySelectors.queryCount(queriesSelector(state), queryConfig),
   );
 
-  const invalidCount = useSelector(state =>
-    querySelectors.invalidCount(queriesSelector(state), queryConfig),
-  );
+  const invalidCount = useSelector(state => {
+    return querySelectors.invalidCount(queriesSelector(state), queryConfig);
+  });
 
   const queryState = React.useMemo(
     () => ({

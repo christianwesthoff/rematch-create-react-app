@@ -49,11 +49,6 @@ const useRequest = (
   // query config won't change.
   const queryConfig = useMemoizedQueryConfig(providedQueryConfig, transformQueryConfig);
 
-  // This is an object that contains metadata about the query, like things from querySelectors
-  // (e.g.`isPending`, `queryCount`, etc.)
-  const queryState = useQueryState(queryConfig);
-
-  const invalidCount = queryState ? queryState.invalidCount : 0;
 
   // const isInvalid = queryState ? queryState.isInvalid : false
   const dispatchRequestToRedux = useConstCallback((queryConfig: QueryConfig) => {
@@ -72,6 +67,14 @@ const useRequest = (
     reduxDispatch(cancelQuery(queryKey));
     isPendingRef.current = false;
   });
+
+
+  // This is an object that contains metadata about the query, like things from querySelectors
+  // (e.g.`isPending`, `queryCount`, etc.)
+  const queryState = useQueryState(queryConfig);
+
+  // If invalidate count changes trigger effect
+  const invalidCount = queryState ? queryState.invalidCount : 0;
 
   const entities = useEntityState(queryState, queryConfig);
 
