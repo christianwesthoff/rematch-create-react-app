@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 /**
- * Creates a flipflop like variable which can be watched
+ * Creates a flipflop variable which can be watched
  * and only triggers change on a certain value
  */
 const useWatcher = <T>(value: T, expectedValue: T): boolean => {
