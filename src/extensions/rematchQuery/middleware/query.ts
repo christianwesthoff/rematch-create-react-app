@@ -28,19 +28,11 @@ import {
   Transform,
   Entities,
   QueryKey,
-  AdditionalHeadersSelector
+  AdditionalHeadersSelector,
+  RequestConfig
 } from '../types';
 import { State as QueriesState } from '../reducers/queries';
 import { wildcardFilter } from '../lib/array';
-
-type Config = {
-  backoff: {
-    maxAttempts: number;
-    minDuration: number;
-    maxDuration: number;
-  };
-  retryableStatusCodes: Array<Status>;
-};
 
 type ReduxStore = {
   dispatch: (action: Action) => any;
@@ -49,7 +41,8 @@ type ReduxStore = {
 
 type Next = (action: PublicAction) => any;
 
-const defaultConfig: Config = {
+const defaultConfig: RequestConfig = {
+  defaultHeaders: {},
   backoff: {
     maxAttempts: 5,
     minDuration: 300,
@@ -101,7 +94,7 @@ const queryMiddleware = (
   queriesSelector: QueriesSelector,
   entitiesSelector: EntitiesSelector,
   additionalHeadersSelector?: AdditionalHeadersSelector | undefined,
-  customConfig?: Config | undefined
+  customConfig?: RequestConfig | undefined
 ) => {
 
   const networkHandlersByQueryKey: { [key: string]: NetworkHandler } = {};
@@ -164,14 +157,14 @@ const queryMiddleware = (
             const { method = httpMethods.GET as HttpMethod } = options;
             let attempts = 0;
             const backoff = new Backoff({
-              min: config.backoff.minDuration,
-              max: config.backoff.maxDuration,
+              min: config.backoff!.minDuration,
+              max: config.backoff!.maxDuration,
             });
 
             const attemptRequest = () => {
               const networkHandler = networkInterface(url, method, {
                 body,
-                headers: { ...options.headers, ...additionalHeaders },
+                headers: { ...options.headers, ...config.defaultHeaders, ...additionalHeaders },
                 credentials: options.credentials,
               });
 
@@ -190,8 +183,8 @@ const queryMiddleware = (
 
               networkHandler.execute((err, status, responseBody, responseText, responseHeaders) => {
                 if (
-                  config.retryableStatusCodes.includes(status) &&
-                  attempts < config.backoff.maxAttempts
+                  config.retryableStatusCodes!.includes(status) &&
+                  attempts < config.backoff!.maxAttempts
                 ) {
                   // TODO take into account Retry-After header if 503
                   setTimeout(attemptRequest, backoff.duration());
@@ -315,7 +308,7 @@ const queryMiddleware = (
 
           const networkHandler = networkInterface(url, method, {
             body,
-            headers: { ...options.headers, ...additionalHeaders },
+            headers: { ...options.headers, ...config.defaultHeaders, ...additionalHeaders },
             credentials: options.credentials,
           });
 

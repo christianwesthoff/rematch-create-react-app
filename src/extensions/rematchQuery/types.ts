@@ -123,10 +123,11 @@ export type ActionPromiseValue = {
 export type Action = PublicAction;
 
 export type RequestConfig = {
-  backoff: {
+  defaultHeaders?: RequestHeaders | undefined,
+  backoff?: {
     maxAttempts: number;
     minDuration: number;
     maxDuration: number;
   };
-  retryableStatusCodes: Array<Status>;
+  retryableStatusCodes?: Array<Status>;
 };
