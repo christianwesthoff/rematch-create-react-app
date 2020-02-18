@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import { useDispatch } from 'react-redux';
 import { requestAsync, cancelQuery } from '../actions';
 import { getQueryKey } from '../lib/query-key';
@@ -7,7 +7,6 @@ import { QueryConfig, QueryKey } from '../types';
 import useConstCallback from './use-const-callback';
 import useMemoizedQueryConfig from './use-memoized-query-config';
 import useQueryState from './use-query-state';
-import useWatcher from './use-watcher';
 
 import { QueryState } from '../types';
 import useEntityState from './use-entity-state';
@@ -54,6 +53,9 @@ const useRequest = (
   // (e.g.`isPending`, `queryCount`, etc.)
   const queryState = useQueryState(queryConfig);
 
+  const invalidCount = queryState ? queryState.invalidCount : 0;
+
+  // const isInvalid = queryState ? queryState.isInvalid : false
   const dispatchRequestToRedux = useConstCallback((queryConfig: QueryConfig) => {
     const promise = reduxDispatch(requestAsync(queryConfig));
 
@@ -73,12 +75,10 @@ const useRequest = (
 
   const entities = useEntityState(queryState, queryConfig);
 
-  // Trigger change also if query is invalid
-  const invalidQueryStateWatcher = useWatcher(queryState ? queryState.isInvalid : false, true);
-
   React.useEffect(() => {
     // Dispatch `requestAsync` actions whenever the query config (note: memoized based on query
     // key) changes.
+
     if (queryConfig) {
       dispatchRequestToRedux(queryConfig);
     }
@@ -95,7 +95,7 @@ const useRequest = (
       }
     };
   
-  }, [dispatchCancelToRedux, dispatchRequestToRedux, queryConfig, invalidQueryStateWatcher]);
+  }, [dispatchCancelToRedux, dispatchRequestToRedux, queryConfig, invalidCount]);
 
   return [queryState, entities];
 };

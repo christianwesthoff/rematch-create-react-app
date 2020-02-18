@@ -8,9 +8,9 @@ export type State = {
   [key: string]: {
     headers?: ResponseHeaders | undefined;
     isFinished: boolean;
-    isMutation: boolean;
     isPending: boolean;
     isInvalid: boolean;
+    invalidCount: number;
     lastUpdated?: number;
     queryCount: number;
     status?: Status;
@@ -35,7 +35,6 @@ const queries = (state: State = initialState, action: Action): State => {
     case actionTypes.RESET: {
       return {};
     }
-    case actionTypes.MUTATE_START:
     case actionTypes.REQUEST_START: {
       const { queryKey } = action;
 
@@ -45,13 +44,13 @@ const queries = (state: State = initialState, action: Action): State => {
           isFinished: false,
           isPending: true,
           isInvalid: false,
-          isMutation: action.type === actionTypes.MUTATE_START,
           queryCount: state[queryKey] ? state[queryKey].queryCount + 1 : 1,
+          invalidCount: state[queryKey] ? state[queryKey].invalidCount : 0,
+          maps: {} as Maps
         }
       };
     }
-    case actionTypes.REQUEST_SUCCESS:
-    case actionTypes.MUTATE_SUCCESS: {
+    case actionTypes.REQUEST_SUCCESS: {
       const { queryKey } = action;
 
       return {
@@ -67,7 +66,6 @@ const queries = (state: State = initialState, action: Action): State => {
         },
       };
     }
-    case actionTypes.MUTATE_FAILURE:
     case actionTypes.REQUEST_FAILURE: {
       const { queryKey } = action;
 
@@ -111,12 +109,16 @@ const queries = (state: State = initialState, action: Action): State => {
         let newState = { ...state };
         const filtered = wildcardFilter(stateKeys, queryPattern);
         for(let index in filtered) {
-          let elem = filtered[index];
-          newState = { ...newState, [elem]: {
-            ...state[elem],
-            isInvalid: true,
-            maps: {} as Maps
-          } }
+          let current = filtered[index];
+          newState = { 
+            ...newState, 
+            [current]: {
+              ...state[current],
+              invalidCount: state[current] ? state[current].invalidCount + 1 : 1,
+              isInvalid: true,
+              maps: {} as Maps
+            } 
+          }
         }
 
         return newState;
@@ -126,6 +128,7 @@ const queries = (state: State = initialState, action: Action): State => {
           ...state,
           [queryKey]: {
             ...state[queryKey],
+            invalidCount: state[queryKey] ? state[queryKey].invalidCount + 1 : 1,
             isInvalid: true,
             maps: {} as Maps
           },

@@ -5,6 +5,7 @@ import queriesReducer from "./reducers/queries";
 import entitiesReducer from "./reducers/entities";
 import { bindActionCreators } from 'redux'
 import { requestAsync, invalidateQueryPattern } from './actions'
+import Config from './config'
 
 const buildQueriesSelector = (queriesModelName: string) => (state: any) => state[queriesModelName];
 const buildQueriesModel = (queriesModelName: string): any => { 
@@ -33,8 +34,6 @@ export type RematchQueryConfig = {
 	entitiesModelName: string,
 	queriesModelName: string
 }
-
-export const Config = { queriesSelector: (_:any):any => undefined, entitiesSelector: (_:any):any => undefined };
 
 export default (config: RematchQueryConfig): Plugin => {
 	const { networkInterface, customConfig, additionalHeadersSelector, entitiesModelName, queriesModelName } = config;

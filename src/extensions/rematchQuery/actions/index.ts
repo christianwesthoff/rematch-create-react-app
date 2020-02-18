@@ -135,130 +135,6 @@ export const requestFailure = ({
   };
 };
 
-type MutateStartParams = {
-  body: RequestBody;
-  meta?: Meta | undefined;
-  optimisticEntities: Entities;
-  queryKey: QueryKey;
-  url: Url;
-};
-
-type MutateStartAction = {
-  type: '@@query/MUTATE_START';
-} & MutateStartParams;
-
-export const mutateStart = ({
-  body,
-  meta,
-  optimisticEntities,
-  queryKey,
-  url,
-}: MutateStartParams): MutateStartAction => {
-  return {
-    type: actionTypes.MUTATE_START,
-    url,
-    body,
-    optimisticEntities,
-    queryKey,
-    meta,
-  };
-};
-
-type MutateSuccessParams = {
-  body: RequestBody;
-  duration: Duration;
-  maps: Maps;
-  entities: Entities;
-  meta?: Meta | undefined;
-  responseBody?: ResponseBody | undefined;
-  responseHeaders?: ResponseHeaders | undefined;
-  responseText?: ResponseText | undefined;
-  queryKey: QueryKey;
-  status: Status;
-  url: Url;
-};
-
-type MutateSuccessAction = {
-  type: '@@query/MUTATE_SUCCESS';
-  time: number;
-} & MutateSuccessParams;
-
-export const mutateSuccess = ({
-  body,
-  duration,
-  maps,
-  entities,
-  meta,
-  queryKey,
-  responseBody,
-  responseHeaders,
-  responseText,
-  status,
-  url,
-}: MutateSuccessParams): MutateSuccessAction => {
-  return {
-    type: actionTypes.MUTATE_SUCCESS,
-    url,
-    body,
-    duration,
-    status,
-    responseBody,
-    responseText,
-    responseHeaders,
-    maps,
-    entities,
-    queryKey,
-    time: Date.now(),
-    meta,
-  };
-};
-
-type MutateFailureParams = {
-  body: RequestBody;
-  duration: Duration;
-  meta?: Meta | undefined;
-  responseBody?: ResponseBody | undefined;
-  responseHeaders?: ResponseHeaders | undefined;
-  responseText?: ResponseText | undefined;
-  rolledBackEntities?: Entities | undefined;
-  queryKey: QueryKey;
-  status: Status;
-  url: Url;
-};
-
-type MutateFailureAction = {
-  type: '@@query/MUTATE_FAILURE';
-  time: number;
-} & MutateFailureParams;
-
-export const mutateFailure = ({
-  body,
-  duration,
-  meta,
-  queryKey,
-  responseBody,
-  responseHeaders,
-  responseText,
-  rolledBackEntities,
-  status,
-  url,
-}: MutateFailureParams): MutateFailureAction => {
-  return {
-    type: actionTypes.MUTATE_FAILURE,
-    url,
-    body,
-    duration,
-    status,
-    responseBody,
-    responseText,
-    responseHeaders,
-    rolledBackEntities,
-    queryKey,
-    time: Date.now(),
-    meta,
-  };
-};
-
 type RequestAsyncAction = {
   type: '@@query/REQUEST_ASYNC';
 } & QueryConfig;
@@ -291,37 +167,6 @@ export const requestAsync = ({
     url,
     // /* eslint-disable-next-line @typescript-eslint/camelcase */
     unstable_preDispatchCallback,
-  };
-};
-
-type MutateAsyncAction = {
-  type: '@@query/MUTATE_ASYNC';
-} & QueryConfig;
-
-export const mutateAsync = ({
-  body,
-  meta,
-  optimisticUpdate,
-  options,
-  queryKey,
-  rollback,
-  transform,
-  update,
-  map,
-  url,
-}: QueryConfig): MutateAsyncAction => {
-  return {
-    type: actionTypes.MUTATE_ASYNC,
-    body,
-    meta,
-    optimisticUpdate,
-    options,
-    queryKey,
-    rollback,
-    transform,
-    update,
-    map,
-    url,
   };
 };
 
@@ -387,7 +232,6 @@ export const reset = ({ entities }: ResetParams): ResetAction => {
 
 export type PublicAction =
   | RequestAsyncAction
-  | MutateAsyncAction
   | CancelQueryAction
   | UpdateEntitiesAction
   | ResetAction
@@ -398,7 +242,4 @@ export type Action =
   | RequestStartAction
   | RequestSuccessAction
   | RequestFailureAction
-  | MutateStartAction
-  | MutateSuccessAction
-  | MutateFailureAction
   | InvalidateQueryAction;

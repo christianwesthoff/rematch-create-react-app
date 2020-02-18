@@ -1,4 +1,4 @@
-import { Config } from '../index'
+import Config from '../config'
 import { QueryState, QueryConfig } from '../types';
 import { useSelector } from 'react-redux';
 

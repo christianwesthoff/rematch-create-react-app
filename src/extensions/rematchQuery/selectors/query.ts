@@ -107,3 +107,16 @@ export const queryCount = (
 
   return idx(queriesState, (_: any) => _[queryKey].queryCount) || 0;
 };
+
+export const invalidCount = (
+  queriesState: QueriesState,
+  queryConfig?: QueryConfig | undefined,
+): number => {
+  const queryKey = getQueryKey(queryConfig);
+
+  if (!queryKey) {
+    return 0;
+  }
+
+  return idx(queriesState, (_: any) => _[queryKey].invalidCount) || 0;
+};

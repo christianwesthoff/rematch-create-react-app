@@ -8,6 +8,7 @@ export type QueryState = {
   isFinished: boolean,
   isPending: boolean,
   isInvalid: boolean,
+  invalidCount: number,
   lastUpdated?: number | undefined,
   queryCount: number,
   status?: number | undefined,
