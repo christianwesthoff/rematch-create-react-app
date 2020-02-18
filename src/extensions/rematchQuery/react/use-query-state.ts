@@ -34,16 +34,16 @@ const useQueryState = (queryConfig?: QueryConfig | undefined): QueryState | unde
   );
 
   const lastUpdated = useSelector(state =>
-    querySelectors.lastUpdated(queriesSelector(state), queryConfig),
+    querySelectors.lastUpdated(queriesSelector(state), queryConfig)
   );
 
   const queryCount = useSelector(state =>
-    querySelectors.queryCount(queriesSelector(state), queryConfig),
+    querySelectors.queryCount(queriesSelector(state), queryConfig)
   );
 
-  const invalidCount = useSelector(state => {
-    return querySelectors.invalidCount(queriesSelector(state), queryConfig);
-  });
+  const invalidCount = useSelector(state =>
+    querySelectors.invalidCount(queriesSelector(state), queryConfig)
+  );
 
   const queryState = React.useMemo(
     () => ({
