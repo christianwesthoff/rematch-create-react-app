@@ -76,8 +76,6 @@ const useRequest = (
   // If invalidate count changes trigger effect
   const invalidCount = queryState ? queryState.invalidCount : 0;
 
-  const entities = useEntityState(queryState);
-
   React.useEffect(() => {
     // Dispatch `requestAsync` actions whenever the query config (note: memoized based on query
     // key) changes.
@@ -99,6 +97,8 @@ const useRequest = (
     };
   
   }, [dispatchCancelToRedux, dispatchRequestToRedux, queryConfig, invalidCount]);
+
+  const entities = useEntityState(queryState);
 
   return [queryState, entities];
 };

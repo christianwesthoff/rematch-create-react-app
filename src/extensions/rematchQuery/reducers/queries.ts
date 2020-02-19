@@ -123,6 +123,7 @@ const queries = (state: State = initialState, action: Action): State => {
 
         return newState;
       } else if (queryKey) {
+        
         if (state[queryKey]) {
           return {
             ...state,
@@ -134,8 +135,28 @@ const queries = (state: State = initialState, action: Action): State => {
             },
           };
         }
+
+        return state;
+        
       } else if (queryUrl) {
 
+        const stateKeys = getStateKeys(state);
+        let newState = { ...state };
+        const filtered = stateKeys.filter(key => key.includes(`"url":"${queryUrl}"`));
+        for(let index in filtered) {
+          let key = filtered[index];
+          newState = { 
+            ...newState, 
+            [key]: {
+              ...state[key],
+              invalidCount: state[key] ? state[key].invalidCount + 1 : 1,
+              isInvalid: true,
+              maps: {} as Maps
+            } 
+          }
+        }
+
+        return newState;
       }
 
       return state;
