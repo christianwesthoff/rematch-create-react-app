@@ -111,7 +111,7 @@ export type Entities = { [key: string]: any };
 
 export type Transform = (
   body?: ResponseBody | undefined,
-  text?: ResponseText | undefined,
+  // text?: ResponseText | undefined,
   headers?: ResponseHeaders | undefined,
 ) => { [key: string]: any };
 

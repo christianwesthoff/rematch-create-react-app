@@ -415,7 +415,7 @@ const queryMiddleware = (
                 } else {
                   const callbackState = getState();
                   const entities = entitiesSelector(callbackState);
-                  transformed = transform(responseBody, responseText, responseHeaders);
+                  transformed = transform(responseBody, responseHeaders);
                   newEntities = updateEntities(update || updateFromTransform(transformed), entities, transformed);
                   maps = updateMaps(map || mapFromTransform(transformed), transformed);
                   dispatch(

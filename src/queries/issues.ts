@@ -8,7 +8,7 @@ export const getIssuesQuery = (
   ) => {
       return {
         url: `https://api.github.com/repos/${org}/${repo}/issues?per_page=25&page=${page}`,
-        transform: (response: any) => {
+        transform: (response: any, headers: any) => {
           const issues = asRecords<number, Issue>(response, t => t.id);
           return {
             issues,
