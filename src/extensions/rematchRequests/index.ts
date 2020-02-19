@@ -1,5 +1,5 @@
 import { NetworkInterface, RequestConfig, AdditionalHeadersSelector } from "./types";
-import queryMiddleware from "./middleware/query"
+import queryMiddleware from "./middleware/request"
 import { Plugin, Middleware } from '@rematch/core'
 import queriesReducer from "./reducers/queries";
 import entitiesReducer from "./reducers/entities";
@@ -51,6 +51,7 @@ export type RematchQueryConfig = {
 
 export default (config: RematchQueryConfig): Plugin => {
 	const { networkInterface, customConfig, additionalHeadersSelector, entitiesModelName, queriesModelName, mutationsModelName } = config;
+	
 	const queriesSelector = buildQueriesSelector(queriesModelName);
 	const entitiesSelector = buildEntitiesSelector(entitiesModelName);
 	const mutationsSelector = buildMutationsSelector(mutationsModelName);
@@ -65,7 +66,6 @@ export default (config: RematchQueryConfig): Plugin => {
 		mutationsSelector,
 		additionalHeadersSelector, 
 		customConfig) as Middleware;
-
 	return {
 		config: {
 			models: {

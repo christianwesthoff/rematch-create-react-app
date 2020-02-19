@@ -8,128 +8,128 @@ export const isFinished = (
   state: MutationsState,
   config?: MutationConfig | undefined,
 ): boolean => {
-  const queryKey = getRequestKey(config);
+  const requestKey = getRequestKey(config);
 
-  if (!queryKey) {
+  if (!requestKey) {
     return false;
   }
 
-  return idx(state, (_: any) => _[queryKey].isFinished) || false;
+  return idx(state, (_: any) => _[requestKey].isFinished) || false;
 };
 
 export const isInvalid = (
   state: MutationsState,
   config?: MutationConfig | undefined,
 ): boolean => {
-  const queryKey = getRequestKey(config);
+  const requestKey = getRequestKey(config);
 
-  if (!queryKey) {
+  if (!requestKey) {
     return false;
   }
 
-  return idx(state, (_: any) => _[queryKey].isInvalid) || false;
+  return idx(state, (_: any) => _[requestKey].isInvalid) || false;
 };
 
 export const error = (
   state: MutationsState,
   config?: MutationConfig | undefined,
 ): any => {
-  const queryKey = getRequestKey(config);
+  const requestKey = getRequestKey(config);
 
-  if (!queryKey) {
+  if (!requestKey) {
     return undefined;
   }
 
-  return idx(state, (_: any) => _[queryKey].error) || undefined;
+  return idx(state, (_: any) => _[requestKey].error) || undefined;
 };
 
 export const isError = (
   state: MutationsState,
   config?: MutationConfig | undefined,
 ): boolean => {
-  const queryKey = getRequestKey(config);
+  const requestKey = getRequestKey(config);
 
-  if (!queryKey) {
+  if (!requestKey) {
     return false;
   }
 
-  return idx(state, (_: any) => _[queryKey].isError) || false;
+  return idx(state, (_: any) => _[requestKey].isError) || false;
 };
 
 export const isPending = (
   state: MutationsState,
   config?: MutationConfig | undefined,
 ): boolean => {
-  const queryKey = getRequestKey(config);
+  const requestKey = getRequestKey(config);
 
-  if (!queryKey) {
+  if (!requestKey) {
     return false;
   }
 
-  return idx(state, (_: any) => _[queryKey].isPending) || false;
+  return idx(state, (_: any) => _[requestKey].isPending) || false;
 };
 
 export const status = (
   state: MutationsState,
   config?: MutationConfig | undefined,
 ): number | undefined => {
-  const queryKey = getRequestKey(config);
+  const requestKey = getRequestKey(config);
 
-  if (!queryKey) {
+  if (!requestKey) {
     return undefined;
   }
 
-  return idx(state, (_: any) => _[queryKey].status);
+  return idx(state, (_: any) => _[requestKey].status);
 };
 
 export const headers = (
   state: MutationsState,
   config?: MutationConfig | undefined,
 ): { [key: string]: any } | undefined => {
-  const queryKey = getRequestKey(config);
+  const requestKey = getRequestKey(config);
 
-  if (!queryKey) {
+  if (!requestKey) {
     return undefined;
   }
 
-  return idx(state, (_: any) => _[queryKey].headers);
+  return idx(state, (_: any) => _[requestKey].headers);
 };
 
 export const lastUpdated = (
   state: MutationsState,
   config?: MutationConfig | undefined,
 ): number | undefined => {
-  const queryKey = getRequestKey(config);
+  const requestKey = getRequestKey(config);
 
-  if (!queryKey) {
+  if (!requestKey) {
     return undefined;
   }
 
-  return idx(state, (_: any) => _[queryKey].lastUpdated);
+  return idx(state, (_: any) => _[requestKey].lastUpdated);
 };
 
 export const payload = (
   state: MutationsState,
   config?: MutationConfig | undefined,
 ): any => {
-  const queryKey = getRequestKey(config);
+  const requestKey = getRequestKey(config);
 
-  if (!queryKey) {
+  if (!requestKey) {
     return undefined;
   }
 
-  return idx(state, (_: any) => _[queryKey].payload);
+  return idx(state, (_: any) => _[requestKey].payload);
 };
 
 export const requestCount = (
   state: MutationsState,
   config?: MutationConfig | undefined,
 ): number => {
-  const queryKey = getRequestKey(config);
+  const requestKey = getRequestKey(config);
 
-  if (!queryKey) {
+  if (!requestKey) {
     return 0;
   }
 
-  return idx(state, (_: any) => _[queryKey].requestCount) || 0;
+  return idx(state, (_: any) => _[requestKey].requestCount) || 0;
 };

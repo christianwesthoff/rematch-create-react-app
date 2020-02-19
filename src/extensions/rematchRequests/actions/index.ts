@@ -21,7 +21,7 @@ import {
 type RequestStartParams = {
   body: RequestBody;
   meta?: Meta | undefined;
-  queryKey: RequestKey;
+  requestKey: RequestKey;
   url: Url;
 };
 
@@ -32,7 +32,7 @@ type RequestStartAction = {
 export const requestStart = ({
   body,
   meta,
-  queryKey,
+  requestKey,
   url,
 }: RequestStartParams): RequestStartAction => {
   return {
@@ -40,7 +40,7 @@ export const requestStart = ({
     url,
     body,
     meta,
-    queryKey,
+    requestKey,
   };
 };
 
@@ -53,7 +53,7 @@ type RequestSuccessParams = {
   responseBody?: ResponseBody | undefined;
   responseHeaders?: ResponseHeaders | undefined;
   responseText?: ResponseText | undefined;
-  queryKey: RequestKey;
+  requestKey: RequestKey;
   status: Status;
   url: Url;
 };
@@ -69,7 +69,7 @@ export const requestSuccess = ({
   maps,
   entities,
   meta,
-  queryKey,
+  requestKey,
   responseBody,
   responseHeaders,
   responseText,
@@ -88,7 +88,7 @@ export const requestSuccess = ({
     responseText,
     responseHeaders,
     meta,
-    queryKey,
+    requestKey,
     time: Date.now(),
   };
 };
@@ -100,7 +100,7 @@ type RequestFailureParams = {
   responseBody?: ResponseBody | undefined;
   responseHeaders?: ResponseHeaders | undefined;
   responseText?: ResponseText | undefined;
-  queryKey: RequestKey;
+  requestKey: RequestKey;
   status: Status;
   url: Url;
 };
@@ -114,7 +114,7 @@ export const requestFailure = ({
   body,
   duration,
   meta,
-  queryKey,
+  requestKey,
   responseBody,
   responseHeaders,
   responseText,
@@ -131,7 +131,7 @@ export const requestFailure = ({
     responseText,
     responseHeaders,
     meta,
-    queryKey,
+    requestKey,
     time: Date.now(),
   };
 };
@@ -145,7 +145,7 @@ export const requestAsync = ({
   force,
   meta,
   options,
-  requestKey: queryKey,
+  requestKey,
   retry,
   transform,
   update,
@@ -158,7 +158,7 @@ export const requestAsync = ({
     type: actionTypes.REQUEST_ASYNC,
     body,
     force,
-    requestKey: queryKey,
+    requestKey,
     meta,
     options,
     retry,
@@ -174,7 +174,7 @@ export const requestAsync = ({
 type MutateStartParams = {
   body: RequestBody;
   meta?: Meta | undefined;
-  queryKey: RequestKey;
+  requestKey: RequestKey;
   url: Url;
 };
 
@@ -185,14 +185,14 @@ type MutateStartAction = {
 export const mutateStart = ({
   body,
   meta,
-  queryKey,
+  requestKey,
   url,
 }: MutateStartParams): MutateStartAction => {
   return {
     type: actionTypes.MUTATE_START,
     url,
     body,
-    queryKey,
+    requestKey,
     meta,
   };
 };
@@ -204,7 +204,7 @@ type MutateSuccessParams = {
   responseBody?: ResponseBody | undefined;
   responseHeaders?: ResponseHeaders | undefined;
   responseText?: ResponseText | undefined;
-  queryKey: RequestKey;
+  requestKey: RequestKey;
   status: Status;
   url: Url;
 };
@@ -218,7 +218,7 @@ export const mutateSuccess = ({
   body,
   duration,
   meta,
-  queryKey,
+  requestKey,
   responseBody,
   responseHeaders,
   responseText,
@@ -234,7 +234,7 @@ export const mutateSuccess = ({
     responseBody,
     responseText,
     responseHeaders,
-    queryKey,
+    requestKey,
     time: Date.now(),
     meta,
   };
@@ -247,7 +247,7 @@ type MutateFailureParams = {
   responseBody?: ResponseBody | undefined;
   responseHeaders?: ResponseHeaders | undefined;
   responseText?: ResponseText | undefined;
-  queryKey: RequestKey;
+  requestKey: RequestKey;
   status: Status;
   url: Url;
 };
@@ -261,7 +261,7 @@ export const mutateFailure = ({
   body,
   duration,
   meta,
-  queryKey,
+  requestKey,
   responseBody,
   responseHeaders,
   responseText,
@@ -277,7 +277,7 @@ export const mutateFailure = ({
     responseBody,
     responseText,
     responseHeaders,
-    queryKey,
+    requestKey,
     time: Date.now(),
     meta,
   };
@@ -291,7 +291,7 @@ export const mutateAsync = ({
   body,
   meta,
   options,
-  requestKey: queryKey,
+  requestKey,
   url,
   triggerKeys,
   triggerPatterns
@@ -301,7 +301,7 @@ export const mutateAsync = ({
     body,
     meta,
     options,
-    requestKey: queryKey,
+    requestKey,
     url,
     triggerKeys,
     triggerPatterns
@@ -311,13 +311,13 @@ export const mutateAsync = ({
 type InvalidateRequestAction = {
   type: '@@query/INVALIDATE_REQUEST';
   queryPattern?: RequestPattern | undefined;
-  queryKey?: RequestKey | undefined;
+  requestKey?: RequestKey | undefined;
 };
 
-export const invalidateRequest = (queryKey: RequestKey): InvalidateRequestAction => {
+export const invalidateRequest = (requestKey: RequestKey): InvalidateRequestAction => {
   return {
     type: actionTypes.INVALIDATE_REQUEST,
-    queryKey,
+    requestKey,
   };
 };
 
@@ -330,25 +330,25 @@ export const invalidateRequestByPattern = (queryPattern: RequestPattern): Invali
 
 type CancelRequestAction = {
   type: '@@query/CANCEL_REQUEST';
-  queryKey?: RequestKey | undefined;
+  requestKey?: RequestKey | undefined;
 };
 
-export const cancelRequst = (queryKey: RequestKey): CancelRequestAction => {
+export const cancelRequst = (requestKey: RequestKey): CancelRequestAction => {
   return {
     type: actionTypes.CANCEL_REQUEST,
-    queryKey,
+    requestKey,
   };
 };
 
 type CancelMutationAction = {
   type: '@@query/CANCEL_MUTATION';
-  queryKey?: RequestKey | undefined;
+  requestKey?: RequestKey | undefined;
 };
 
-export const CancelMutation = (queryKey: RequestKey): CancelMutationAction => {
+export const CancelMutation = (requestKey: RequestKey): CancelMutationAction => {
   return {
     type: actionTypes.CANCEL_MUTATION,
-    queryKey,
+    requestKey,
   };
 };
 

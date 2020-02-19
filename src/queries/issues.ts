@@ -1,5 +1,5 @@
 import { Issue } from "api/githubAPI";
-import { asRecord } from "utils/normalizeUtils";
+import { asRecords } from "utils/normalizeUtils";
 
 export const getIssuesQuery = (
     org: string,
@@ -8,8 +8,8 @@ export const getIssuesQuery = (
   ) => {
       return {
         url: `https://api.github.com/repos/${org}/${repo}/issues?per_page=25&page=${page}`,
-        transform: (response: Issue[]) => {
-          const issues = asRecord(response, t => t.id);
+        transform: (response: any) => {
+          const issues = asRecords<number, Issue>(response, t => t.id);
           return {
             issues,
           };

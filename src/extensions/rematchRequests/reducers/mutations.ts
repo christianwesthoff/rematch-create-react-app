@@ -25,26 +25,26 @@ const queries = (state: State = initialState, action: Action): State => {
       return {};
     }
     case actionTypes.MUTATE_START: {
-      const { queryKey } = action;
+      const { requestKey } = action;
 
       return {
         ...state,
-        [queryKey]: {
+        [requestKey]: {
           isFinished: false,
           isPending: true,
           isError: false,
           payload: action.body,
-          requestCount: state[queryKey] ? state[queryKey].requestCount + 1 : 1
+          requestCount: state[requestKey] ? state[requestKey].requestCount + 1 : 1
         }
       };
     }
     case actionTypes.MUTATE_SUCCESS: {
-      const { queryKey } = action;
+      const { requestKey } = action;
 
       return {
         ...state,
-        [queryKey]: {
-          ...state[queryKey],
+        [requestKey]: {
+          ...state[requestKey],
           isFinished: true,
           isPending: false,
           lastUpdated: action.time,
@@ -54,12 +54,12 @@ const queries = (state: State = initialState, action: Action): State => {
       };
     }
     case actionTypes.MUTATE_FAILURE: {
-      const { queryKey } = action;
+      const { requestKey } = action;
 
       return {
         ...state,
-        [queryKey]: {
-          ...state[queryKey],
+        [requestKey]: {
+          ...state[requestKey],
           isFinished: true,
           isPending: false,
           isError: true,
@@ -71,15 +71,15 @@ const queries = (state: State = initialState, action: Action): State => {
       };
     }
     case actionTypes.CANCEL_MUTATION: {
-      const { queryKey } = action;
+      const { requestKey } = action;
 
-      if (queryKey && state[queryKey].isPending) {
-        // Make sure query is actually pending
+      if (requestKey && state[requestKey].isPending) {
+        // Make sure request is actually pending
 
         return {
           ...state,
-          [queryKey]: {
-            ...state[queryKey],
+          [requestKey]: {
+            ...state[requestKey],
             isFinished: true,
             isPending: false,
             isError: false,

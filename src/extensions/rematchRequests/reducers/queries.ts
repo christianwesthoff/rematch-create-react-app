@@ -23,13 +23,13 @@ export type State = {
 const initialState = {};
 
 const getStateKeys = (queries: State): string[] => {
-  const queryKeys: string[] = [];
+  const requestKeys: string[] = [];
 
-  for (const queryKey in queries) {
-    queryKeys.push(queryKey)
+  for (const requestKey in queries) {
+    requestKeys.push(requestKey)
   }
 
-  return queryKeys;
+  return requestKeys;
 };
 
 const queries = (state: State = initialState, action: Action): State => {
@@ -38,28 +38,28 @@ const queries = (state: State = initialState, action: Action): State => {
       return {};
     }
     case actionTypes.REQUEST_START: {
-      const { queryKey } = action;
+      const { requestKey } = action;
 
       return {
         ...state,
-        [queryKey]: {
+        [requestKey]: {
           isFinished: false,
           isPending: true,
           isError: false,
           isInvalid: false,
-          requestCount: state[queryKey] ? state[queryKey].requestCount + 1 : 1,
-          invalidCount: state[queryKey] ? state[queryKey].invalidCount : 0,
+          requestCount: state[requestKey] ? state[requestKey].requestCount + 1 : 1,
+          invalidCount: state[requestKey] ? state[requestKey].invalidCount : 0,
           maps: {} as Maps
         }
       };
     }
     case actionTypes.REQUEST_SUCCESS: {
-      const { queryKey } = action;
+      const { requestKey } = action;
 
       return {
         ...state,
-        [queryKey]: {
-          ...state[queryKey],
+        [requestKey]: {
+          ...state[requestKey],
           isFinished: true,
           isPending: false,
           lastUpdated: action.time,
@@ -70,12 +70,12 @@ const queries = (state: State = initialState, action: Action): State => {
       };
     }
     case actionTypes.REQUEST_FAILURE: {
-      const { queryKey } = action;
+      const { requestKey } = action;
 
       return {
         ...state,
-        [queryKey]: {
-          ...state[queryKey],
+        [requestKey]: {
+          ...state[requestKey],
           isFinished: true,
           isPending: false,
           isError: true,
@@ -88,15 +88,15 @@ const queries = (state: State = initialState, action: Action): State => {
       };
     }
     case actionTypes.CANCEL_REQUEST: {
-      const { queryKey } = action;
+      const { requestKey } = action;
 
-      if (queryKey && state[queryKey].isPending) {
-        // Make sure query is actually pending
+      if (requestKey && state[requestKey].isPending) {
+        // Make sure request is actually pending
 
         return {
           ...state,
-          [queryKey]: {
-            ...state[queryKey],
+          [requestKey]: {
+            ...state[requestKey],
             isFinished: true,
             isPending: false,
             isError: false,
@@ -109,7 +109,7 @@ const queries = (state: State = initialState, action: Action): State => {
       return state;
     }
     case actionTypes.INVALIDATE_REQUEST: {
-      const { queryPattern, queryKey } = action;
+      const { queryPattern, requestKey } = action;
 
       if (queryPattern) {
 
@@ -130,14 +130,14 @@ const queries = (state: State = initialState, action: Action): State => {
         }
 
         return newState;
-      } else if (queryKey) {
+      } else if (requestKey) {
         
-        if (state[queryKey]) {
+        if (state[requestKey]) {
           return {
             ...state,
-            [queryKey]: {
-              ...state[queryKey],
-              invalidCount: state[queryKey] ? state[queryKey].invalidCount + 1 : 1,
+            [requestKey]: {
+              ...state[requestKey],
+              invalidCount: state[requestKey] ? state[requestKey].invalidCount + 1 : 1,
               isInvalid: true,
               maps: {} as Maps
             },

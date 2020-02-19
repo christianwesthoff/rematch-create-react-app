@@ -9,8 +9,8 @@ import useConstCallback from './use-const-callback';
 import useMutationState from './use-mutation-state';
 import useMemoizedMutationConfig from './use-memoized-mutation-config';
 
-const useMutation = (
-  providedMutationConfig?: MutationConfig | undefined,
+const useMutation = <TMutationConfig extends MutationConfig>(
+  providedMutationConfig?: TMutationConfig,
 ): [MutationState, any] => {
   const reduxDispatch = useDispatch();
 
@@ -61,8 +61,8 @@ const useMutation = (
     return promise;
   });
 
-  const dispatchCancelToRedux = useConstCallback((queryKey: RequestKey) => {
-    reduxDispatch(cancelRequst(queryKey));
+  const dispatchCancelToRedux = useConstCallback((requestKey: RequestKey) => {
+    reduxDispatch(cancelRequst(requestKey));
     isPendingRef.current = false;
   });
 
@@ -83,17 +83,18 @@ const useMutation = (
       // If there is an pending request whenever the component unmounts of the query config
       // changes, cancel the pending request.
       if (isPendingRef.current) {
-        const queryKey = getRequestKey(mutationConfig);
+        const requestKey = getRequestKey(mutationConfig);
 
-        if (queryKey) {
-          dispatchCancelToRedux(queryKey);
+        if (requestKey) {
+          dispatchCancelToRedux(requestKey);
         }
       }
     };
   
   }, [dispatchCancelToRedux, dispatchRequestToRedux, mutationConfig]);
 
-  return [mutationState, mutationState.payload];
+  const { payload, ...requestProps } = mutationState;
+  return [requestProps, payload];
 };
 
 export default useMutation;

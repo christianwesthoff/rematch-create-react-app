@@ -4,26 +4,48 @@ import { State as QueriesState } from './reducers/queries';
 import { State as EntitiesState } from './reducers/entities';
 import { State as MutationsState } from './reducers/mutations';
 
+export type ExtractNormalizedStateFromQueryConfig<T> = T extends QueryConfig & {
+  transform?: (...args: any[]) => infer O
+} ? {
+  [P in keyof O]: O[P]
+} : never
+
+export type ExtractStateFromQueryConfig<T> = T extends QueryConfig & {
+    transform?: (...args: any[]) => infer O
+} ? {
+    [P in keyof O]: O[P] extends Record<any, infer T> ? Array<T> : never
+} : never
+
+export type ExtractKeyFromQueryConfig<T> = T extends QueryConfig & {
+    transform?: (...args: any[]) => infer O
+} ? {
+    [P in keyof O]: O[P] extends Record<infer T, any> ? Array<T> : never
+} : never
+
 export type MutationState = {
-  headers?: { [key: string]: any } | undefined,
-  isFinished: boolean,
-  isPending: boolean,
-  lastUpdated?: number | undefined,
-  requestCount: number,
-  status?: number | undefined,
-  payload?: any
+  headers?: ResponseHeaders | undefined;
+  isFinished: boolean;
+  isPending: boolean;
+  isError: boolean;
+  error?: any;
+  lastUpdated?: number;
+  requestCount: number;
+  status?: Status;
+  payload?: any;
 };
 
 export type QueryState = {
-  headers?: { [key: string]: any } | undefined,
-  isFinished: boolean,
-  isPending: boolean,
-  isInvalid: boolean,
-  invalidCount: number,
-  lastUpdated?: number | undefined,
-  requestCount: number,
-  status?: number | undefined,
-  maps?: Maps | undefined
+  headers?: ResponseHeaders | undefined;
+  isFinished: boolean;
+  isPending: boolean;
+  isError: boolean;
+  error?: any;
+  isInvalid: boolean;
+  invalidCount: number;
+  lastUpdated?: number;
+  requestCount: number;
+  status?: Status;
+  maps?: Maps
 };
 
 export type CredentialOption = 'include' | 'same-origin' | 'omit';
@@ -90,6 +112,7 @@ export type Entities = { [key: string]: any };
 export type Transform = (
   body?: ResponseBody | undefined,
   text?: ResponseText | undefined,
+  headers?: ResponseHeaders | undefined,
 ) => { [key: string]: any };
 
 export type Update = { [key: string]: (prevValue: any, newValue: any) => any };

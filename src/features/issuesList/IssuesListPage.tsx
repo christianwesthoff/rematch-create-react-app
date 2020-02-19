@@ -8,7 +8,7 @@ import { IssuePagination, OnPageChangeCallback } from './IssuePagination'
 import { GetIssuesPayload } from 'models/issues'
 import { GetRepoDetailsPayload } from 'models/repoDetails'
 
-import useQuery from 'extensions/rematchQuery/react/use-query'
+import useQuery from 'extensions/rematchRequests/react/use-query'
 import { getIssuesQuery } from 'queries/issues'
 
 const mapDispatch = (dispatch: RootDispatch) => ({
@@ -52,8 +52,6 @@ export const IssuesListPage = ({
     issuesByNumber,
     pageCount
   } = issues;
-
-
 
   const currentPageIssuesByNumber = currentPageIssues.map(
     issueNumber => issuesByNumber[issueNumber]
@@ -107,7 +105,10 @@ export const IssuesListPage = ({
       <div>{JSON.stringify(query)}</div>
       <br/>
       <strong>Query Data</strong>
-      <div>{JSON.stringify(entities)}</div>
+      <div>
+      {query.isFinished && !query.isError && entities.issues ? entities.issues.map(issue => (<div>
+      <div><strong>{issue.id} </strong><span>{issue.body}</span></div>
+      </div>)) : query.isPending ? <strong>Loading...</strong> : query.isError ? <strong>{JSON.stringify(query.error)}</strong> : <></>}</div>
       <IssuesPageHeader
         openIssuesCount={openIssueCount}
         org={org}

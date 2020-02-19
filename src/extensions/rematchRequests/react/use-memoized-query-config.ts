@@ -15,13 +15,13 @@ const useMemoizedQueryConfig = (
   const [queryConfig, setQueryConfig] = React.useState(
     providedQueryConfig ? transform(providedQueryConfig) : undefined,
   );
-  const previousQueryKey = React.useRef(getRequestKey(providedQueryConfig));
+  const previousrequestKey = React.useRef(getRequestKey(providedQueryConfig));
 
   React.useEffect(() => {
-    const queryKey = getRequestKey(providedQueryConfig);
+    const requestKey = getRequestKey(providedQueryConfig);
 
-    if (queryKey !== previousQueryKey.current) {
-      previousQueryKey.current = queryKey;
+    if (requestKey !== previousrequestKey.current) {
+      previousrequestKey.current = requestKey;
       setQueryConfig(providedQueryConfig ? transform(providedQueryConfig) : undefined);
     }
   }, [providedQueryConfig, transform]);

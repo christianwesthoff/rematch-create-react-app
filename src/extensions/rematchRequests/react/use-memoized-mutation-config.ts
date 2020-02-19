@@ -15,13 +15,13 @@ const useMemoizedMutationConfig = (
   const [queryConfig, setQueryConfig] = React.useState(
     providedMutationConfig ? transform(providedMutationConfig) : undefined,
   );
-  const previousQueryKey = React.useRef(getRequestKey(providedMutationConfig));
+  const previousrequestKey = React.useRef(getRequestKey(providedMutationConfig));
 
   React.useEffect(() => {
-    const queryKey = getRequestKey(providedMutationConfig);
+    const requestKey = getRequestKey(providedMutationConfig);
 
-    if (queryKey !== previousQueryKey.current) {
-      previousQueryKey.current = queryKey;
+    if (requestKey !== previousrequestKey.current) {
+      previousrequestKey.current = requestKey;
       setQueryConfig(providedMutationConfig ? transform(providedMutationConfig) : undefined);
     }
   }, [providedMutationConfig, transform]);

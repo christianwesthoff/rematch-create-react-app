@@ -2,7 +2,7 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 import { requestAsync, cancelRequst } from '../actions';
 import { getRequestKey } from '../lib/request-key';
-import { QueryConfig, RequestKey } from '../types';
+import { QueryConfig, RequestKey, ExtractStateFromQueryConfig } from '../types';
 
 import useConstCallback from './use-const-callback';
 import useMemoizedQueryConfig from './use-memoized-query-config';
@@ -11,9 +11,9 @@ import useQueryState from './use-query-state';
 import { QueryState } from '../types';
 import useEntityState from './use-entity-state';
 
-const useQuery = (
-  providedQueryConfig?: QueryConfig | undefined,
-): [QueryState, any] => {
+const useQuery = <TQueryConfig extends QueryConfig>(
+  providedQueryConfig?: TQueryConfig,
+): [QueryState, ExtractStateFromQueryConfig<TQueryConfig>] => {
   const reduxDispatch = useDispatch();
 
   // This hook manually tracks the pending state, which is synchronized as precisely as possible
@@ -63,8 +63,8 @@ const useQuery = (
     return promise;
   });
 
-  const dispatchCancelToRedux = useConstCallback((queryKey: RequestKey) => {
-    reduxDispatch(cancelRequst(queryKey));
+  const dispatchCancelToRedux = useConstCallback((requestKey: RequestKey) => {
+    reduxDispatch(cancelRequst(requestKey));
     isPendingRef.current = false;
   });
 
@@ -88,10 +88,10 @@ const useQuery = (
       // If there is an pending request whenever the component unmounts of the query config
       // changes, cancel the pending request.
       if (isPendingRef.current) {
-        const queryKey = getRequestKey(queryConfig);
+        const requestKey = getRequestKey(queryConfig);
 
-        if (queryKey) {
-          dispatchCancelToRedux(queryKey);
+        if (requestKey) {
+          dispatchCancelToRedux(requestKey);
         }
       }
     };
@@ -100,7 +100,7 @@ const useQuery = (
 
   const entities = useEntityState(queryState);
 
-  return [queryState, entities];
+  return [queryState, entities as ExtractStateFromQueryConfig<TQueryConfig>];
 };
 
 export default useQuery;

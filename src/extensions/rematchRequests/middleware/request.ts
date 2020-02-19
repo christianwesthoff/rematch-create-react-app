@@ -61,25 +61,25 @@ const defaultConfig: RequestConfig = {
   ],
 };
 
-const getQueryKeys = (queries: QueriesState): RequestKey[] => {
-  const queryKeys: RequestKey[] = [];
+const getrequestKeys = (queries: QueriesState): RequestKey[] => {
+  const requestKeys: RequestKey[] = [];
 
-  for (const queryKey in queries) {
-    queryKeys.push(queryKey)
+  for (const requestKey in queries) {
+    requestKeys.push(requestKey)
   }
 
-  return queryKeys;
+  return requestKeys;
 };
 
 const getPendingMutations = (mutations: MutationsState): MutationsState => {
   const pendingMutations: MutationsState = {};
 
-  for (const queryKey in mutations) {
-    if (mutations.hasOwnProperty(queryKey)) {
-      const mutation = mutations[queryKey];
+  for (const requestKey in mutations) {
+    if (mutations.hasOwnProperty(requestKey)) {
+      const mutation = mutations[requestKey];
 
       if (mutation.isPending) {
-        pendingMutations[queryKey] = mutation;
+        pendingMutations[requestKey] = mutation;
       }
     }
   }
@@ -90,12 +90,12 @@ const getPendingMutations = (mutations: MutationsState): MutationsState => {
 const getPendingQueries = (queries: QueriesState): QueriesState => {
   const pendingQueries: QueriesState = {};
 
-  for (const queryKey in queries) {
-    if (queries.hasOwnProperty(queryKey)) {
-      const query = queries[queryKey];
+  for (const requestKey in queries) {
+    if (queries.hasOwnProperty(requestKey)) {
+      const query = queries[requestKey];
 
       if (query.isPending) {
-        pendingQueries[queryKey] = query;
+        pendingQueries[requestKey] = query;
       }
     }
   }
@@ -136,14 +136,14 @@ const queryMiddleware = (
   customConfig?: RequestConfig | undefined
 ) => {
 
-  const networkHandlersByQueryKey: { [key: string]: NetworkHandler } = {};
+  const networkHandlersByrequestKey: { [key: string]: NetworkHandler } = {};
 
-  const abortQuery = (queryKey: string) => {
-    const networkHandler = networkHandlersByQueryKey[queryKey];
+  const abortQuery = (requestKey: string) => {
+    const networkHandler = networkHandlersByrequestKey[requestKey];
 
     if (networkHandler) {
       networkHandler.abort();
-      delete networkHandlersByQueryKey[queryKey];
+      delete networkHandlersByrequestKey[requestKey];
     }
   };
 
@@ -166,20 +166,20 @@ const queryMiddleware = (
           throw new Error('Missing required url field for request');
         }
 
-        const queryKey = getRequestKey({
+        const requestKey = getRequestKey({
           body: action.body,
           requestKey: action.requestKey,
           url: action.url,
         });
 
-        if (!queryKey) {
-          throw new Error('Failed to generate queryKey for request');
+        if (!requestKey) {
+          throw new Error('Failed to generate requestKey for request');
         }
 
         const state = getState();
         const mutations = mutationsSelector(state);
 
-        const mutationsState = mutations[queryKey];
+        const mutationsState = mutations[requestKey];
         const isPending = idx(mutationsState, (_: any) => _.isPending);
         const payload = idx(mutationsState, (_: any) => _.payload);
 
@@ -202,13 +202,13 @@ const queryMiddleware = (
                 credentials: options.credentials,
               });
 
-              networkHandlersByQueryKey[queryKey] = networkHandler;
+              networkHandlersByrequestKey[requestKey] = networkHandler;
 
               dispatch(
                 mutateStart({
                   body,
                   meta,
-                  queryKey,
+                  requestKey,
                   url,
                 }),
               );
@@ -237,7 +237,7 @@ const queryMiddleware = (
                       body,
                       duration,
                       meta,
-                      queryKey,
+                      requestKey,
                       responseBody,
                       responseHeaders,
                       status,
@@ -259,7 +259,7 @@ const queryMiddleware = (
                       body,
                       duration,
                       meta,
-                      queryKey,
+                      requestKey,
                       responseBody,
                       responseHeaders,
                       status,
@@ -293,7 +293,7 @@ const queryMiddleware = (
                   });
                 }
 
-                delete networkHandlersByQueryKey[queryKey];
+                delete networkHandlersByrequestKey[requestKey];
               });
             };
 
@@ -320,20 +320,20 @@ const queryMiddleware = (
           throw new Error('Missing required url field for request');
         }
 
-        const queryKey = getRequestKey({
+        const requestKey = getRequestKey({
           body: action.body,
           requestKey: action.requestKey,
           url: action.url,
         });
 
-        if (!queryKey) {
-          throw new Error('Failed to generate queryKey for request');
+        if (!requestKey) {
+          throw new Error('Failed to generate requestKey for request');
         }
 
         const state = getState();
         const queries = queriesSelector(state);
 
-        const queriesState = queries[queryKey];
+        const queriesState = queries[requestKey];
         const isPending = idx(queriesState, (_: any) => _.isPending);
         const isInvalid = idx(queriesState, (_: any) => _.isInvalid);
         const status = idx(queriesState, (_: any) => _.status);
@@ -358,13 +358,13 @@ const queryMiddleware = (
                 credentials: options.credentials,
               });
 
-              networkHandlersByQueryKey[queryKey] = networkHandler;
+              networkHandlersByrequestKey[requestKey] = networkHandler;
 
               dispatch(
                 requestStart({
                   body,
                   meta,
-                  queryKey,
+                  requestKey,
                   url,
                 }),
               );
@@ -396,7 +396,7 @@ const queryMiddleware = (
                       body,
                       duration,
                       meta,
-                      queryKey,
+                      requestKey,
                       responseBody,
                       responseHeaders,
                       status,
@@ -415,7 +415,7 @@ const queryMiddleware = (
                 } else {
                   const callbackState = getState();
                   const entities = entitiesSelector(callbackState);
-                  transformed = transform(responseBody, responseText);
+                  transformed = transform(responseBody, responseText, responseHeaders);
                   newEntities = updateEntities(update || updateFromTransform(transformed), entities, transformed);
                   maps = updateMaps(map || mapFromTransform(transformed), transformed);
                   dispatch(
@@ -424,7 +424,7 @@ const queryMiddleware = (
                       duration,
                       meta,
                       entities: newEntities,
-                      queryKey,
+                      requestKey,
                       responseBody,
                       responseHeaders,
                       status,
@@ -445,7 +445,7 @@ const queryMiddleware = (
                   });
                 }
 
-                delete networkHandlersByQueryKey[queryKey];
+                delete networkHandlersByrequestKey[requestKey];
               });
             };
 
@@ -456,54 +456,54 @@ const queryMiddleware = (
         break;
       }
       case actionTypes.CANCEL_MUTATION: {
-        const { queryKey } = action;
+        const { requestKey } = action;
 
-        if (!queryKey) {
-          throw new Error('Missing required queryKey field');
+        if (!requestKey) {
+          throw new Error('Missing required requestKey field');
         }
 
         const state = getState();
         const queries = mutationsSelector(state);
         const pendingMutations= getPendingMutations(queries);
 
-        if (queryKey in pendingMutations) {
-          abortQuery(queryKey);
+        if (requestKey in pendingMutations) {
+          abortQuery(requestKey);
           returnValue = next(action);
         } else {
           // eslint-disable-next-line
-          console.warn('Trying to cancel a request that is not in flight: ', queryKey);
+          console.warn('Trying to cancel a request that is not in flight: ', requestKey);
           returnValue = null;
         }
 
         break;
       }
       case actionTypes.CANCEL_REQUEST: {
-        const { queryKey } = action;
+        const { requestKey } = action;
 
-        if (!queryKey) {
-          throw new Error('Missing required queryKey field');
+        if (!requestKey) {
+          throw new Error('Missing required requestKey field');
         }
 
         const state = getState();
         const queries = queriesSelector(state);
         const pendingQueries = getPendingQueries(queries);
 
-        if (queryKey in pendingQueries) {
-          abortQuery(queryKey);
+        if (requestKey in pendingQueries) {
+          abortQuery(requestKey);
           returnValue = next(action);
         } else {
           // eslint-disable-next-line
-          console.warn('Trying to cancel a request that is not in flight: ', queryKey);
+          console.warn('Trying to cancel a request that is not in flight: ', requestKey);
           returnValue = null;
         }
 
         break;
       }
       case actionTypes.INVALIDATE_REQUEST: {
-        const { queryPattern, queryKey } = action;
+        const { queryPattern, requestKey } = action;
 
-        if (!queryPattern && !queryKey) {
-          throw new Error('Missing required queryPattern or queryKey field');
+        if (!queryPattern && !requestKey) {
+          throw new Error('Missing required queryPattern or requestKey field');
         }
 
         const state = getState();
@@ -511,17 +511,17 @@ const queryMiddleware = (
         const pendingQueries = getPendingQueries(queries);
 
         if (queryPattern) {
-          const queryKeys = getQueryKeys(queries);
-          const filtered = wildcardFilter(queryKeys, queryPattern);
+          const requestKeys = getrequestKeys(queries);
+          const filtered = wildcardFilter(requestKeys, queryPattern);
           for(let index in filtered) {
               const key = filtered[index];
               if (key in pendingQueries) {
                 abortQuery(key);
               }
           }
-        } else if (queryKey) {
-          if (queryKey in pendingQueries) {
-            abortQuery(queryKey);
+        } else if (requestKey) {
+          if (requestKey in pendingQueries) {
+            abortQuery(requestKey);
           }
         }
 
@@ -533,9 +533,9 @@ const queryMiddleware = (
         const queries = queriesSelector(state);
         const pendingQueries = getPendingQueries(queries);
 
-        for (const queryKey in pendingQueries) {
-          if (pendingQueries.hasOwnProperty(queryKey)) {
-            abortQuery(queryKey);
+        for (const requestKey in pendingQueries) {
+          if (pendingQueries.hasOwnProperty(requestKey)) {
+            abortQuery(requestKey);
           }
         }
 
