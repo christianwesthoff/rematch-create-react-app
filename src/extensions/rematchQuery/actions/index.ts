@@ -15,6 +15,7 @@ import {
   Url,
   QueryPattern,
   Maps,
+  QueryUrl,
 } from '../types';
 
 type RequestStartParams = {
@@ -174,6 +175,7 @@ type InvalidateQueryAction = {
   type: '@@query/INVALIDATE_QUERY';
   queryPattern?: QueryPattern | undefined;
   queryKey?: QueryKey | undefined;
+  queryUrl?: QueryUrl | undefined;
 };
 
 export const invalidateQueryConfig = (queryKey: QueryKey): InvalidateQueryAction => {
@@ -187,6 +189,13 @@ export const invalidateQueryPattern = (queryPattern: QueryPattern): InvalidateQu
   return {
     type: actionTypes.INVALIDATE_QUERY,
     queryPattern,
+  };
+};
+
+export const invalidateQueryUrl = (queryUrl: QueryUrl): InvalidateQueryAction => {
+  return {
+    type: actionTypes.INVALIDATE_QUERY,
+    queryUrl,
   };
 };
 

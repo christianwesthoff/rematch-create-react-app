@@ -261,10 +261,10 @@ const queryMiddleware = (
         break;
       }
       case actionTypes.INVALIDATE_QUERY: {
-        const { queryPattern, queryKey } = action;
+        const { queryPattern, queryKey, queryUrl } = action;
 
-        if (!queryPattern && !queryKey) {
-          throw new Error('Missing required queryPattern or queryKey field');
+        if (!queryPattern && !queryKey && !queryUrl) {
+          throw new Error('Missing required "queryPattern" or "queryKey" or "queryUrl" field');
         }
 
         const state = getState();
@@ -275,15 +275,24 @@ const queryMiddleware = (
           const queryKeys = getQueryKeys(queries);
           const filtered = wildcardFilter(queryKeys, queryPattern);
           for(let index in filtered) {
-              const elem = filtered[index];
-              if (elem in pendingQueries) {
-                abortQuery(queryPattern);
+              const key = filtered[index];
+              if (key in pendingQueries) {
+                abortQuery(key);
               }
           }
         } else if (queryKey) {
           if (queryKey in pendingQueries) {
             abortQuery(queryKey);
           }
+        } else if (queryUrl) {
+          const queryKeys = getQueryKeys(queries);
+          const filtered = queryKeys.filter(key => key.includes(`"url":"${queryUrl}"`));
+          for(let index in filtered) {
+            const key = filtered[index];
+            if (key in pendingQueries) {
+              abortQuery(key);
+            }
+        }
         }
 
         returnValue = next(action);
@@ -293,7 +302,7 @@ const queryMiddleware = (
         const { queryKey } = action;
 
         if (!queryKey) {
-          throw new Error('Missing required queryKey field');
+          throw new Error('Missing required "queryKey" field');
         }
 
         const state = getState();

@@ -101,7 +101,7 @@ const queries = (state: State = initialState, action: Action): State => {
       return state;
     }
     case actionTypes.INVALIDATE_QUERY: {
-      const { queryPattern, queryKey } = action;
+      const { queryPattern, queryKey, queryUrl } = action;
 
       if (queryPattern) {
 
@@ -109,12 +109,12 @@ const queries = (state: State = initialState, action: Action): State => {
         let newState = { ...state };
         const filtered = wildcardFilter(stateKeys, queryPattern);
         for(let index in filtered) {
-          let current = filtered[index];
+          let key = filtered[index];
           newState = { 
             ...newState, 
-            [current]: {
-              ...state[current],
-              invalidCount: state[current] ? state[current].invalidCount + 1 : 1,
+            [key]: {
+              ...state[key],
+              invalidCount: state[key] ? state[key].invalidCount + 1 : 1,
               isInvalid: true,
               maps: {} as Maps
             } 
@@ -122,17 +122,20 @@ const queries = (state: State = initialState, action: Action): State => {
         }
 
         return newState;
-      } else if (queryKey && state[queryKey]) {
+      } else if (queryKey) {
+        if (state[queryKey]) {
+          return {
+            ...state,
+            [queryKey]: {
+              ...state[queryKey],
+              invalidCount: state[queryKey] ? state[queryKey].invalidCount + 1 : 1,
+              isInvalid: true,
+              maps: {} as Maps
+            },
+          };
+        }
+      } else if (queryUrl) {
 
-        return {
-          ...state,
-          [queryKey]: {
-            ...state[queryKey],
-            invalidCount: state[queryKey] ? state[queryKey].invalidCount + 1 : 1,
-            isInvalid: true,
-            maps: {} as Maps
-          },
-        };
       }
 
       return state;

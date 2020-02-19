@@ -32,9 +32,7 @@ export type QueryConfig = {
   transform?: Transform;
   update?: Update;
   map?: Map;
-  optimisticUpdate?: OptimisticUpdate;
   retry?: boolean;
-  rollback?: { [key: string]: (initialValue: any, currentValue: any) => any };
   unstable_preDispatchCallback?: () => void | undefined;
   url: Url;
 };
@@ -46,6 +44,8 @@ export type RequestBody = any;
 export type RequestHeaders = { [key: string]: any };
 
 export type Meta = { [key: string]: any };
+
+export type QueryUrl = string;
 
 export type QueryKey = string;
 

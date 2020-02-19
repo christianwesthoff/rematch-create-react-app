@@ -5,7 +5,7 @@ import { QueryState } from '../types';
 import { QueryConfig } from '../types';
 import Config from '../config'
 
-const useQueryState = (queryConfig?: QueryConfig | undefined): QueryState | undefined=> {
+const useQueryState = (queryConfig?: QueryConfig | undefined): QueryState => {
 
   const { queriesSelector } = Config;
 

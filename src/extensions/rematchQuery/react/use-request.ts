@@ -13,7 +13,7 @@ import useEntityState from './use-entity-state';
 
 const useRequest = (
   providedQueryConfig?: QueryConfig | undefined,
-): [QueryState | undefined, any] => {
+): [QueryState, any] => {
   const reduxDispatch = useDispatch();
 
   // This hook manually tracks the pending state, which is synchronized as precisely as possible
@@ -76,7 +76,7 @@ const useRequest = (
   // If invalidate count changes trigger effect
   const invalidCount = queryState ? queryState.invalidCount : 0;
 
-  const entities = useEntityState(queryState, queryConfig);
+  const entities = useEntityState(queryState);
 
   React.useEffect(() => {
     // Dispatch `requestAsync` actions whenever the query config (note: memoized based on query
