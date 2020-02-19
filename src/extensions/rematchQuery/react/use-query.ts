@@ -11,7 +11,7 @@ import useQueryState from './use-query-state';
 import { QueryState } from '../types';
 import useEntityState from './use-entity-state';
 
-const useRequest = (
+const useQuery = (
   providedQueryConfig?: QueryConfig | undefined,
 ): [QueryState, any] => {
   const reduxDispatch = useDispatch();
@@ -103,4 +103,4 @@ const useRequest = (
   return [queryState, entities];
 };
 
-export default useRequest;
+export default useQuery;
