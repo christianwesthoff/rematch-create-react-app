@@ -109,9 +109,9 @@ const defaultTransform: Transform = (body?: ResponseBody | undefined) => body ||
 
 const queryMiddleware = (
   networkInterface: NetworkInterface,
-  mutationsSelector: MutationsSelector,
   queriesSelector: QueriesSelector,
   entitiesSelector: EntitiesSelector,
+  mutationsSelector: MutationsSelector,
   additionalHeadersSelector?: AdditionalHeadersSelector | undefined,
   customConfig?: RequestConfig | undefined
 ) => {
