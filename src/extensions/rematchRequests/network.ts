@@ -44,22 +44,22 @@ const axiosInterface: NetworkInterface = (
     const request = buildRequest(instance, url, method, body);
 
     const execute = (cb: any) =>
-    request.then(function (response) {
-        const resStatus = (response && response.status) || 0;
-        const resBody = (response && response.data) || undefined;
-        const resHeaders = (response && response.headers) || undefined;
-        cb(undefined, resStatus, resBody, undefined, resHeaders);
-      })
-      .catch(function (error) {
-        if (error.response) {
-          cb(error, error.response.status, error.response.data, undefined, error.response.headers);
-        } else {
-          cb(error);
-        }
-      })
-      .then(function () {
-        // always executed
-      });
+      request.then(function (response) {
+          const resStatus = (response && response.status) || 0;
+          const resBody = (response && response.data) || undefined;
+          const resHeaders = (response && response.headers) || undefined;
+          cb(undefined, resStatus, resBody, undefined, resHeaders);
+        })
+        .catch(function (error) {
+          if (error.response) {
+            cb(error, error.response.status, error.response.data, undefined, error.response.headers);
+          } else {
+            cb(error);
+          }
+        })
+        .then(function () {
+          // always executed
+        });
 
     const abort = () => cancel();
 

@@ -4,7 +4,7 @@ import * as models from 'models'
 import immerPlugin from '@rematch/immer'
 import selectPlugin from '@rematch/select'
 import queryPlugin from 'extensions/rematchRequests'
-import networkInterface from 'extensions/rematchRequests/networkInterface'
+import networkInterface from 'extensions/rematchRequests/network'
 
 export const store = init({
 	models,
