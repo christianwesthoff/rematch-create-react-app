@@ -30,7 +30,9 @@ import {
   RequestKey,
   AdditionalHeadersSelector,
   RequestConfig,
-  MutationsSelector
+  MutationsSelector,
+  Update,
+  Map
 } from '../types';
 import { State as QueriesState } from '../reducers/queries';
 import { State as MutationsState } from '../reducers/mutations';
@@ -106,6 +108,24 @@ const isStatusOk = (status?: Status | undefined): boolean => {
 };
 
 const defaultTransform: Transform = (body?: ResponseBody | undefined) => body || {};
+
+const updateFromTransform = (transform: any): Update => {
+  return Object.keys(transform).reduce((accum: any, key: string) => {
+    accum[key] = (prevValue: any, newValue: any) => {
+      return {...prevValue || {}, ...newValue }; 
+    } 
+    return accum;
+  }, {}) as Update;
+}
+
+const mapFromTransform = (transform: any): Map => {
+  return Object.keys(transform).reduce((accum: any, key: string) => {
+    accum[key] = (values: any) => {
+      return Object.keys(values); 
+    } 
+    return accum;
+  }, {}) as Map;
+}
 
 const queryMiddleware = (
   networkInterface: NetworkInterface,
@@ -396,8 +416,8 @@ const queryMiddleware = (
                   const callbackState = getState();
                   const entities = entitiesSelector(callbackState);
                   transformed = transform(responseBody, responseText);
-                  newEntities = updateEntities(update, entities, transformed);
-                  maps = updateMaps(map, transformed);
+                  newEntities = updateEntities(update || updateFromTransform(transformed), entities, transformed);
+                  maps = updateMaps(map || mapFromTransform(transformed), transformed);
                   dispatch(
                     requestSuccess({
                       body,

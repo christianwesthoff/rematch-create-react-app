@@ -9,20 +9,10 @@ export const getIssuesQuery = (
       return {
         url: `https://api.github.com/repos/${org}/${repo}/issues?per_page=25&page=${page}`,
         transform: (response: Issue[]) => {
-            const issues = asRecord(response, t => t.id);
-            return {
-              issues,
-            };
-          },
-        update: {
-            issues: (oldValue: Record<number, Issue>, newValue: Record<number, Issue>) => {
-              return {...oldValue || {}, ...newValue };
-            },
-        },
-        map: {
-            issues: (value: Record<number, Issue>) => {
-              return Object.keys(value);
-            }
+          const issues = asRecord(response, t => t.id);
+          return {
+            issues,
+          };
         }
     }
   };
