@@ -9,7 +9,7 @@ export type MutationState = {
   isFinished: boolean,
   isPending: boolean,
   lastUpdated?: number | undefined,
-  queryCount: number,
+  requestCount: number,
   status?: number | undefined,
   payload?: any
 };
@@ -21,7 +21,7 @@ export type QueryState = {
   isInvalid: boolean,
   invalidCount: number,
   lastUpdated?: number | undefined,
-  queryCount: number,
+  requestCount: number,
   status?: number | undefined,
   maps?: Maps | undefined
 };

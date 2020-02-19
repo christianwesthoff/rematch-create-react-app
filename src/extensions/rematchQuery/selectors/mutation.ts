@@ -2,10 +2,10 @@ import idx from 'idx';
 
 import { State as QueriesState } from '../reducers/queries';
 import { getQueryKey } from '../lib/query-key';
-import { QueryConfig, Maps } from '../types';
+import { QueryConfig, Maps, MutationState } from '../types';
 
 export const isFinished = (
-  queriesState: QueriesState,
+  queriesState: MutationState,
   queryConfig?: QueryConfig | undefined,
 ): boolean => {
   const queryKey = getQueryKey(queryConfig);
@@ -18,7 +18,7 @@ export const isFinished = (
 };
 
 export const isInvalid = (
-  queriesState: QueriesState,
+  queriesState: MutationState,
   queryConfig?: QueryConfig | undefined,
 ): boolean => {
   const queryKey = getQueryKey(queryConfig);
@@ -31,7 +31,7 @@ export const isInvalid = (
 };
 
 export const error = (
-  queriesState: QueriesState,
+  queriesState: MutationState,
   queryConfig?: QueryConfig | undefined,
 ): any => {
   const queryKey = getQueryKey(queryConfig);
@@ -44,7 +44,7 @@ export const error = (
 };
 
 export const isError = (
-  queriesState: QueriesState,
+  queriesState: MutationState,
   queryConfig?: QueryConfig | undefined,
 ): boolean => {
   const queryKey = getQueryKey(queryConfig);
@@ -56,21 +56,8 @@ export const isError = (
   return idx(queriesState, (_: any) => _[queryKey].isError) || false;
 };
 
-export const maps = (
-  queriesState: QueriesState,
-  queryConfig?: QueryConfig | undefined,
-): Maps | undefined => {
-  const queryKey = getQueryKey(queryConfig);
-
-  if (!queryKey) {
-    return undefined;
-  }
-
-  return idx(queriesState, (_: any) => _[queryKey].maps) || false;
-};
-
 export const isPending = (
-  queriesState: QueriesState,
+  queriesState: MutationState,
   queryConfig?: QueryConfig | undefined,
 ): boolean => {
   const queryKey = getQueryKey(queryConfig);
@@ -83,7 +70,7 @@ export const isPending = (
 };
 
 export const status = (
-  queriesState: QueriesState,
+  queriesState: MutationState,
   queryConfig?: QueryConfig | undefined,
 ): number | undefined => {
   const queryKey = getQueryKey(queryConfig);
@@ -96,7 +83,7 @@ export const status = (
 };
 
 export const headers = (
-  queriesState: QueriesState,
+  queriesState: MutationState,
   queryConfig?: QueryConfig | undefined,
 ): { [key: string]: any } | undefined => {
   const queryKey = getQueryKey(queryConfig);
@@ -109,7 +96,7 @@ export const headers = (
 };
 
 export const lastUpdated = (
-  queriesState: QueriesState,
+  queriesState: MutationState,
   queryConfig?: QueryConfig | undefined,
 ): number | undefined => {
   const queryKey = getQueryKey(queryConfig);
@@ -121,8 +108,21 @@ export const lastUpdated = (
   return idx(queriesState, (_: any) => _[queryKey].lastUpdated);
 };
 
+export const payload = (
+  queriesState: MutationState,
+  queryConfig?: QueryConfig | undefined,
+): any => {
+  const queryKey = getQueryKey(queryConfig);
+
+  if (!queryKey) {
+    return undefined;
+  }
+
+  return idx(queriesState, (_: any) => _[queryKey].payload);
+};
+
 export const requestCount = (
-  queriesState: QueriesState,
+  queriesState: MutationState,
   queryConfig?: QueryConfig | undefined,
 ): number => {
   const queryKey = getQueryKey(queryConfig);
@@ -132,17 +132,4 @@ export const requestCount = (
   }
 
   return idx(queriesState, (_: any) => _[queryKey].requestCount) || 0;
-};
-
-export const invalidCount = (
-  queriesState: QueriesState,
-  queryConfig?: QueryConfig | undefined,
-): number => {
-  const queryKey = getQueryKey(queryConfig);
-
-  if (!queryKey) {
-    return 0;
-  }
-
-  return idx(queriesState, (_: any) => _[queryKey].invalidCount) || 0;
 };

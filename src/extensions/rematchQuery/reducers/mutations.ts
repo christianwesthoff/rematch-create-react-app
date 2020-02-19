@@ -11,7 +11,7 @@ export type State = {
     isError: boolean;
     error?: any;
     lastUpdated?: number;
-    queryCount: number;
+    requestCount: number;
     status?: Status;
     payload?: any;
   };
@@ -34,7 +34,7 @@ const queries = (state: State = initialState, action: Action): State => {
           isPending: true,
           isError: false,
           payload: action.body,
-          queryCount: state[queryKey] ? state[queryKey].queryCount + 1 : 1
+          requestCount: state[queryKey] ? state[queryKey].requestCount + 1 : 1
         }
       };
     }

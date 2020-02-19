@@ -37,8 +37,8 @@ const useQueryState = (queryConfig?: QueryConfig | undefined): QueryState => {
     querySelectors.lastUpdated(queriesSelector(state), queryConfig)
   );
 
-  const queryCount = useSelector(state =>
-    querySelectors.queryCount(queriesSelector(state), queryConfig)
+  const requestCount = useSelector(state =>
+    querySelectors.requestCount(queriesSelector(state), queryConfig)
   );
 
   const invalidCount = useSelector(state =>
@@ -64,11 +64,11 @@ const useQueryState = (queryConfig?: QueryConfig | undefined): QueryState => {
       status,
       headers,
       lastUpdated,
-      queryCount,
+      requestCount,
       maps,
       error
     }),
-    [headers, maps, isFinished, isPending, isInvalid, isError, lastUpdated, queryCount, status, invalidCount, error],
+    [headers, maps, isFinished, isPending, isInvalid, isError, lastUpdated, requestCount, status, invalidCount, error],
   );
 
   return queryState;

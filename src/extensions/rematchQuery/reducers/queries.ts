@@ -14,7 +14,7 @@ export type State = {
     isInvalid: boolean;
     invalidCount: number;
     lastUpdated?: number;
-    queryCount: number;
+    requestCount: number;
     status?: Status;
     maps?: Maps
   };
@@ -47,7 +47,7 @@ const queries = (state: State = initialState, action: Action): State => {
           isPending: true,
           isError: false,
           isInvalid: false,
-          queryCount: state[queryKey] ? state[queryKey].queryCount + 1 : 1,
+          requestCount: state[queryKey] ? state[queryKey].requestCount + 1 : 1,
           invalidCount: state[queryKey] ? state[queryKey].invalidCount : 0,
           maps: {} as Maps
         }
