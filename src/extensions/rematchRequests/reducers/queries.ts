@@ -124,7 +124,7 @@ const queries = (state: State = initialState, action: Action): State => {
               ...state[key],
               invalidCount: state[key] ? state[key].invalidCount + 1 : 1,
               isInvalid: true,
-              maps: undefined
+              maps: {}
             } 
           }
         }
@@ -139,7 +139,7 @@ const queries = (state: State = initialState, action: Action): State => {
               ...state[requestKey],
               invalidCount: state[requestKey] ? state[requestKey].invalidCount + 1 : 1,
               isInvalid: true,
-              maps: undefined
+              maps: {}
             },
           };
         }

@@ -1,5 +1,5 @@
 import Config from '../config'
-import { QueryState, Entities } from '../types';
+import { QueryState, Entities, QueryConfig } from '../types';
 import { useSelector } from 'react-redux';
 import React from 'react';
 import { getEntitiesFromQuery } from '../selectors/entities'
