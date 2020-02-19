@@ -7,46 +7,46 @@ import Config from '../config'
 
 const useMutationState = (queryConfig?: QueryConfig | undefined): MutationState => {
 
-  const { mutationSelector } = Config;
+  const { mutationsSelector } = Config;
 
   const isPending = useSelector(state =>
-    mutationSelectors.isPending(mutationSelector(state), queryConfig),
+    mutationSelectors.isPending(mutationsSelector(state), queryConfig),
   );
 
   const isFinished = useSelector(state =>
-    mutationSelectors.isFinished(mutationSelector(state), queryConfig),
+    mutationSelectors.isFinished(mutationsSelector(state), queryConfig),
   );
 
   const isInvalid = useSelector(state =>
-    mutationSelectors.isInvalid(mutationSelector(state), queryConfig),
+    mutationSelectors.isInvalid(mutationsSelector(state), queryConfig),
   );
 
   const status = useSelector(state => 
-    mutationSelectors.status(mutationSelector(state), queryConfig)
+    mutationSelectors.status(mutationsSelector(state), queryConfig)
   );
 
   const headers = useSelector(state => 
-    mutationSelectors.headers(mutationSelector(state), queryConfig)
+    mutationSelectors.headers(mutationsSelector(state), queryConfig)
   );
 
   const lastUpdated = useSelector(state =>
-    mutationSelectors.lastUpdated(mutationSelector(state), queryConfig)
+    mutationSelectors.lastUpdated(mutationsSelector(state), queryConfig)
   );
 
   const requestCount = useSelector(state =>
-    mutationSelectors.requestCount(mutationSelector(state), queryConfig)
+    mutationSelectors.requestCount(mutationsSelector(state), queryConfig)
   );
 
   const isError = useSelector(state =>
-    mutationSelectors.isError(mutationSelector(state), queryConfig)
+    mutationSelectors.isError(mutationsSelector(state), queryConfig)
   );
 
   const error = useSelector(state =>
-    mutationSelectors.error(mutationSelector(state), queryConfig)
+    mutationSelectors.error(mutationsSelector(state), queryConfig)
   );
 
   const payload = useSelector(state =>
-    mutationSelectors.payload(mutationSelector(state), queryConfig)
+    mutationSelectors.payload(mutationsSelector(state), queryConfig)
   );
 
   const mutationState = React.useMemo(

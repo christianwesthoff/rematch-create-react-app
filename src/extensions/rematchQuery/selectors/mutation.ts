@@ -1,135 +1,135 @@
 import idx from 'idx';
 
-import { State as QueriesState } from '../reducers/queries';
-import { getQueryKey } from '../lib/query-key';
-import { QueryConfig, Maps, MutationState } from '../types';
+import { State as MutationsState } from '../reducers/mutations';
+import { getRequestKey } from '../lib/request-key';
+import { MutationConfig } from '../types';
 
 export const isFinished = (
-  queriesState: MutationState,
-  queryConfig?: QueryConfig | undefined,
+  state: MutationsState,
+  config?: MutationConfig | undefined,
 ): boolean => {
-  const queryKey = getQueryKey(queryConfig);
+  const queryKey = getRequestKey(config);
 
   if (!queryKey) {
     return false;
   }
 
-  return idx(queriesState, (_: any) => _[queryKey].isFinished) || false;
+  return idx(state, (_: any) => _[queryKey].isFinished) || false;
 };
 
 export const isInvalid = (
-  queriesState: MutationState,
-  queryConfig?: QueryConfig | undefined,
+  state: MutationsState,
+  config?: MutationConfig | undefined,
 ): boolean => {
-  const queryKey = getQueryKey(queryConfig);
+  const queryKey = getRequestKey(config);
 
   if (!queryKey) {
     return false;
   }
 
-  return idx(queriesState, (_: any) => _[queryKey].isInvalid) || false;
+  return idx(state, (_: any) => _[queryKey].isInvalid) || false;
 };
 
 export const error = (
-  queriesState: MutationState,
-  queryConfig?: QueryConfig | undefined,
+  state: MutationsState,
+  config?: MutationConfig | undefined,
 ): any => {
-  const queryKey = getQueryKey(queryConfig);
+  const queryKey = getRequestKey(config);
 
   if (!queryKey) {
     return undefined;
   }
 
-  return idx(queriesState, (_: any) => _[queryKey].error) || undefined;
+  return idx(state, (_: any) => _[queryKey].error) || undefined;
 };
 
 export const isError = (
-  queriesState: MutationState,
-  queryConfig?: QueryConfig | undefined,
+  state: MutationsState,
+  config?: MutationConfig | undefined,
 ): boolean => {
-  const queryKey = getQueryKey(queryConfig);
+  const queryKey = getRequestKey(config);
 
   if (!queryKey) {
     return false;
   }
 
-  return idx(queriesState, (_: any) => _[queryKey].isError) || false;
+  return idx(state, (_: any) => _[queryKey].isError) || false;
 };
 
 export const isPending = (
-  queriesState: MutationState,
-  queryConfig?: QueryConfig | undefined,
+  state: MutationsState,
+  config?: MutationConfig | undefined,
 ): boolean => {
-  const queryKey = getQueryKey(queryConfig);
+  const queryKey = getRequestKey(config);
 
   if (!queryKey) {
     return false;
   }
 
-  return idx(queriesState, (_: any) => _[queryKey].isPending) || false;
+  return idx(state, (_: any) => _[queryKey].isPending) || false;
 };
 
 export const status = (
-  queriesState: MutationState,
-  queryConfig?: QueryConfig | undefined,
+  state: MutationsState,
+  config?: MutationConfig | undefined,
 ): number | undefined => {
-  const queryKey = getQueryKey(queryConfig);
+  const queryKey = getRequestKey(config);
 
   if (!queryKey) {
     return undefined;
   }
 
-  return idx(queriesState, (_: any) => _[queryKey].status);
+  return idx(state, (_: any) => _[queryKey].status);
 };
 
 export const headers = (
-  queriesState: MutationState,
-  queryConfig?: QueryConfig | undefined,
+  state: MutationsState,
+  config?: MutationConfig | undefined,
 ): { [key: string]: any } | undefined => {
-  const queryKey = getQueryKey(queryConfig);
+  const queryKey = getRequestKey(config);
 
   if (!queryKey) {
     return undefined;
   }
 
-  return idx(queriesState, (_: any) => _[queryKey].headers);
+  return idx(state, (_: any) => _[queryKey].headers);
 };
 
 export const lastUpdated = (
-  queriesState: MutationState,
-  queryConfig?: QueryConfig | undefined,
+  state: MutationsState,
+  config?: MutationConfig | undefined,
 ): number | undefined => {
-  const queryKey = getQueryKey(queryConfig);
+  const queryKey = getRequestKey(config);
 
   if (!queryKey) {
     return undefined;
   }
 
-  return idx(queriesState, (_: any) => _[queryKey].lastUpdated);
+  return idx(state, (_: any) => _[queryKey].lastUpdated);
 };
 
 export const payload = (
-  queriesState: MutationState,
-  queryConfig?: QueryConfig | undefined,
+  state: MutationsState,
+  config?: MutationConfig | undefined,
 ): any => {
-  const queryKey = getQueryKey(queryConfig);
+  const queryKey = getRequestKey(config);
 
   if (!queryKey) {
     return undefined;
   }
 
-  return idx(queriesState, (_: any) => _[queryKey].payload);
+  return idx(state, (_: any) => _[queryKey].payload);
 };
 
 export const requestCount = (
-  queriesState: MutationState,
-  queryConfig?: QueryConfig | undefined,
+  state: MutationsState,
+  config?: MutationConfig | undefined,
 ): number => {
-  const queryKey = getQueryKey(queryConfig);
+  const queryKey = getRequestKey(config);
 
   if (!queryKey) {
     return 0;
   }
 
-  return idx(queriesState, (_: any) => _[queryKey].requestCount) || 0;
+  return idx(state, (_: any) => _[queryKey].requestCount) || 0;
 };

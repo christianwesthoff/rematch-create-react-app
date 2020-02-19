@@ -7,12 +7,14 @@ import {
   requestSuccess,
   mutateStart,
   mutateFailure,
-  mutateSuccess
+  mutateSuccess,
+  invalidateRequest,
+  invalidateRequestByPattern
 } from '../actions';
 import * as actionTypes from '../constants/action-types';
 import httpMethods, { HttpMethod } from '../constants/http-methods';
 import * as statusCodes from '../constants/status-codes';
-import { getQueryKey } from '../lib/query-key';
+import { getRequestKey } from '../lib/request-key';
 import { updateEntities, updateMaps } from '../lib/update';
 
 import { Action, PublicAction } from '../actions';
@@ -25,7 +27,7 @@ import {
   ResponseBody,
   Status,
   Transform,
-  QueryKey,
+  RequestKey,
   AdditionalHeadersSelector,
   RequestConfig,
   MutationsSelector
@@ -57,8 +59,8 @@ const defaultConfig: RequestConfig = {
   ],
 };
 
-const getQueryKeys = (queries: QueriesState): QueryKey[] => {
-  const queryKeys: QueryKey[] = [];
+const getQueryKeys = (queries: QueriesState): RequestKey[] => {
+  const queryKeys: RequestKey[] = [];
 
   for (const queryKey in queries) {
     queryKeys.push(queryKey)
@@ -136,15 +138,17 @@ const queryMiddleware = (
           body,
           options = {},
           meta,
+          triggerKeys,
+          triggerPatterns
         } = action;
 
         if (!url) {
           throw new Error('Missing required url field for request');
         }
 
-        const queryKey = getQueryKey({
+        const queryKey = getRequestKey({
           body: action.body,
-          queryKey: action.queryKey,
+          requestKey: action.requestKey,
           url: action.url,
         });
 
@@ -244,6 +248,22 @@ const queryMiddleware = (
                     }),
                   );
 
+                  if (triggerKeys) {
+                    for(let key in triggerKeys) {
+                      dispatch(
+                        invalidateRequest(key),
+                      );
+                    }
+                  }
+
+                  if (triggerPatterns) {
+                    for(let pattern in triggerPatterns) {
+                      dispatch(
+                        invalidateRequestByPattern(pattern),
+                      );
+                    }
+                  }
+
                   resolve({
                     body: responseBody,
                     duration,
@@ -280,9 +300,9 @@ const queryMiddleware = (
           throw new Error('Missing required url field for request');
         }
 
-        const queryKey = getQueryKey({
+        const queryKey = getRequestKey({
           body: action.body,
-          queryKey: action.queryKey,
+          requestKey: action.requestKey,
           url: action.url,
         });
 

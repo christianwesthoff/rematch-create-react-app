@@ -5,7 +5,7 @@ import {
   Entities,
   Meta,
   QueryConfig,
-  QueryKey,
+  RequestKey,
   RequestBody,
   ResponseBody,
   ResponseHeaders,
@@ -13,14 +13,15 @@ import {
   Status,
   Update,
   Url,
-  QueryPattern,
-  Maps
+  RequestPattern,
+  Maps,
+  MutationConfig
 } from '../types';
 
 type RequestStartParams = {
   body: RequestBody;
   meta?: Meta | undefined;
-  queryKey: QueryKey;
+  queryKey: RequestKey;
   url: Url;
 };
 
@@ -52,7 +53,7 @@ type RequestSuccessParams = {
   responseBody?: ResponseBody | undefined;
   responseHeaders?: ResponseHeaders | undefined;
   responseText?: ResponseText | undefined;
-  queryKey: QueryKey;
+  queryKey: RequestKey;
   status: Status;
   url: Url;
 };
@@ -99,7 +100,7 @@ type RequestFailureParams = {
   responseBody?: ResponseBody | undefined;
   responseHeaders?: ResponseHeaders | undefined;
   responseText?: ResponseText | undefined;
-  queryKey: QueryKey;
+  queryKey: RequestKey;
   status: Status;
   url: Url;
 };
@@ -144,7 +145,7 @@ export const requestAsync = ({
   force,
   meta,
   options,
-  queryKey,
+  requestKey: queryKey,
   retry,
   transform,
   update,
@@ -157,7 +158,7 @@ export const requestAsync = ({
     type: actionTypes.REQUEST_ASYNC,
     body,
     force,
-    queryKey,
+    requestKey: queryKey,
     meta,
     options,
     retry,
@@ -173,7 +174,7 @@ export const requestAsync = ({
 type MutateStartParams = {
   body: RequestBody;
   meta?: Meta | undefined;
-  queryKey: QueryKey;
+  queryKey: RequestKey;
   url: Url;
 };
 
@@ -203,7 +204,7 @@ type MutateSuccessParams = {
   responseBody?: ResponseBody | undefined;
   responseHeaders?: ResponseHeaders | undefined;
   responseText?: ResponseText | undefined;
-  queryKey: QueryKey;
+  queryKey: RequestKey;
   status: Status;
   url: Url;
 };
@@ -246,7 +247,7 @@ type MutateFailureParams = {
   responseBody?: ResponseBody | undefined;
   responseHeaders?: ResponseHeaders | undefined;
   responseText?: ResponseText | undefined;
-  queryKey: QueryKey;
+  queryKey: RequestKey;
   status: Status;
   url: Url;
 };
@@ -284,39 +285,43 @@ export const mutateFailure = ({
 
 type MutateAsyncAction = {
   type: '@@query/MUTATE_ASYNC';
-} & QueryConfig;
+} & MutationConfig;
 
 export const mutateAsync = ({
   body,
   meta,
   options,
-  queryKey,
+  requestKey: queryKey,
   url,
-}: QueryConfig): MutateAsyncAction => {
+  triggerKeys,
+  triggerPatterns
+}: MutationConfig): MutateAsyncAction => {
   return {
     type: actionTypes.MUTATE_ASYNC,
     body,
     meta,
     options,
-    queryKey,
+    requestKey: queryKey,
     url,
+    triggerKeys,
+    triggerPatterns
   };
 };
 
 type InvalidateRequestAction = {
   type: '@@query/INVALIDATE_REQUEST';
-  queryPattern?: QueryPattern | undefined;
-  queryKey?: QueryKey | undefined;
+  queryPattern?: RequestPattern | undefined;
+  queryKey?: RequestKey | undefined;
 };
 
-export const invalidateRequest = (queryKey: QueryKey): InvalidateRequestAction => {
+export const invalidateRequest = (queryKey: RequestKey): InvalidateRequestAction => {
   return {
     type: actionTypes.INVALIDATE_REQUEST,
     queryKey,
   };
 };
 
-export const invalidateRequestByPattern = (queryPattern: QueryPattern): InvalidateRequestAction => {
+export const invalidateRequestByPattern = (queryPattern: RequestPattern): InvalidateRequestAction => {
   return {
     type: actionTypes.INVALIDATE_REQUEST,
     queryPattern,
@@ -325,10 +330,10 @@ export const invalidateRequestByPattern = (queryPattern: QueryPattern): Invalida
 
 type CancelRequestAction = {
   type: '@@query/CANCEL_REQUEST';
-  queryKey?: QueryKey | undefined;
+  queryKey?: RequestKey | undefined;
 };
 
-export const cancelRequst = (queryKey: QueryKey): CancelRequestAction => {
+export const cancelRequst = (queryKey: RequestKey): CancelRequestAction => {
   return {
     type: actionTypes.CANCEL_REQUEST,
     queryKey,
@@ -337,10 +342,10 @@ export const cancelRequst = (queryKey: QueryKey): CancelRequestAction => {
 
 type CancelMutationAction = {
   type: '@@query/CANCEL_MUTATION';
-  queryKey?: QueryKey | undefined;
+  queryKey?: RequestKey | undefined;
 };
 
-export const CancelMutation = (queryKey: QueryKey): CancelMutationAction => {
+export const CancelMutation = (queryKey: RequestKey): CancelMutationAction => {
   return {
     type: actionTypes.CANCEL_MUTATION,
     queryKey,

@@ -28,18 +28,31 @@ export type QueryState = {
 
 export type CredentialOption = 'include' | 'same-origin' | 'omit';
 
-export type QueryOptions = {
+export type RequestOptions = {
   credentials?: CredentialOption;
   method?: HttpMethod;
   headers?: { [key: string]: any };
+};
+
+export type MutationConfig = {
+  body?: RequestBody;
+  force?: boolean;
+  meta?: Meta;
+  options?: RequestOptions;
+  requestKey?: RequestKey;
+  retry?: boolean;
+  unstable_preDispatchCallback?: () => void | undefined;
+  url: Url;
+  triggerKeys?: Array<string> | undefined,
+  triggerPatterns?: Array<string> | undefined,
 };
 
 export type QueryConfig = {
   body?: RequestBody;
   force?: boolean;
   meta?: Meta;
-  options?: QueryOptions;
-  queryKey?: QueryKey;
+  options?: RequestOptions;
+  requestKey?: RequestKey;
   transform?: Transform;
   update?: Update;
   map?: Map;
@@ -56,9 +69,9 @@ export type RequestHeaders = { [key: string]: any };
 
 export type Meta = { [key: string]: any };
 
-export type QueryKey = string;
+export type RequestKey = string;
 
-export type QueryPattern = string;
+export type RequestPattern = string;
 
 export type ResponseBody = any;
 
@@ -120,7 +133,7 @@ export type EntitiesSelector = (state: any) => EntitiesState;
 
 export type MutationsSelector = (state: any) => MutationsState;
 
-export type QueryKeyGetter = (queryConfig?: QueryConfig | undefined) => QueryKey | undefined;
+export type RequestKeyGetter = (config?: QueryConfig | MutationConfig | undefined) => RequestKey | undefined;
 
 export type ActionPromiseValue = {
   body: ResponseBody;
