@@ -5,6 +5,9 @@ import {
   requestStart,
   requestFailure,
   requestSuccess,
+  mutateStart,
+  mutateFailure,
+  mutateSuccess
 } from '../actions';
 import * as actionTypes from '../constants/action-types';
 import httpMethods, { HttpMethod } from '../constants/http-methods';
@@ -24,9 +27,11 @@ import {
   Transform,
   QueryKey,
   AdditionalHeadersSelector,
-  RequestConfig
+  RequestConfig,
+  MutationsSelector
 } from '../types';
 import { State as QueriesState } from '../reducers/queries';
+import { State as MutationsState } from '../reducers/mutations';
 import { wildcardFilter } from '../lib/array';
 
 type ReduxStore = {
@@ -62,6 +67,22 @@ const getQueryKeys = (queries: QueriesState): QueryKey[] => {
   return queryKeys;
 };
 
+const getPendingMutations = (mutations: MutationsState): MutationsState => {
+  const pendingMutations: MutationsState = {};
+
+  for (const queryKey in mutations) {
+    if (mutations.hasOwnProperty(queryKey)) {
+      const mutation = mutations[queryKey];
+
+      if (mutation.isPending) {
+        pendingMutations[queryKey] = mutation;
+      }
+    }
+  }
+
+  return pendingMutations;
+};
+
 const getPendingQueries = (queries: QueriesState): QueriesState => {
   const pendingQueries: QueriesState = {};
 
@@ -86,6 +107,7 @@ const defaultTransform: Transform = (body?: ResponseBody | undefined) => body ||
 
 const queryMiddleware = (
   networkInterface: NetworkInterface,
+  mutationsSelector: MutationsSelector,
   queriesSelector: QueriesSelector,
   entitiesSelector: EntitiesSelector,
   additionalHeadersSelector?: AdditionalHeadersSelector | undefined,
@@ -108,6 +130,139 @@ const queryMiddleware = (
     const config = { ...defaultConfig, ...customConfig };
 
     switch (action.type) {
+      case actionTypes.MUTATE_ASYNC: {
+        const {
+          url,
+          body,
+          options = {},
+          meta,
+        } = action;
+
+        if (!url) {
+          throw new Error('Missing required url field for request');
+        }
+
+        const queryKey = getQueryKey({
+          body: action.body,
+          queryKey: action.queryKey,
+          url: action.url,
+        });
+
+        if (!queryKey) {
+          throw new Error('Failed to generate queryKey for request');
+        }
+
+        const state = getState();
+        const mutations = mutationsSelector(state);
+
+        const mutationsState = mutations[queryKey];
+        const isPending = idx(mutationsState, (_: any) => _.isPending);
+        const payload = idx(mutationsState, (_: any) => _.payload);
+
+        const additionalHeaders = !!additionalHeadersSelector ? additionalHeadersSelector(state) : {};
+
+        if (!(isPending && payload === action.body)) {
+          returnValue = new Promise<ActionPromiseValue>(resolve => {
+            const start = new Date();
+            const { method = httpMethods.POST as HttpMethod } = options;
+            let attempts = 0;
+            const backoff = new Backoff({
+              min: config.backoff!.minDuration,
+              max: config.backoff!.maxDuration,
+            });
+
+            const attemptRequest = () => {
+              const networkHandler = networkInterface(url, method, {
+                body,
+                headers: { ...options.headers, ...config.defaultHeaders, ...additionalHeaders },
+                credentials: options.credentials,
+              });
+
+              networkHandlersByQueryKey[queryKey] = networkHandler;
+
+              dispatch(
+                mutateStart({
+                  body,
+                  meta,
+                  queryKey,
+                  url,
+                }),
+              );
+
+              attempts += 1;
+
+              networkHandler.execute((err, status, responseBody, responseText, responseHeaders) => {
+                if (
+                  config.retryableStatusCodes!.includes(status) &&
+                  attempts < config.backoff!.maxAttempts
+                ) {
+                  // TODO take into account Retry-After header if 503
+                  setTimeout(attemptRequest, backoff.duration());
+                  return;
+                }
+
+                const end = new Date();
+                const duration = +end - +start;
+                if (action.unstable_preDispatchCallback) {
+                  action.unstable_preDispatchCallback();
+                }
+
+                if (err || !isStatusOk(status)) {
+                  dispatch(
+                    mutateFailure({
+                      body,
+                      duration,
+                      meta,
+                      queryKey,
+                      responseBody,
+                      responseHeaders,
+                      status,
+                      responseText,
+                      url,
+                    }),
+                  );
+
+                  resolve({
+                    body: responseBody,
+                    duration,
+                    status: status,
+                    text: responseText,
+                    headers: responseHeaders,
+                  });
+                } else {
+                  dispatch(
+                    mutateSuccess({
+                      body,
+                      duration,
+                      meta,
+                      queryKey,
+                      responseBody,
+                      responseHeaders,
+                      status,
+                      responseText,
+                      url,
+                    }),
+                  );
+
+                  resolve({
+                    body: responseBody,
+                    duration,
+                    status,
+                    text: responseText,
+                    headers: responseHeaders,
+                  });
+                }
+
+                delete networkHandlersByQueryKey[queryKey];
+              });
+            };
+
+            attemptRequest();
+          });
+        }
+
+        break;
+      }
       case actionTypes.REQUEST_ASYNC: {
         const {
           url,
@@ -260,45 +415,29 @@ const queryMiddleware = (
 
         break;
       }
-      case actionTypes.INVALIDATE_QUERY: {
-        const { queryPattern, queryKey, queryUrl } = action;
+      case actionTypes.CANCEL_MUTATION: {
+        const { queryKey } = action;
 
-        if (!queryPattern && !queryKey && !queryUrl) {
-          throw new Error('Missing required queryPattern or queryKey or queryUrl field');
+        if (!queryKey) {
+          throw new Error('Missing required queryKey field');
         }
 
         const state = getState();
-        const queries = queriesSelector(state);
-        const pendingQueries = getPendingQueries(queries);
+        const queries = mutationsSelector(state);
+        const pendingMutations= getPendingMutations(queries);
 
-        if (queryPattern) {
-          const queryKeys = getQueryKeys(queries);
-          const filtered = wildcardFilter(queryKeys, queryPattern);
-          for(let index in filtered) {
-              const key = filtered[index];
-              if (key in pendingQueries) {
-                abortQuery(key);
-              }
-          }
-        } else if (queryKey) {
-          if (queryKey in pendingQueries) {
-            abortQuery(queryKey);
-          }
-        } else if (queryUrl) {
-          const queryKeys = getQueryKeys(queries);
-          const filtered = queryKeys.filter(key => key.includes(`"url":"${queryUrl}"`));
-          for(let index in filtered) {
-            const key = filtered[index];
-            if (key in pendingQueries) {
-              abortQuery(key);
-            }
-        }
+        if (queryKey in pendingMutations) {
+          abortQuery(queryKey);
+          returnValue = next(action);
+        } else {
+          // eslint-disable-next-line
+          console.warn('Trying to cancel a request that is not in flight: ', queryKey);
+          returnValue = null;
         }
 
-        returnValue = next(action);
         break;
       }
-      case actionTypes.CANCEL_QUERY: {
+      case actionTypes.CANCEL_REQUEST: {
         const { queryKey } = action;
 
         if (!queryKey) {
@@ -318,6 +457,35 @@ const queryMiddleware = (
           returnValue = null;
         }
 
+        break;
+      }
+      case actionTypes.INVALIDATE_REQUEST: {
+        const { queryPattern, queryKey } = action;
+
+        if (!queryPattern && !queryKey) {
+          throw new Error('Missing required queryPattern or queryKey field');
+        }
+
+        const state = getState();
+        const queries = queriesSelector(state);
+        const pendingQueries = getPendingQueries(queries);
+
+        if (queryPattern) {
+          const queryKeys = getQueryKeys(queries);
+          const filtered = wildcardFilter(queryKeys, queryPattern);
+          for(let index in filtered) {
+              const key = filtered[index];
+              if (key in pendingQueries) {
+                abortQuery(key);
+              }
+          }
+        } else if (queryKey) {
+          if (queryKey in pendingQueries) {
+            abortQuery(queryKey);
+          }
+        }
+
+        returnValue = next(action);
         break;
       }
       case actionTypes.RESET: {

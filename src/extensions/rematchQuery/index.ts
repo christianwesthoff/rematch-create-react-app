@@ -3,9 +3,21 @@ import queryMiddleware from "./middleware/query"
 import { Plugin, Middleware } from '@rematch/core'
 import queriesReducer from "./reducers/queries";
 import entitiesReducer from "./reducers/entities";
+import mutationsReducer from "./reducers/mutations";
 import { bindActionCreators } from 'redux'
-import { requestAsync, invalidateQueryPattern, invalidateQueryUrl } from './actions'
+import { requestAsync, mutateAsync, invalidateRequestByPattern, invalidateRequest } from './actions'
 import Config from './config'
+
+const buildMutationsSelector = (mutationsModelName: string) => (state: any) => state[mutationsModelName];
+const buildMutationsModel = (mutationsModelName: string): any => { 
+	return {
+		name: mutationsModelName,
+		baseReducer: mutationsReducer,
+		effects: (dispatch: any) => bindActionCreators({
+			mutateAsync,
+		}, dispatch)
+	};
+}
 
 const buildQueriesSelector = (queriesModelName: string) => (state: any) => state[queriesModelName];
 const buildQueriesModel = (queriesModelName: string): any => { 
@@ -14,8 +26,8 @@ const buildQueriesModel = (queriesModelName: string): any => {
 		baseReducer: queriesReducer,
 		effects: (dispatch: any) => bindActionCreators({
 			requestAsync,
-			invalidateQueryPattern,
-			invalidateQueryUrl
+			invalidateRequestByPattern,
+			invalidateRequest
 		}, dispatch)
 	};
 }
@@ -33,13 +45,15 @@ export type RematchQueryConfig = {
 	customConfig?: RequestConfig | undefined,
 	additionalHeadersSelector?: AdditionalHeadersSelector | undefined
 	entitiesModelName: string,
-	queriesModelName: string
+	queriesModelName: string,
+	mutationsModelName: string
 }
 
 export default (config: RematchQueryConfig): Plugin => {
-	const { networkInterface, customConfig, additionalHeadersSelector, entitiesModelName, queriesModelName } = config;
+	const { networkInterface, customConfig, additionalHeadersSelector, entitiesModelName, queriesModelName, mutationsModelName } = config;
 	const queriesSelector = buildQueriesSelector(queriesModelName);
 	const entitiesSelector = buildEntitiesSelector(entitiesModelName);
+	const mutationsSelector = buildMutationsSelector(mutationsModelName);
 
 	Config.queriesSelector = queriesSelector;
 	Config.entitiesSelector = entitiesSelector;
@@ -47,6 +61,7 @@ export default (config: RematchQueryConfig): Plugin => {
 	const middleware = queryMiddleware(networkInterface, 
 		queriesSelector, 
 		entitiesSelector, 
+		mutationsSelector,
 		additionalHeadersSelector, 
 		customConfig) as Middleware;
 
@@ -54,7 +69,8 @@ export default (config: RematchQueryConfig): Plugin => {
 		config: {
 			models: {
 				[queriesModelName]: buildQueriesModel(queriesModelName),
-				[entitiesModelName]: buildEntitiesModel(entitiesModelName)
+				[entitiesModelName]: buildEntitiesModel(entitiesModelName),
+				[mutationsModelName]: buildMutationsModel(mutationsModelName)
 			},
 		},
 		middleware

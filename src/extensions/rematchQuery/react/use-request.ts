@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { requestAsync, cancelQuery } from '../actions';
+import { requestAsync, cancelRequst } from '../actions';
 import { getQueryKey } from '../lib/query-key';
 import { QueryConfig, QueryKey } from '../types';
 
@@ -64,7 +64,7 @@ const useRequest = (
   });
 
   const dispatchCancelToRedux = useConstCallback((queryKey: QueryKey) => {
-    reduxDispatch(cancelQuery(queryKey));
+    reduxDispatch(cancelRequst(queryKey));
     isPendingRef.current = false;
   });
 

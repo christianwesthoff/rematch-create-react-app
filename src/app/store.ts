@@ -11,7 +11,7 @@ export const store = init({
 	plugins: [
 		immerPlugin(), 
 		selectPlugin(), 
-		queryPlugin({ networkInterface, entitiesModelName: "entities", queriesModelName: "queries" })
+		queryPlugin({ networkInterface, entitiesModelName: "entities", queriesModelName: "queries", mutationsModelName: "mutations" })
 	]
 });
 

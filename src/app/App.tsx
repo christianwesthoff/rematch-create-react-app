@@ -13,13 +13,13 @@ const mapDispatch = (dispatch: RootDispatch) => ({
   displayRepo: (payload:CurrentRepo) => dispatch.issuesDisplay.displayRepo(payload),
   setCurrentDisplayType: (payload:CurrentDisplayPayload) => dispatch.issuesDisplay.setCurrentDisplayType(payload),
   setCurrentPage: (page:number) => dispatch.issuesDisplay.setCurrentPage(page),
-  invalidateQueryPattern:(payload:any) => (dispatch as any).queries.invalidateQueryPattern(payload),
-  invalidateQueryUrl:(payload:any) => (dispatch as any).queries.invalidateQueryUrl(payload)
+  invalidateRequestByPattern:(payload:any) => (dispatch as any).queries.invalidateRequestByPattern(payload),
+  invalidateRequest:(payload:any) => (dispatch as any).queries.invalidateRequest(payload)
 })
 
 const App: React.FC = () => {
   const dispatch: RootDispatch = useDispatch()
-  const { displayRepo, setCurrentDisplayType, setCurrentPage , invalidateQueryPattern, invalidateQueryUrl } = mapDispatch(dispatch);
+  const { displayRepo, setCurrentDisplayType, setCurrentPage, invalidateRequestByPattern, invalidateRequest } = mapDispatch(dispatch);
   
   const { org, repo, displayType, page, issueId } = useSelector(
     (state: RootState) => state.issuesDisplay
@@ -42,11 +42,11 @@ const App: React.FC = () => {
   }
 
   const setInvalidateQuery = (page: number) => {
-    invalidateQueryUrl(`https://api.github.com/repos/${org}/${repo}/issues?per_page=25&page=${page}`)
+    invalidateRequest(`https://api.github.com/repos/${org}/${repo}/issues?per_page=25&page=${page}`)
   }
 
   const setInvalidateRepo = () => {
-    invalidateQueryPattern(`*https://api.github.com/repos/${org}/${repo}/issues*`)
+    invalidateRequestByPattern(`*${org}/${repo}/issues*`)
   }
 
 

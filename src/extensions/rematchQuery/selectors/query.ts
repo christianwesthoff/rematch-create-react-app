@@ -30,6 +30,32 @@ export const isInvalid = (
   return idx(queriesState, (_: any) => _[queryKey].isInvalid) || false;
 };
 
+export const error = (
+  queriesState: QueriesState,
+  queryConfig?: QueryConfig | undefined,
+): any => {
+  const queryKey = getQueryKey(queryConfig);
+
+  if (!queryKey) {
+    return undefined;
+  }
+
+  return idx(queriesState, (_: any) => _[queryKey].error) || undefined;
+};
+
+export const isError = (
+  queriesState: QueriesState,
+  queryConfig?: QueryConfig | undefined,
+): boolean => {
+  const queryKey = getQueryKey(queryConfig);
+
+  if (!queryKey) {
+    return false;
+  }
+
+  return idx(queriesState, (_: any) => _[queryKey].isError) || false;
+};
+
 export const maps = (
   queriesState: QueriesState,
   queryConfig?: QueryConfig | undefined,

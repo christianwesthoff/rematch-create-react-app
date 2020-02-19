@@ -1,5 +1,3 @@
-import stringify from 'fast-json-stable-stringify';
-
 import { QueryKeyGetter } from '../types';
 
 export const getQueryKey: QueryKeyGetter = queryConfig => {
@@ -7,11 +5,11 @@ export const getQueryKey: QueryKeyGetter = queryConfig => {
     return undefined;
   }
 
-  const { url, body, queryKey } = queryConfig;
+  const { url, queryKey } = queryConfig;
 
   if (queryKey !== null && queryKey !== undefined) {
     return queryKey;
   } else {
-    return stringify({ url, body }) as string;
+    return url;
   }
 };

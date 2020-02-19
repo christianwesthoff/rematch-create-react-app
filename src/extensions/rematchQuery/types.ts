@@ -2,6 +2,17 @@ import { HttpMethod } from './constants/http-methods';
 import { PublicAction } from './actions';
 import { State as QueriesState } from './reducers/queries';
 import { State as EntitiesState } from './reducers/entities';
+import { State as MutationsState } from './reducers/mutations';
+
+export type MutationState = {
+  headers?: { [key: string]: any } | undefined,
+  isFinished: boolean,
+  isPending: boolean,
+  lastUpdated?: number | undefined,
+  queryCount: number,
+  status?: number | undefined,
+  payload?: any
+};
 
 export type QueryState = {
   headers?: { [key: string]: any } | undefined,
@@ -44,8 +55,6 @@ export type RequestBody = any;
 export type RequestHeaders = { [key: string]: any };
 
 export type Meta = { [key: string]: any };
-
-export type QueryUrl = string;
 
 export type QueryKey = string;
 
@@ -108,6 +117,8 @@ export type AdditionalHeadersSelector = (state: any) => { [key: string]: string 
 export type QueriesSelector = (state: any) => QueriesState;
 
 export type EntitiesSelector = (state: any) => EntitiesState;
+
+export type MutationsSelector = (state: any) => MutationsState;
 
 export type QueryKeyGetter = (queryConfig?: QueryConfig | undefined) => QueryKey | undefined;
 

@@ -9,6 +9,8 @@ export type State = {
     headers?: ResponseHeaders | undefined;
     isFinished: boolean;
     isPending: boolean;
+    isError: boolean;
+    error?: any;
     isInvalid: boolean;
     invalidCount: number;
     lastUpdated?: number;
@@ -43,6 +45,7 @@ const queries = (state: State = initialState, action: Action): State => {
         [queryKey]: {
           isFinished: false,
           isPending: true,
+          isError: false,
           isInvalid: false,
           queryCount: state[queryKey] ? state[queryKey].queryCount + 1 : 1,
           invalidCount: state[queryKey] ? state[queryKey].invalidCount : 0,
@@ -75,13 +78,16 @@ const queries = (state: State = initialState, action: Action): State => {
           ...state[queryKey],
           isFinished: true,
           isPending: false,
+          isError: true,
+          error: action.responseBody,
           lastUpdated: action.time,
           status: action.status,
-          headers: action.responseHeaders
+          headers: action.responseHeaders,
+          maps: {} as Maps
         },
       };
     }
-    case actionTypes.CANCEL_QUERY: {
+    case actionTypes.CANCEL_REQUEST: {
       const { queryKey } = action;
 
       if (queryKey && state[queryKey].isPending) {
@@ -93,6 +99,8 @@ const queries = (state: State = initialState, action: Action): State => {
             ...state[queryKey],
             isFinished: true,
             isPending: false,
+            isError: false,
+            isInvalid: false,
             status: 0
           },
         };
@@ -100,8 +108,8 @@ const queries = (state: State = initialState, action: Action): State => {
 
       return state;
     }
-    case actionTypes.INVALIDATE_QUERY: {
-      const { queryPattern, queryKey, queryUrl } = action;
+    case actionTypes.INVALIDATE_REQUEST: {
+      const { queryPattern, queryKey } = action;
 
       if (queryPattern) {
 
@@ -138,25 +146,6 @@ const queries = (state: State = initialState, action: Action): State => {
 
         return state;
         
-      } else if (queryUrl) {
-
-        const stateKeys = getStateKeys(state);
-        let newState = { ...state };
-        const filtered = stateKeys.filter(key => key.includes(`"url":"${queryUrl}"`));
-        for(let index in filtered) {
-          let key = filtered[index];
-          newState = { 
-            ...newState, 
-            [key]: {
-              ...state[key],
-              invalidCount: state[key] ? state[key].invalidCount + 1 : 1,
-              isInvalid: true,
-              maps: {} as Maps
-            } 
-          }
-        }
-
-        return newState;
       }
 
       return state;

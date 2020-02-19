@@ -45,19 +45,30 @@ const useQueryState = (queryConfig?: QueryConfig | undefined): QueryState => {
     querySelectors.invalidCount(queriesSelector(state), queryConfig)
   );
 
+  const isError = useSelector(state =>
+    querySelectors.isError(queriesSelector(state), queryConfig)
+  );
+
+  const error = useSelector(state =>
+    querySelectors.error(queriesSelector(state), queryConfig)
+  );
+
+
   const queryState = React.useMemo(
     () => ({
       isPending,
       isFinished,
       isInvalid,
+      isError,
       invalidCount,
       status,
       headers,
       lastUpdated,
       queryCount,
-      maps
+      maps,
+      error
     }),
-    [headers, maps, isFinished, isPending, isInvalid, lastUpdated, queryCount, status, invalidCount],
+    [headers, maps, isFinished, isPending, isInvalid, isError, lastUpdated, queryCount, status, invalidCount, error],
   );
 
   return queryState;

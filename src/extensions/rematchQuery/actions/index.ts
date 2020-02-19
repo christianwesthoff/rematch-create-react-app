@@ -14,8 +14,7 @@ import {
   Update,
   Url,
   QueryPattern,
-  Maps,
-  QueryUrl,
+  Maps
 } from '../types';
 
 type RequestStartParams = {
@@ -171,45 +170,183 @@ export const requestAsync = ({
   };
 };
 
-type InvalidateQueryAction = {
-  type: '@@query/INVALIDATE_QUERY';
-  queryPattern?: QueryPattern | undefined;
-  queryKey?: QueryKey | undefined;
-  queryUrl?: QueryUrl | undefined;
+type MutateStartParams = {
+  body: RequestBody;
+  meta?: Meta | undefined;
+  queryKey: QueryKey;
+  url: Url;
 };
 
-export const invalidateQueryConfig = (queryKey: QueryKey): InvalidateQueryAction => {
+type MutateStartAction = {
+  type: '@@query/MUTATE_START';
+} & MutateStartParams;
+
+export const mutateStart = ({
+  body,
+  meta,
+  queryKey,
+  url,
+}: MutateStartParams): MutateStartAction => {
   return {
-    type: actionTypes.INVALIDATE_QUERY,
+    type: actionTypes.MUTATE_START,
+    url,
+    body,
+    queryKey,
+    meta,
+  };
+};
+
+type MutateSuccessParams = {
+  body: RequestBody;
+  duration: Duration;
+  meta?: Meta | undefined;
+  responseBody?: ResponseBody | undefined;
+  responseHeaders?: ResponseHeaders | undefined;
+  responseText?: ResponseText | undefined;
+  queryKey: QueryKey;
+  status: Status;
+  url: Url;
+};
+
+type MutateSuccessAction = {
+  type: '@@query/MUTATE_SUCCESS';
+  time: number;
+} & MutateSuccessParams;
+
+export const mutateSuccess = ({
+  body,
+  duration,
+  meta,
+  queryKey,
+  responseBody,
+  responseHeaders,
+  responseText,
+  status,
+  url,
+}: MutateSuccessParams): MutateSuccessAction => {
+  return {
+    type: actionTypes.MUTATE_SUCCESS,
+    url,
+    body,
+    duration,
+    status,
+    responseBody,
+    responseText,
+    responseHeaders,
+    queryKey,
+    time: Date.now(),
+    meta,
+  };
+};
+
+type MutateFailureParams = {
+  body: RequestBody;
+  duration: Duration;
+  meta?: Meta | undefined;
+  responseBody?: ResponseBody | undefined;
+  responseHeaders?: ResponseHeaders | undefined;
+  responseText?: ResponseText | undefined;
+  queryKey: QueryKey;
+  status: Status;
+  url: Url;
+};
+
+type MutateFailureAction = {
+  type: '@@query/MUTATE_FAILURE';
+  time: number;
+} & MutateFailureParams;
+
+export const mutateFailure = ({
+  body,
+  duration,
+  meta,
+  queryKey,
+  responseBody,
+  responseHeaders,
+  responseText,
+  status,
+  url,
+}: MutateFailureParams): MutateFailureAction => {
+  return {
+    type: actionTypes.MUTATE_FAILURE,
+    url,
+    body,
+    duration,
+    status,
+    responseBody,
+    responseText,
+    responseHeaders,
+    queryKey,
+    time: Date.now(),
+    meta,
+  };
+};
+
+type MutateAsyncAction = {
+  type: '@@query/MUTATE_ASYNC';
+} & QueryConfig;
+
+export const mutateAsync = ({
+  body,
+  meta,
+  options,
+  queryKey,
+  url,
+}: QueryConfig): MutateAsyncAction => {
+  return {
+    type: actionTypes.MUTATE_ASYNC,
+    body,
+    meta,
+    options,
+    queryKey,
+    url,
+  };
+};
+
+type InvalidateRequestAction = {
+  type: '@@query/INVALIDATE_REQUEST';
+  queryPattern?: QueryPattern | undefined;
+  queryKey?: QueryKey | undefined;
+};
+
+export const invalidateRequest = (queryKey: QueryKey): InvalidateRequestAction => {
+  return {
+    type: actionTypes.INVALIDATE_REQUEST,
     queryKey,
   };
 };
 
-export const invalidateQueryPattern = (queryPattern: QueryPattern): InvalidateQueryAction => {
+export const invalidateRequestByPattern = (queryPattern: QueryPattern): InvalidateRequestAction => {
   return {
-    type: actionTypes.INVALIDATE_QUERY,
+    type: actionTypes.INVALIDATE_REQUEST,
     queryPattern,
   };
 };
 
-export const invalidateQueryUrl = (queryUrl: QueryUrl): InvalidateQueryAction => {
-  return {
-    type: actionTypes.INVALIDATE_QUERY,
-    queryUrl,
-  };
-};
-
-type CancelQueryAction = {
-  type: '@@query/CANCEL_QUERY';
+type CancelRequestAction = {
+  type: '@@query/CANCEL_REQUEST';
   queryKey?: QueryKey | undefined;
 };
 
-export const cancelQuery = (queryKey: QueryKey): CancelQueryAction => {
+export const cancelRequst = (queryKey: QueryKey): CancelRequestAction => {
   return {
-    type: actionTypes.CANCEL_QUERY,
+    type: actionTypes.CANCEL_REQUEST,
     queryKey,
   };
 };
+
+type CancelMutationAction = {
+  type: '@@query/CANCEL_MUTATION';
+  queryKey?: QueryKey | undefined;
+};
+
+export const CancelMutation = (queryKey: QueryKey): CancelMutationAction => {
+  return {
+    type: actionTypes.CANCEL_MUTATION,
+    queryKey,
+  };
+};
+
 
 type UpdateEntitiesAction = {
   type: '@@query/UPDATE_ENTITIES';
@@ -241,14 +378,19 @@ export const reset = ({ entities }: ResetParams): ResetAction => {
 
 export type PublicAction =
   | RequestAsyncAction
-  | CancelQueryAction
+  | CancelRequestAction
   | UpdateEntitiesAction
+  | MutateAsyncAction
+  | CancelMutationAction
   | ResetAction
-  | InvalidateQueryAction;
+  | InvalidateRequestAction;
 
 export type Action =
   | PublicAction
   | RequestStartAction
   | RequestSuccessAction
   | RequestFailureAction
-  | InvalidateQueryAction;
+  | MutateStartAction
+  | MutateSuccessAction
+  | MutateFailureAction
+  | InvalidateRequestAction;
