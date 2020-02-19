@@ -264,7 +264,7 @@ const queryMiddleware = (
         const { queryPattern, queryKey, queryUrl } = action;
 
         if (!queryPattern && !queryKey && !queryUrl) {
-          throw new Error('Missing required "queryPattern" or "queryKey" or "queryUrl" field');
+          throw new Error('Missing required queryPattern or queryKey or queryUrl field');
         }
 
         const state = getState();
@@ -302,7 +302,7 @@ const queryMiddleware = (
         const { queryKey } = action;
 
         if (!queryKey) {
-          throw new Error('Missing required "queryKey" field');
+          throw new Error('Missing required queryKey field');
         }
 
         const state = getState();
