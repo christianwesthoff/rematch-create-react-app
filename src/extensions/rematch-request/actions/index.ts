@@ -343,7 +343,6 @@ export const CancelMutation = (requestKey: RequestKey): CancelMutationAction => 
   };
 };
 
-
 type UpdateEntitiesAction = {
   type: '@@request/UPDATE_ENTITIES';
   update: Update;

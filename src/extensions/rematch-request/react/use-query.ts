@@ -78,14 +78,14 @@ const useQuery = <TQueryConfig extends QueryConfig>(
   }, [dispatchRequestToRedux, queryConfig]);
 
   // This is an object that contains metadata about the query, like things from querySelectors
-  // (e.g.`isPending`, `queryCount`, etc.)
+  // (e.g.`isPending`, `requestCount`, etc.)
   const queryState = useQueryState(queryConfig);
 
-  // If invalidate count changes trigger effect
+  // The invalid count of the query is used to determine if a change should be triggered
   const invalidCount = queryState ? queryState.invalidCount : 0;
 
   React.useEffect(() => {
-    // Dispatch `requestAsync` actions whenever the query config (note: memoized based on query
+    // Dispatch `queryAsync` actions whenever the query config (note: memoized based on query
     // key) changes.
 
     if (queryConfig) {

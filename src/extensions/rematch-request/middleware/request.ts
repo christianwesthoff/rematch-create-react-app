@@ -181,7 +181,7 @@ const queryMiddleware = (
 
         const additionalHeaders = !!additionalHeadersSelector ? additionalHeadersSelector(state) : {};
 
-        if (!(isPending && payload === action.body)) {
+        if (!isPending && payload !== action.body) {
           returnValue = new Promise<ActionPromiseValue>(resolve => {
             const start = new Date();
             const { method = httpMethods.POST as HttpMethod } = options;

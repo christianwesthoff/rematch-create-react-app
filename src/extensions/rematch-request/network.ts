@@ -2,12 +2,12 @@ import { NetworkInterface, RequestHeaders } from "./types";
 import HttpMethods, { HttpMethod } from './constants/http-methods';
 import axios, { AxiosInstance, CancelToken } from 'axios';
 
-const buildCancelToken = () => {
+const getCancelToken = () => {
   var source = axios.CancelToken.source();
   return { token: source.token, cancel: source.cancel }
 };
 
-const buildRequest = (instance: AxiosInstance, url: string, method: HttpMethod, body: any) => {
+const getRequest = (instance: AxiosInstance, url: string, method: HttpMethod, body: any) => {
     switch (method) {
       case HttpMethods.HEAD:
         return instance.head(url, body);
@@ -26,7 +26,7 @@ const buildRequest = (instance: AxiosInstance, url: string, method: HttpMethod, 
     }
   };
   
-const buildInstance = (headers?: RequestHeaders, withCredentials?: boolean, cancelToken?: CancelToken, baseUrl?: string): AxiosInstance => axios.create({
+const getInstance = (headers?: RequestHeaders, withCredentials?: boolean, cancelToken?: CancelToken, baseUrl?: string): AxiosInstance => axios.create({
     baseURL: baseUrl,
     withCredentials,
     headers,
@@ -39,9 +39,9 @@ const axiosInterface: NetworkInterface = (
     { body, headers, credentials } = {},
 ) => {
 
-    const { token, cancel } = buildCancelToken();
-    const instance = buildInstance(headers, credentials === 'include', token);
-    const request = buildRequest(instance, url, method, body);
+    const { token, cancel } = getCancelToken();
+    const instance = getInstance(headers, credentials === 'include', token);
+    const request = getRequest(instance, url, method, body);
 
     const execute = (cb: any) =>
       request.then(function (response) {

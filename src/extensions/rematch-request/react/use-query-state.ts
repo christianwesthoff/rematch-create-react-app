@@ -53,7 +53,6 @@ const useQueryState = (queryConfig?: QueryConfig | undefined): QueryState => {
     querySelectors.error(queriesSelector(state), queryConfig)
   );
 
-
   const queryState = React.useMemo(
     () => ({
       isPending,

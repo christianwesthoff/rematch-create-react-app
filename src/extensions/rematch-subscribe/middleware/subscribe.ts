@@ -2,17 +2,17 @@ import { Middleware, Dispatch, MiddlewareAPI, Action } from 'redux';
 import { ActionType, Listener } from '../types'
 
 type ActionListenerContainer = {
-    action: string;
+    action: ActionType;
     listener: Listener;
   };
 
-const _actionsSubscribedBefore: ActionListenerContainer[] = [];
-const _actionsSubscribedAfter: ActionListenerContainer[] = [];
+const _actionsSubscribedBefore: Array<ActionListenerContainer> = [];
+const _actionsSubscribedAfter: Array<ActionListenerContainer> = [];
 
-const subscribeAction = (
+const subscribe = (
   actionListenerContainer: ActionListenerContainer,
   listenerContainer: ActionListenerContainer[]
-) => {
+): () => void => {
   if (!actionListenerContainer.action) {
     throw new Error('Expected the action to be a string.');
   }
@@ -26,14 +26,14 @@ const subscribeAction = (
   };
 };
 
-export const subscribeActionBefore = (action: ActionType, listener: Listener) => {
+export const subscribeBefore = (action: ActionType, listener: Listener) => {
   const actionListenerContainer = { action, listener };
-  return subscribeAction(actionListenerContainer, _actionsSubscribedBefore);
+  return subscribe(actionListenerContainer, _actionsSubscribedBefore);
 };
 
-export const subscribeActionAfter = (action: ActionType, listener: Listener) => {
+export const subscribeAfter = (action: ActionType, listener: Listener) => {
   const actionListenerContainer = { action, listener };
-  return subscribeAction(actionListenerContainer, _actionsSubscribedAfter);
+  return subscribe(actionListenerContainer, _actionsSubscribedAfter);
 };
 
 const callActionListeners = (
