@@ -3,8 +3,8 @@ import { RematchRootDispatch, RematchRootState } from 'extensions/util'
 import * as models from 'models'
 import immerPlugin from '@rematch/immer'
 import selectPlugin from '@rematch/select'
-import queryPlugin from 'extensions/rematchRequests'
-import networkInterface from 'extensions/rematchRequests/network'
+import queryPlugin from 'extensions/rematch-requests'
+import networkInterface from 'extensions/rematch-requests/network'
 
 export const store = init({
 	models,

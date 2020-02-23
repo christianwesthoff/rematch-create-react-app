@@ -65,7 +65,6 @@ export type MutationConfig = {
   retry?: boolean;
   unstable_preDispatchCallback?: () => void | undefined;
   url: Url;
-  triggerKeys?: Array<string> | undefined,
   triggerPatterns?: Array<string> | undefined,
 };
 

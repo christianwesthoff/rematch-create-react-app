@@ -1,17 +1,19 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { requestAsync, cancelRequst } from '../actions';
+import { queryAsync, cancelQuery } from '../actions';
 import { getRequestKey } from '../lib/request-key';
-import { QueryConfig, RequestKey, MutationState, MutationConfig } from '../types';
+import { QueryConfig, RequestKey, ExtractStateFromQueryConfig } from '../types';
 
 import useConstCallback from './use-const-callback';
+import useMemoizedQueryConfig from './use-memoized-query-config';
+import useQueryState from './use-query-state';
 
-import useMutationState from './use-mutation-state';
-import useMemoizedMutationConfig from './use-memoized-mutation-config';
+import { QueryState } from '../types';
+import useEntityState from './use-entity-state';
 
-const useMutation = <TMutationConfig extends MutationConfig>(
-  providedMutationConfig?: TMutationConfig,
-): [MutationState, any] => {
+const useQuery = <TQueryConfig extends QueryConfig>(
+  providedQueryConfig?: TQueryConfig | undefined,
+): [QueryState, ExtractStateFromQueryConfig<TQueryConfig>, () => void] => {
   const reduxDispatch = useDispatch();
 
   // This hook manually tracks the pending state, which is synchronized as precisely as possible
@@ -30,8 +32,8 @@ const useMutation = <TMutationConfig extends MutationConfig>(
   // Setting `retry` to `true` for these query configs makes it so that when this query config is
   // passed to a requestAsync action, if a previous request with the same query key failed, it will
   // retry the request (if `retry` is `false`, then it would essentially ignore the action).
-  const transformMutationConfig = useConstCallback(
-    (queryConfig?: MutationConfig | undefined): MutationConfig | undefined => {
+  const transformQueryConfig = useConstCallback(
+    (queryConfig?: QueryConfig | undefined): QueryConfig | undefined => {
         if (queryConfig) {
             return {
                 ...queryConfig,
@@ -45,12 +47,12 @@ const useMutation = <TMutationConfig extends MutationConfig>(
 
   // Query configs are memoized based on query key. As long as the query key doesn't change, the
   // query config won't change.
-  const mutationConfig = useMemoizedMutationConfig(providedMutationConfig, transformMutationConfig);
+  const queryConfig = useMemoizedQueryConfig(providedQueryConfig, transformQueryConfig);
 
 
   // const isInvalid = queryState ? queryState.isInvalid : false
   const dispatchRequestToRedux = useConstCallback((queryConfig: QueryConfig) => {
-    const promise = reduxDispatch(requestAsync(queryConfig));
+    const promise = reduxDispatch(queryAsync(queryConfig));
 
     // If a promise is not returned, we know that the query middleware ignored this request and
     // one will not be made, so don't consider it as "pending".
@@ -62,28 +64,39 @@ const useMutation = <TMutationConfig extends MutationConfig>(
   });
 
   const dispatchCancelToRedux = useConstCallback((requestKey: RequestKey) => {
-    reduxDispatch(cancelRequst(requestKey));
+    reduxDispatch(cancelQuery(requestKey));
     isPendingRef.current = false;
   });
 
+  const refresh = React.useCallback(() => {
+    if (queryConfig) {
+      return dispatchRequestToRedux({
+        ...queryConfig,
+        force: true,
+      });
+    }
+  }, [dispatchRequestToRedux, queryConfig]);
 
   // This is an object that contains metadata about the query, like things from querySelectors
   // (e.g.`isPending`, `queryCount`, etc.)
-  const mutationState = useMutationState(mutationConfig);
+  const queryState = useQueryState(queryConfig);
+
+  // If invalidate count changes trigger effect
+  const invalidCount = queryState ? queryState.invalidCount : 0;
 
   React.useEffect(() => {
     // Dispatch `requestAsync` actions whenever the query config (note: memoized based on query
     // key) changes.
 
-    if (mutationConfig) {
-      dispatchRequestToRedux(mutationConfig);
+    if (queryConfig) {
+      dispatchRequestToRedux(queryConfig);
     }
 
     return () => {
       // If there is an pending request whenever the component unmounts of the query config
       // changes, cancel the pending request.
       if (isPendingRef.current) {
-        const requestKey = getRequestKey(mutationConfig);
+        const requestKey = getRequestKey(queryConfig);
 
         if (requestKey) {
           dispatchCancelToRedux(requestKey);
@@ -91,10 +104,10 @@ const useMutation = <TMutationConfig extends MutationConfig>(
       }
     };
   
-  }, [dispatchCancelToRedux, dispatchRequestToRedux, mutationConfig]);
+  }, [dispatchCancelToRedux, dispatchRequestToRedux, queryConfig, invalidCount]);
 
-  const { payload, ...requestProps } = mutationState;
-  return [requestProps, payload];
+  const entityState = useEntityState(queryState) as ExtractStateFromQueryConfig<TQueryConfig>;
+  return [queryState, entityState, refresh];
 };
 
-export default useMutation;
+export default useQuery;

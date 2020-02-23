@@ -3,13 +3,12 @@ import idx from 'idx';
 
 import {
   requestStart,
-  requestFailure,
-  requestSuccess,
+  queryFailure,
+  querySuccess,
   mutateStart,
   mutateFailure,
   mutateSuccess,
-  invalidateRequest,
-  invalidateRequestByPattern
+  invalidateQuery
 } from '../actions';
 import * as actionTypes from '../constants/action-types';
 import httpMethods, { HttpMethod } from '../constants/http-methods';
@@ -36,7 +35,6 @@ import {
 } from '../types';
 import { State as QueriesState } from '../reducers/queries';
 import { State as MutationsState } from '../reducers/mutations';
-import { wildcardFilter } from '../lib/array';
 
 type ReduxStore = {
   dispatch: (action: Action) => any;
@@ -54,14 +52,14 @@ const defaultConfig: RequestConfig = {
   },
   retryableStatusCodes: [
     statusCodes.UNKNOWN, // normally means a failed connection
-    statusCodes.REQUEST_TIMEOUT,
-    statusCodes.TOO_MANY_REQUESTS, // hopefully backoff stops this getting worse
+    statusCodes.QUERY_TIMEOUT,
+    statusCodes.TOO_MANY_QUERYS, // hopefully backoff stops this getting worse
     statusCodes.SERVICE_UNAVAILABLE,
     statusCodes.GATEWAY_TIMEOUT,
   ],
 };
 
-const getrequestKeys = (queries: QueriesState): RequestKey[] => {
+const getQueryKeys = (queries: QueriesState): RequestKey[] => {
   const requestKeys: RequestKey[] = [];
 
   for (const requestKey in queries) {
@@ -158,7 +156,6 @@ const queryMiddleware = (
           body,
           options = {},
           meta,
-          triggerKeys,
           triggerPatterns
         } = action;
 
@@ -267,21 +264,10 @@ const queryMiddleware = (
                       url,
                     }),
                   );
-
-                  if (triggerKeys) {
-                    for(let key in triggerKeys) {
-                      dispatch(
-                        invalidateRequest(key),
-                      );
-                    }
-                  }
-
                   if (triggerPatterns) {
-                    for(let pattern in triggerPatterns) {
                       dispatch(
-                        invalidateRequestByPattern(pattern),
+                        invalidateQuery(triggerPatterns),
                       );
-                    }
                   }
 
                   resolve({
@@ -303,7 +289,7 @@ const queryMiddleware = (
 
         break;
       }
-      case actionTypes.REQUEST_ASYNC: {
+      case actionTypes.QUERY_ASYNC: {
         const {
           url,
           body,
@@ -392,7 +378,7 @@ const queryMiddleware = (
 
                 if (err || !isStatusOk(status)) {
                   dispatch(
-                    requestFailure({
+                    queryFailure({
                       body,
                       duration,
                       meta,
@@ -419,7 +405,7 @@ const queryMiddleware = (
                   newEntities = updateEntities(update || updateFromTransform(transformed), entities, transformed);
                   maps = updateMaps(map || mapFromTransform(transformed), transformed);
                   dispatch(
-                    requestSuccess({
+                    querySuccess({
                       body,
                       duration,
                       meta,
@@ -477,7 +463,7 @@ const queryMiddleware = (
 
         break;
       }
-      case actionTypes.CANCEL_REQUEST: {
+      case actionTypes.CANCEL_QUERY: {
         const { requestKey } = action;
 
         if (!requestKey) {
@@ -499,10 +485,10 @@ const queryMiddleware = (
 
         break;
       }
-      case actionTypes.INVALIDATE_REQUEST: {
-        const { queryPattern, requestKey } = action;
+      case actionTypes.INVALIDATE_QUERY: {
+        const { queryPatterns } = action;
 
-        if (!queryPattern && !requestKey) {
+        if (!queryPatterns) {
           throw new Error('Missing required queryPattern or requestKey field');
         }
 
@@ -510,18 +496,14 @@ const queryMiddleware = (
         const queries = queriesSelector(state);
         const pendingQueries = getPendingQueries(queries);
 
-        if (queryPattern) {
-          const requestKeys = getrequestKeys(queries);
-          const filtered = wildcardFilter(requestKeys, queryPattern);
+        if (queryPatterns) {
+          const requestKeys = getQueryKeys(queries);
+          const filtered = requestKeys.filter(key => queryPatterns.some(pattern => key.includes(pattern)));
           for(let index in filtered) {
               const key = filtered[index];
               if (key in pendingQueries) {
                 abortQuery(key);
               }
-          }
-        } else if (requestKey) {
-          if (requestKey in pendingQueries) {
-            abortQuery(requestKey);
           }
         }
 

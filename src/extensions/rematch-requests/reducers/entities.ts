@@ -1,5 +1,5 @@
 import {
-  REQUEST_SUCCESS,
+  QUERY_SUCCESS,
   RESET,
   UPDATE_ENTITIES,
 } from '../constants/action-types';
@@ -17,7 +17,7 @@ const initialState = {};
 const entities = (state: State = initialState, action: Action) => {
   if (action.type === RESET) {
     return 'entities' in action ? action.entities : initialState;
-  } else if (action.type === REQUEST_SUCCESS) {
+  } else if (action.type === QUERY_SUCCESS) {
     return {
       ...state,
       ...action.entities,

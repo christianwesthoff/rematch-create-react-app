@@ -5,7 +5,7 @@ import queriesReducer from "./reducers/queries";
 import entitiesReducer from "./reducers/entities";
 import mutationsReducer from "./reducers/mutations";
 import { bindActionCreators } from 'redux'
-import { requestAsync, mutateAsync, invalidateRequestByPattern, invalidateRequest } from './actions'
+import { queryAsync, mutateAsync, invalidateQuery } from './actions'
 import Config from './config'
 
 const buildMutationsSelector = (mutationsModelName: string) => (state: any) => state[mutationsModelName];
@@ -25,9 +25,8 @@ const buildQueriesModel = (queriesModelName: string): any => {
 		name: queriesModelName,
 		baseReducer: queriesReducer,
 		effects: (dispatch: any) => bindActionCreators({
-			requestAsync,
-			invalidateRequestByPattern,
-			invalidateRequest
+			requestAsync: queryAsync,
+			invalidateQuery
 		}, dispatch)
 	};
 }

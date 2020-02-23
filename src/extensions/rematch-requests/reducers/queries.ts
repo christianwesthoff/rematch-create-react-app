@@ -2,7 +2,6 @@ import * as actionTypes from '../constants/action-types';
 
 import { Action } from '../actions';
 import { ResponseHeaders, Status, Maps } from '../types';
-import { wildcardFilter } from '../lib/array';
 
 export type State = {
   [key: string]: {
@@ -37,7 +36,7 @@ const queries = (state: State = initialState, action: Action): State => {
     case actionTypes.RESET: {
       return {};
     }
-    case actionTypes.REQUEST_START: {
+    case actionTypes.QUERY_START: {
       const { requestKey } = action;
 
       return {
@@ -53,7 +52,7 @@ const queries = (state: State = initialState, action: Action): State => {
         }
       };
     }
-    case actionTypes.REQUEST_SUCCESS: {
+    case actionTypes.QUERY_SUCCESS: {
       const { requestKey } = action;
 
       return {
@@ -69,7 +68,7 @@ const queries = (state: State = initialState, action: Action): State => {
         },
       };
     }
-    case actionTypes.REQUEST_FAILURE: {
+    case actionTypes.QUERY_FAILURE: {
       const { requestKey } = action;
 
       return {
@@ -87,7 +86,7 @@ const queries = (state: State = initialState, action: Action): State => {
         },
       };
     }
-    case actionTypes.CANCEL_REQUEST: {
+    case actionTypes.CANCEL_QUERY: {
       const { requestKey } = action;
 
       if (requestKey && state[requestKey].isPending) {
@@ -108,14 +107,14 @@ const queries = (state: State = initialState, action: Action): State => {
 
       return state;
     }
-    case actionTypes.INVALIDATE_REQUEST: {
-      const { queryPattern, requestKey } = action;
+    case actionTypes.INVALIDATE_QUERY: {
+      const { queryPatterns } = action;
 
-      if (queryPattern) {
+      if (queryPatterns) {
 
         const stateKeys = getStateKeys(state);
         let newState = { ...state };
-        const filtered = wildcardFilter(stateKeys, queryPattern);
+        const filtered = stateKeys.filter(key => queryPatterns.some(pattern => key.includes(pattern)));
         for(let index in filtered) {
           let key = filtered[index];
           newState = { 
@@ -130,22 +129,6 @@ const queries = (state: State = initialState, action: Action): State => {
         }
 
         return newState;
-      } else if (requestKey) {
-        
-        if (state[requestKey]) {
-          return {
-            ...state,
-            [requestKey]: {
-              ...state[requestKey],
-              invalidCount: state[requestKey] ? state[requestKey].invalidCount + 1 : 1,
-              isInvalid: true,
-              maps: {}
-            },
-          };
-        }
-
-        return state;
-        
       }
 
       return state;

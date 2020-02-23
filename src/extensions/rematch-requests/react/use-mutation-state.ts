@@ -1,11 +1,10 @@
 import * as React from 'react';
 import { useSelector } from 'react-redux';
 import * as mutationSelectors from '../selectors/mutation';
-import { MutationState } from '../types';
-import { QueryConfig } from '../types';
+import { MutationState, MutationConfig } from '../types';
 import Config from '../config'
 
-const useMutationState = (queryConfig?: QueryConfig | undefined): MutationState => {
+const useMutationState = (queryConfig?: MutationConfig | undefined): MutationState => {
 
   const { mutationsSelector } = Config;
 
