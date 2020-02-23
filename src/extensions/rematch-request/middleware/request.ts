@@ -211,7 +211,7 @@ const queryMiddleware = (
 
               attempts += 1;
 
-              networkHandler.execute((err, status, responseBody, responseText, responseHeaders) => {
+              networkHandler.execute((err, status, responseBody, responseHeaders) => {
                 if (
                   config.retryableStatusCodes!.includes(status) &&
                   attempts < config.backoff!.maxAttempts
@@ -237,7 +237,7 @@ const queryMiddleware = (
                       responseBody,
                       responseHeaders,
                       status,
-                      responseText,
+                      // responseText,
                       url,
                     }),
                   );
@@ -246,7 +246,7 @@ const queryMiddleware = (
                     body: responseBody,
                     duration,
                     status: status,
-                    text: responseText,
+                    // text: responseText,
                     headers: responseHeaders,
                   });
                 } else {
@@ -259,7 +259,7 @@ const queryMiddleware = (
                       responseBody,
                       responseHeaders,
                       status,
-                      responseText,
+                      // responseText,
                       url,
                     }),
                   );
@@ -273,7 +273,7 @@ const queryMiddleware = (
                     body: responseBody,
                     duration,
                     status,
-                    text: responseText,
+                    // text: responseText,
                     headers: responseHeaders,
                   });
                 }
@@ -356,7 +356,7 @@ const queryMiddleware = (
 
               attempts += 1;
 
-              networkHandler.execute((err, status, responseBody, responseText, responseHeaders) => {
+              networkHandler.execute((err, status, responseBody, responseHeaders) => {
                 if (
                   config.retryableStatusCodes!.includes(status) &&
                   attempts < config.backoff!.maxAttempts
@@ -385,7 +385,7 @@ const queryMiddleware = (
                       responseBody,
                       responseHeaders,
                       status,
-                      responseText,
+                      // responseText,
                       url,
                     }),
                   );
@@ -394,7 +394,7 @@ const queryMiddleware = (
                     body: responseBody,
                     duration,
                     status: status,
-                    text: responseText,
+                    // text: responseText,
                     headers: responseHeaders,
                   });
                 } else {
@@ -413,7 +413,7 @@ const queryMiddleware = (
                       responseBody,
                       responseHeaders,
                       status,
-                      responseText,
+                      // responseText,
                       url,
                       maps
                     }),
@@ -423,7 +423,7 @@ const queryMiddleware = (
                     body: responseBody,
                     duration,
                     status,
-                    text: responseText,
+                    // text: responseText,
                     transformed,
                     entities: newEntities,
                     headers: responseHeaders,

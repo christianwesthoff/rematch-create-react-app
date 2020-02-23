@@ -129,7 +129,7 @@ export type NetworkHandler = {
       error: any,
       status: Status,
       responseBody?: ResponseBody | undefined,
-      responseText?: ResponseText | undefined,
+      // responseText?: ResponseText | undefined,
       responseHeaders?: ResponseHeaders | undefined,
     ) => void,
   ) => void;
