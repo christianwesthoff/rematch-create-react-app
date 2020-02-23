@@ -1,7 +1,7 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { queryAsync, cancelQuery } from '../actions';
-import { getRequestKey } from '../lib/request-key';
+import { getQueryKey } from '../lib/request-key';
 import { QueryConfig, RequestKey, ExtractStateFromQueryConfig } from '../types';
 
 import useConstCallback from './use-const-callback';
@@ -96,7 +96,7 @@ const useQuery = <TQueryConfig extends QueryConfig>(
       // If there is an pending request whenever the component unmounts of the query config
       // changes, cancel the pending request.
       if (isPendingRef.current) {
-        const requestKey = getRequestKey(queryConfig);
+        const requestKey = getQueryKey(queryConfig);
 
         if (requestKey) {
           dispatchCancelToRedux(requestKey);

@@ -1,14 +1,14 @@
 import idx from 'idx';
 
 import { State as MutationsState } from '../reducers/mutations';
-import { getRequestKey } from '../lib/request-key';
+import { getMutationKey } from '../lib/request-key';
 import { MutationConfig } from '../types';
 
 export const isFinished = (
   state: MutationsState,
   config?: MutationConfig | undefined,
 ): boolean => {
-  const requestKey = getRequestKey(config);
+  const requestKey = getMutationKey(config);
 
   if (!requestKey) {
     return false;
@@ -21,7 +21,7 @@ export const isInvalid = (
   state: MutationsState,
   config?: MutationConfig | undefined,
 ): boolean => {
-  const requestKey = getRequestKey(config);
+  const requestKey = getMutationKey(config);
 
   if (!requestKey) {
     return false;
@@ -34,7 +34,7 @@ export const error = (
   state: MutationsState,
   config?: MutationConfig | undefined,
 ): any => {
-  const requestKey = getRequestKey(config);
+  const requestKey = getMutationKey(config);
 
   if (!requestKey) {
     return undefined;
@@ -47,7 +47,7 @@ export const isError = (
   state: MutationsState,
   config?: MutationConfig | undefined,
 ): boolean => {
-  const requestKey = getRequestKey(config);
+  const requestKey = getMutationKey(config);
 
   if (!requestKey) {
     return false;
@@ -60,7 +60,7 @@ export const isPending = (
   state: MutationsState,
   config?: MutationConfig | undefined,
 ): boolean => {
-  const requestKey = getRequestKey(config);
+  const requestKey = getMutationKey(config);
 
   if (!requestKey) {
     return false;
@@ -73,7 +73,7 @@ export const status = (
   state: MutationsState,
   config?: MutationConfig | undefined,
 ): number | undefined => {
-  const requestKey = getRequestKey(config);
+  const requestKey = getMutationKey(config);
 
   if (!requestKey) {
     return undefined;
@@ -86,7 +86,7 @@ export const headers = (
   state: MutationsState,
   config?: MutationConfig | undefined,
 ): { [key: string]: any } | undefined => {
-  const requestKey = getRequestKey(config);
+  const requestKey = getMutationKey(config);
 
   if (!requestKey) {
     return undefined;
@@ -99,7 +99,7 @@ export const lastUpdated = (
   state: MutationsState,
   config?: MutationConfig | undefined,
 ): number | undefined => {
-  const requestKey = getRequestKey(config);
+  const requestKey = getMutationKey(config);
 
   if (!requestKey) {
     return undefined;
@@ -112,7 +112,7 @@ export const payload = (
   state: MutationsState,
   config?: MutationConfig | undefined,
 ): any => {
-  const requestKey = getRequestKey(config);
+  const requestKey = getMutationKey(config);
 
   if (!requestKey) {
     return undefined;
@@ -125,7 +125,7 @@ export const requestCount = (
   state: MutationsState,
   config?: MutationConfig | undefined,
 ): number => {
-  const requestKey = getRequestKey(config);
+  const requestKey = getMutationKey(config);
 
   if (!requestKey) {
     return 0;

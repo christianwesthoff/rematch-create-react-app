@@ -1,6 +1,21 @@
 import { RequestKeyGetter } from '../types';
+import stringify from 'fast-json-stable-stringify';
 
-export const getRequestKey: RequestKeyGetter = queryConfig => {
+
+export const getQueryKey: RequestKeyGetter = queryConfig => {
+  if (!queryConfig) {
+    return undefined;
+  }
+
+  const { url, body, requestKey } = queryConfig;
+
+  if (requestKey !== null && requestKey !== undefined) {
+    return requestKey;
+  }
+  return stringify({ url, body });
+};
+
+export const getMutationKey: RequestKeyGetter = queryConfig => {
   if (!queryConfig) {
     return undefined;
   }
@@ -9,7 +24,6 @@ export const getRequestKey: RequestKeyGetter = queryConfig => {
 
   if (requestKey !== null && requestKey !== undefined) {
     return requestKey;
-  } else {
-    return url;
   }
+  return stringify({ url });
 };

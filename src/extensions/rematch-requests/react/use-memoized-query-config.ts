@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { getRequestKey } from '../lib/request-key';
+import { getQueryKey } from '../lib/request-key';
 import { QueryConfig } from '../types';
 
 const identity = (x: any):any => x;
@@ -15,10 +15,10 @@ const useMemoizedQueryConfig = (
   const [queryConfig, setQueryConfig] = React.useState(
     providedQueryConfig ? transform(providedQueryConfig) : undefined,
   );
-  const previousrequestKey = React.useRef(getRequestKey(providedQueryConfig));
+  const previousrequestKey = React.useRef(getQueryKey(providedQueryConfig));
 
   React.useEffect(() => {
-    const requestKey = getRequestKey(providedQueryConfig);
+    const requestKey = getQueryKey(providedQueryConfig);
 
     if (requestKey !== previousrequestKey.current) {
       previousrequestKey.current = requestKey;

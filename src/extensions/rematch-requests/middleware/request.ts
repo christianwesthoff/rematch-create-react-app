@@ -13,7 +13,7 @@ import {
 import * as actionTypes from '../constants/action-types';
 import httpMethods, { HttpMethod } from '../constants/http-methods';
 import * as statusCodes from '../constants/status-codes';
-import { getRequestKey } from '../lib/request-key';
+import { getQueryKey, getMutationKey } from '../lib/request-key';
 import { updateEntities, updateMaps } from '../lib/update';
 
 import { Action, PublicAction } from '../actions';
@@ -163,7 +163,7 @@ const queryMiddleware = (
           throw new Error('Missing required url field for request');
         }
 
-        const requestKey = getRequestKey({
+        const requestKey = getQueryKey({
           body: action.body,
           requestKey: action.requestKey,
           url: action.url,
@@ -306,7 +306,7 @@ const queryMiddleware = (
           throw new Error('Missing required url field for request');
         }
 
-        const requestKey = getRequestKey({
+        const requestKey = getMutationKey({
           body: action.body,
           requestKey: action.requestKey,
           url: action.url,
