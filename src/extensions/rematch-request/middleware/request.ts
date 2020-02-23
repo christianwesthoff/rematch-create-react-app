@@ -1,6 +1,6 @@
 import Backoff from 'backo2';
 import idx from 'idx';
-
+import { Middleware, Dispatch, MiddlewareAPI } from 'redux';
 import {
   requestStart,
   queryFailure,
@@ -15,7 +15,6 @@ import httpMethods, { HttpMethod } from '../constants/http-methods';
 import * as statusCodes from '../constants/status-codes';
 import { getQueryKey, getMutationKey } from '../lib/request-key';
 import { updateEntities, updateMaps } from '../lib/update';
-
 import { Action, PublicAction } from '../actions';
 import {
   ActionPromiseValue,
@@ -59,7 +58,7 @@ const defaultConfig: RequestConfig = {
   ],
 };
 
-const getQueryKeys = (queries: QueriesState): RequestKey[] => {
+const getQueryKeys = (queries: QueriesState): Array<RequestKey> => {
   const requestKeys: RequestKey[] = [];
 
   for (const requestKey in queries) {
@@ -132,7 +131,7 @@ const queryMiddleware = (
   mutationsSelector: MutationsSelector,
   additionalHeadersSelector?: AdditionalHeadersSelector | undefined,
   customConfig?: RequestConfig | undefined
-) => {
+):Middleware => {
 
   const networkHandlersByrequestKey: { [key: string]: NetworkHandler } = {};
 
@@ -145,7 +144,7 @@ const queryMiddleware = (
     }
   };
 
-  return ({ dispatch, getState }: ReduxStore) => (next: Next) => (action: PublicAction) => {
+  return ({ dispatch, getState }: MiddlewareAPI) => (next: Dispatch) => (action: PublicAction) => {
     let returnValue;
     const config = { ...defaultConfig, ...customConfig };
 
