@@ -56,9 +56,6 @@ const axiosInterface: NetworkInterface = (
           } else {
             cb(error);
           }
-        })
-        .then(function () {
-          // always executed
         });
 
     const abort = () => cancel();
