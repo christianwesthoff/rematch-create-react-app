@@ -48,8 +48,6 @@ export type QueryState = {
   maps?: Maps
 };
 
-export type TypedQueryState<_> = QueryState;
-
 export type CredentialOption = 'include' | 'same-origin' | 'omit';
 
 export type RequestOptions = {
