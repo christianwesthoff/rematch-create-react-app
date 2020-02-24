@@ -1,36 +1,17 @@
-import { bindActionCreators, Dispatch } from 'redux'
-import { createBrowserHistory } from 'history'
-import {
-	routerReducer,
-	push,
-	replace,
-	go,
-	goBack,
-	goForward,
-	routerMiddleware,
-} from 'react-router-redux'
+import { createHashHistory } from 'history'
+import { connectRouter, routerMiddleware } from 'connected-react-router'
 import { Plugin } from '@rematch/core'
+
+export const history = createHashHistory();
 
 const getRouterModel = ():any => {
 	return {
-		baseReducer: routerReducer,
-		effects: (dispatch: Dispatch) =>
-			bindActionCreators(
-				{
-					push,
-					replace,
-					go,
-					goBack,
-					goForward,
-				},
-				dispatch
-			)
+		baseReducer: connectRouter(history),
 	};
 }
 
 const routerPlugin = (name: string): Plugin => {
-	const browserHistory = createBrowserHistory()
-	const middleware = routerMiddleware(browserHistory)
+	const middleware = routerMiddleware(history)
 
 	return {
 		config: {
@@ -38,12 +19,7 @@ const routerPlugin = (name: string): Plugin => {
 				[name]: getRouterModel(),
 			},
 		},
-		middleware,
-		onStoreCreated() {
-			return {
-				browserHistory,
-			}
-		}
+		middleware
 	}
 }
 
