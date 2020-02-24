@@ -19,6 +19,7 @@ const subscribe = (
   if (typeof actionListenerContainer.listener !== 'function') {
     throw new Error('Listener must be a function.');
   }
+  
   listenerContainer.push(actionListenerContainer);
   return () => {
     const index = listenerContainer.indexOf(actionListenerContainer);
