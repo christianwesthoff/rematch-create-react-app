@@ -6,6 +6,7 @@ import selectPlugin from '@rematch/select'
 import queryPlugin from 'extensions/rematch-request'
 import subscribePlugin from 'extensions/rematch-subscribe'
 import networkInterface from 'extensions/rematch-request/network'
+import routerPlugin from 'extensions/rematch-router'
 
 export const store = init({
 	models,
@@ -13,6 +14,7 @@ export const store = init({
 		immerPlugin(), 
 		selectPlugin(),
 		subscribePlugin(),
+		routerPlugin("router"),
 		queryPlugin({ networkInterface, entitiesModelName: "entities", queriesModelName: "queries", mutationsModelName: "mutations" })
 	]
 });

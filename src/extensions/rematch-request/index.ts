@@ -9,9 +9,8 @@ import { queryAsync, mutateAsync, invalidateQuery } from './actions'
 import Config from './config'
 
 const getMutationsSelector = (mutationsModelName: string) => (state: any) => state[mutationsModelName];
-const getMutationsModel = (mutationsModelName: string): any => { 
+const getMutationsModel = (): any => { 
 	return {
-		name: mutationsModelName,
 		baseReducer: mutationsReducer,
 		effects: (dispatch: any) => bindActionCreators({
 			mutateAsync,
@@ -20,9 +19,8 @@ const getMutationsModel = (mutationsModelName: string): any => {
 }
 
 const getQueriesSelector = (queriesModelName: string) => (state: any) => state[queriesModelName];
-const getQueriesModel = (queriesModelName: string): any => { 
+const getQueriesModel = (): any => { 
 	return {
-		name: queriesModelName,
 		baseReducer: queriesReducer,
 		effects: (dispatch: any) => bindActionCreators({
 			queryAsync,
@@ -32,9 +30,8 @@ const getQueriesModel = (queriesModelName: string): any => {
 }
 
 const getEntitiesSelector = (entitiesModelName: string) => (state: any) => state[entitiesModelName];
-const getEntitiesModel = (entitiesModelName: string): any => { 
+const getEntitiesModel = (): any => { 
 	return {
-		name: entitiesModelName, 
 		baseReducer: entitiesReducer
 	}
 };
@@ -53,7 +50,7 @@ export default (config: RematchQueryConfig): Plugin => {
 	
 	const queriesSelector = getQueriesSelector(queriesModelName);
 	Config.queriesSelector = queriesSelector;
-
+	
 	const entitiesSelector = getEntitiesSelector(entitiesModelName);
 	Config.entitiesSelector = entitiesSelector;
 
@@ -66,13 +63,12 @@ export default (config: RematchQueryConfig): Plugin => {
 		mutationsSelector,
 		additionalHeadersSelector, 
 		customConfig) as Middleware;
-		
 	return {
 		config: {
 			models: {
-				[queriesModelName]: getQueriesModel(queriesModelName),
-				[entitiesModelName]: getEntitiesModel(entitiesModelName),
-				[mutationsModelName]: getMutationsModel(mutationsModelName)
+				[queriesModelName]: getQueriesModel(),
+				[entitiesModelName]: getEntitiesModel(),
+				[mutationsModelName]: getMutationsModel()
 			},
 		},
 		middleware
