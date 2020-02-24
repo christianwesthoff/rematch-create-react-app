@@ -31,19 +31,10 @@ export const issuesDisplay = {
     reducers: {
         displayRepo(state: CurrentDisplayState, payload: CurrentRepo) {
             const { org, repo } = payload;
-            state.org = org;
-            state.repo = repo;
-            return state;
+            return { ...state, org, repo };
         },
         setCurrentPage(state: CurrentDisplayState, page: number) {
-            state.page = page;
-            return state;
-        },
-        setCurrentDisplayType(state: CurrentDisplayState, payload: CurrentDisplayPayload) {
-            const { displayType, issueId = null } = payload
-            state.displayType = displayType;
-            state.issueId = issueId;
-            return state;
+            return { ...state, page };
         }
     }
 }

@@ -3,22 +3,20 @@ import { useSelector, useDispatch } from 'react-redux'
 
 import { RepoSearchForm } from 'features/repoSearch/RepoSearchForm'
 import { IssuesListPage } from 'features/issuesList/IssuesListPage'
-import { IssueDetailsPage } from 'features/issueDetails/IssueDetailsPage'
-import { CurrentRepo, CurrentDisplayPayload } from 'models/issuesDisplay'
+import { CurrentRepo } from 'models/issuesDisplay'
 import { RootDispatch, RootState } from 'app/store'
 
 const mapDispatch = (dispatch: RootDispatch) => ({
   displayRepo: (payload:CurrentRepo) => dispatch.issuesDisplay.displayRepo(payload),
-  setCurrentDisplayType: (payload:CurrentDisplayPayload) => dispatch.issuesDisplay.setCurrentDisplayType(payload),
   setCurrentPage: (page:number) => dispatch.issuesDisplay.setCurrentPage(page),
   invalidateQuery:(payload:Array<any>) => (dispatch as any).queries.invalidateQuery(payload)
 })
 
-const App: React.FC = () => {
+const Issues: React.FC = () => {
   const dispatch: RootDispatch = useDispatch()
-  const { displayRepo, setCurrentDisplayType, setCurrentPage, invalidateQuery } = mapDispatch(dispatch);
+  const { displayRepo, setCurrentPage, invalidateQuery } = mapDispatch(dispatch);
   
-  const { org, repo, displayType, page, issueId } = useSelector(
+  const { org, repo, page } = useSelector(
     (state: RootState) => state.issuesDisplay
   )
 
@@ -30,23 +28,12 @@ const App: React.FC = () => {
     setCurrentPage(page);
   }
 
-  const showIssuesList = () => {
-    setCurrentDisplayType({ displayType: 'issues' });
-  }
-
-  const showIssueComments = (issueId: number) => {
-    setCurrentDisplayType({ displayType: 'comments', issueId });
-  }
-
   const setInvalidateQuery = (page: number) =>  invalidateQuery([`https://api.github.com/repos/${org}/${repo}/issues?per_page=25&page=${page}`])
 
   const setInvalidateRepo = () => invalidateQuery([`${org}/${repo}/issues`])
 
 
-  let content
-
-  if (displayType === 'issues') {
-    content = (
+  let content = (
       <React.Fragment>
         <RepoSearchForm
           org={org}
@@ -60,25 +47,11 @@ const App: React.FC = () => {
           org={org}
           repo={repo}
           page={page}
-          setJumpToPage={setJumpToPage}
-          showIssueComments={showIssueComments}
         />
       </React.Fragment>
     )
-  } else if (issueId !== null) {
-    const key = `${org}/${repo}/${issueId}`
-    content = (
-      <IssueDetailsPage
-        key={key}
-        org={org}
-        repo={repo}
-        issueId={issueId}
-        showIssuesList={showIssuesList}
-      />
-    )
-  }
 
-  return <div className="App">{content}</div>
+  return <div>{content}</div>
 }
 
-export default App
+export default Issues
