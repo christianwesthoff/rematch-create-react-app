@@ -144,7 +144,7 @@ export type NetworkOptions = {
 export type NetworkInterface = (
   url: Url,
   method: HttpMethod,
-  networkOptions: NetworkOptions,
+  networkOptions: NetworkOptions
 ) => NetworkHandler;
 
 export type AdditionalHeadersSelector = (state: any) => { [key: string]: string };

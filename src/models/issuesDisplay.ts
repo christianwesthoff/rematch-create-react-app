@@ -1,12 +1,3 @@
-export interface CurrentDisplay {
-    displayType: 'issues' | 'comments'
-    issueId: number | null
-}
-
-export interface CurrentDisplayPayload {
-    displayType: 'issues' | 'comments'
-    issueId?: number
-}
 
 export interface CurrentRepo {
     org: string
@@ -15,15 +6,13 @@ export interface CurrentRepo {
 
 type CurrentDisplayState = {
     page: number
-} & CurrentDisplay &
+} & 
 CurrentRepo
 
 let issuesDisplayInitialState: CurrentDisplayState = {
     org: 'dotnet',
     repo: 'core',
-    page: 1,
-    displayType: 'issues',
-    issueId: null
+    page: 1
 }
 
 export const issuesDisplay = {  

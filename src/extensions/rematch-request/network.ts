@@ -33,7 +33,7 @@ const getInstance = (headers?: RequestHeaders, withCredentials?: boolean, cancel
     cancelToken
 });
 
-const axiosInterface: NetworkInterface = (
+const axiosInterface = (configure?: ((instance:AxiosInstance) => AxiosInstance) | undefined): NetworkInterface => (
     url,
     method,
     { body, headers, credentials } = {},
@@ -41,7 +41,8 @@ const axiosInterface: NetworkInterface = (
 
     const { token, cancel } = getCancelToken();
     const instance = getInstance(headers, credentials === 'include', token);
-    const request = getRequest(instance, url, method, body);
+    const configured = configure ? configure(instance) : instance;
+    const request = getRequest(configured, url, method, body);
 
     const execute = (cb: any) =>
       request.then(function (response) {

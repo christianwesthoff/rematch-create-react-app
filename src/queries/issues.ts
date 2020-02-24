@@ -1,5 +1,27 @@
-import { Issue } from "api/githubAPI";
 import { asRecords } from "utils/normalizeUtils";
+
+export interface Label {
+  id: number
+  name: string
+  color: string
+}
+
+export interface User {
+  login: string
+  avatar_url: string
+}
+
+export interface Issue {
+  id: number
+  title: string
+  number: number
+  user: User
+  body: string
+  labels: Label[]
+  comments_url: string
+  state: 'open' | 'closed'
+  comments: number
+}
 
 export const getIssuesQuery = (
     org: string,
