@@ -6,8 +6,8 @@ type ActionListenerContainer = {
     listener: Listener;
   };
 
-const _actionsSubscribedBefore: Array<ActionListenerContainer> = [];
-const _actionsSubscribedAfter: Array<ActionListenerContainer> = [];
+const actionsSubscribedBefore: Array<ActionListenerContainer> = [];
+const actionsSubscribedAfter: Array<ActionListenerContainer> = [];
 
 const subscribe = (
   actionListenerContainer: ActionListenerContainer,
@@ -28,12 +28,12 @@ const subscribe = (
 
 export const subscribeBefore = (action: ActionType, listener: Listener) => {
   const actionListenerContainer = { action, listener };
-  return subscribe(actionListenerContainer, _actionsSubscribedBefore);
+  return subscribe(actionListenerContainer, actionsSubscribedBefore);
 };
 
 export const subscribeAfter = (action: ActionType, listener: Listener) => {
   const actionListenerContainer = { action, listener };
-  return subscribe(actionListenerContainer, _actionsSubscribedAfter);
+  return subscribe(actionListenerContainer, actionsSubscribedAfter);
 };
 
 const callActionListeners = (
@@ -52,9 +52,9 @@ const callActionListeners = (
 const subscribeMiddleware: Middleware = ({ dispatch }: MiddlewareAPI) => (
     next: Dispatch
   ) => <A extends Action>(action: A) => {
-    callActionListeners(action, dispatch, _actionsSubscribedBefore);
+    callActionListeners(action, dispatch, actionsSubscribedBefore);
     const result = next(action);
-    callActionListeners(action, dispatch, _actionsSubscribedAfter);
+    callActionListeners(action, dispatch, actionsSubscribedAfter);
     return result;
   };
   
