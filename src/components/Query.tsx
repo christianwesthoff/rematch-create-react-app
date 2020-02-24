@@ -5,9 +5,7 @@ import { RepoSearchForm } from 'features/repoSearch/RepoSearchForm'
 import { IssuesListPage } from 'features/issuesList/IssuesListPage'
 import { IssueDetailsPage } from 'features/issueDetails/IssueDetailsPage'
 import { CurrentRepo, CurrentDisplayPayload } from 'models/issuesDisplay'
-import { RootDispatch, RootState } from './store'
-
-import './App.css'
+import { RootDispatch, RootState } from 'app/store'
 
 const mapDispatch = (dispatch: RootDispatch) => ({
   displayRepo: (payload:CurrentRepo) => dispatch.issuesDisplay.displayRepo(payload),
