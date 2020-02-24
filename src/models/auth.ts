@@ -26,7 +26,6 @@ export interface Credentials {
 
 
 const authService = new AuthService();
-
 export const auth = {  
     state: authInitialState,
     reducers: {
