@@ -14,10 +14,10 @@ const subscribe = (
   listenerContainer: ActionListenerContainer[]
 ): () => void => {
   if (!actionListenerContainer.action) {
-    throw new Error('Expected the action to be a string.');
+    throw new Error('Missing action name.');
   }
   if (typeof actionListenerContainer.listener !== 'function') {
-    throw new Error('Expected the listener to be a function.');
+    throw new Error('Listener must be a function.');
   }
   listenerContainer.push(actionListenerContainer);
   return () => {
