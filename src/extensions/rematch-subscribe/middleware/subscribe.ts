@@ -11,7 +11,7 @@ const _actionsSubscribedAfter: Array<ActionListenerContainer> = [];
 
 const subscribe = (
   actionListenerContainer: ActionListenerContainer,
-  listenerContainer: ActionListenerContainer[]
+  listenerContainer: Array<ActionListenerContainer>
 ): () => void => {
   if (!actionListenerContainer.action) {
     throw new Error('Missing action name.');
