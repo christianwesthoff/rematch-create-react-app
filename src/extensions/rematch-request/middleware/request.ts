@@ -51,8 +51,8 @@ const defaultConfig: RequestConfig = {
   },
   retryableStatusCodes: [
     statusCodes.UNKNOWN, // normally means a failed connection
-    statusCodes.QUERY_TIMEOUT,
-    statusCodes.TOO_MANY_QUERYS, // hopefully backoff stops this getting worse
+    statusCodes.REQUEST_TIMEOUT,
+    statusCodes.TOO_MANY_REQUESTS, // hopefully backoff stops this getting worse
     statusCodes.SERVICE_UNAVAILABLE,
     statusCodes.GATEWAY_TIMEOUT,
   ],
