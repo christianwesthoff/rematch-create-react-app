@@ -37,7 +37,7 @@ const useQuery = <TQueryConfig extends QueryConfig>(
         if (queryConfig) {
             return {
                 ...queryConfig,
-                unstable_preDispatchCallback: finishedCallback,
+                preDispatchCallback: finishedCallback,
                 retry: true,
               };
         }

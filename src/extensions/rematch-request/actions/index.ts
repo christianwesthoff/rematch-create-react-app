@@ -152,7 +152,7 @@ export const queryAsync = ({
   map,
   url,
   // /* eslint-disable-next-line @typescript-eslint/camelcase */
-  unstable_preDispatchCallback,
+  preDispatchCallback,
 }: QueryConfig): QueryAsyncAction => {
   return {
     type: actionTypes.QUERY_ASYNC,
@@ -167,7 +167,7 @@ export const queryAsync = ({
     map,
     url,
     // /* eslint-disable-next-line @typescript-eslint/camelcase */
-    unstable_preDispatchCallback,
+    preDispatchCallback,
   };
 };
 

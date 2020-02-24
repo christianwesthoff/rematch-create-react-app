@@ -15,7 +15,7 @@ import httpMethods, { HttpMethod } from '../constants/http-methods';
 import * as statusCodes from '../constants/status-codes';
 import { getQueryKey, getMutationKey } from '../lib/request-key';
 import { updateEntities, updateMaps } from '../lib/update';
-import { Action, PublicAction } from '../actions';
+import { PublicAction } from '../actions';
 import {
   ActionPromiseValue,
   EntitiesSelector,
@@ -35,13 +35,6 @@ import {
 import { State as QueriesState } from '../reducers/queries';
 import { State as MutationsState } from '../reducers/mutations';
 
-type ReduxStore = {
-  dispatch: (action: Action) => any;
-  getState: () => any;
-};
-
-type Next = (action: PublicAction) => any;
-
 const defaultConfig: RequestConfig = {
   defaultHeaders: {},
   backoff: {
@@ -59,7 +52,7 @@ const defaultConfig: RequestConfig = {
 };
 
 const getQueryKeys = (queries: QueriesState): Array<RequestKey> => {
-  const requestKeys: RequestKey[] = [];
+  const requestKeys: Array<RequestKey> = [];
 
   for (const requestKey in queries) {
     requestKeys.push(requestKey)
@@ -131,16 +124,16 @@ const queryMiddleware = (
   mutationsSelector: MutationsSelector,
   additionalHeadersSelector?: AdditionalHeadersSelector | undefined,
   customConfig?: RequestConfig | undefined
-):Middleware => {
+): Middleware => {
 
-  const networkHandlersByrequestKey: { [key: string]: NetworkHandler } = {};
+  const networkHandlersByRequestKey: { [key: string]: NetworkHandler } = {};
 
   const abortQuery = (requestKey: string) => {
-    const networkHandler = networkHandlersByrequestKey[requestKey];
+    const networkHandler = networkHandlersByRequestKey[requestKey];
 
     if (networkHandler) {
       networkHandler.abort();
-      delete networkHandlersByrequestKey[requestKey];
+      delete networkHandlersByRequestKey[requestKey];
     }
   };
 
@@ -198,7 +191,7 @@ const queryMiddleware = (
                 credentials: options.credentials,
               });
 
-              networkHandlersByrequestKey[requestKey] = networkHandler;
+              networkHandlersByRequestKey[requestKey] = networkHandler;
 
               dispatch(
                 mutateStart({
@@ -223,8 +216,8 @@ const queryMiddleware = (
 
                 const end = new Date();
                 const duration = +end - +start;
-                if (action.unstable_preDispatchCallback) {
-                  action.unstable_preDispatchCallback();
+                if (action.preDispatchCallback) {
+                  action.preDispatchCallback();
                 }
 
                 if (err || !isStatusOk(status)) {
@@ -278,7 +271,7 @@ const queryMiddleware = (
                   });
                 }
 
-                delete networkHandlersByrequestKey[requestKey];
+                delete networkHandlersByRequestKey[requestKey];
               });
             };
 
@@ -343,7 +336,7 @@ const queryMiddleware = (
                 credentials: options.credentials,
               });
 
-              networkHandlersByrequestKey[requestKey] = networkHandler;
+              networkHandlersByRequestKey[requestKey] = networkHandler;
 
               dispatch(
                 requestStart({
@@ -371,8 +364,8 @@ const queryMiddleware = (
                 let transformed;
                 let newEntities;
                 let maps;
-                if (action.unstable_preDispatchCallback) {
-                  action.unstable_preDispatchCallback();
+                if (action.preDispatchCallback) {
+                  action.preDispatchCallback();
                 }
 
                 if (err || !isStatusOk(status)) {
@@ -430,7 +423,7 @@ const queryMiddleware = (
                   });
                 }
 
-                delete networkHandlersByrequestKey[requestKey];
+                delete networkHandlersByRequestKey[requestKey];
               });
             };
 

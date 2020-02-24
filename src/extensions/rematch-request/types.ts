@@ -65,7 +65,7 @@ export type MutationConfig = {
   options?: RequestOptions;
   requestKey?: RequestKey;
   retry?: boolean;
-  unstable_preDispatchCallback?: () => void | undefined;
+  preDispatchCallback?: () => void | undefined;
   url: Url;
   triggerPatterns?: Array<string> | undefined,
 };
@@ -80,7 +80,7 @@ export type QueryConfig = {
   update?: Update;
   map?: Map;
   retry?: boolean;
-  unstable_preDispatchCallback?: () => void | undefined;
+  preDispatchCallback?: () => void | undefined;
   url: Url;
 };
 
