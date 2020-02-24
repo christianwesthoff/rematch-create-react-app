@@ -6,8 +6,9 @@ import queryPlugin from 'extensions/rematch-request'
 import subscribePlugin from 'extensions/rematch-subscribe'
 import buildNetworkInterface from 'extensions/rematch-request/network'
 import routerPlugin from 'extensions/rematch-router'
+import { AxiosInstance } from 'axios'
 
-const networkInterface = buildNetworkInterface((client) => {
+const configureAxiosClient = (client: AxiosInstance): AxiosInstance => {
 	client.interceptors.request.use(config => {
 		const { getState } = store;
 		const { auth } = getState();
@@ -34,8 +35,9 @@ const networkInterface = buildNetworkInterface((client) => {
 		}
 	);
 	return client;
-})
+}
 
+const networkInterface = buildNetworkInterface(configureAxiosClient)
 export const store = init({
 	models,
 	plugins: [
