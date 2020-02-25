@@ -2,16 +2,34 @@ import React from 'react'
 import { History } from 'history'
 import { ConnectedRouter } from 'connected-react-router'
 import routes from 'routes'
+import NotificationsSystem from 'reapop';
+import theme from './reapop-theme'
 
 interface AppProps {
   history: History;
 }
 
+const reapopTheme = {
+  smallScreenMin: 0,
+  notificationsSystem: {
+    className: {}
+  },
+  notificationsContainer: {
+    className: {}
+  },
+  notification: {
+    className: {}
+  }
+}
+
 const App = ({ history }: AppProps) => {
   return (
+    <>
+    <NotificationsSystem theme={theme}/>
     <ConnectedRouter history={history}>
       { routes }
     </ConnectedRouter>
+    </>
   )
 }
 

@@ -5,7 +5,8 @@ import selectPlugin from '@rematch/select'
 import queryPlugin from 'rematch/rematch-request'
 import subscribePlugin from 'rematch/rematch-subscribe'
 import buildNetworkInterface from 'rematch/rematch-request/network'
-import routerPlugin from 'rematch/rematch-router'
+import routerPlugin from 'rematch/rematch-react-router'
+import reapopPlugin from 'rematch/rematch-reapop'
 import { AxiosInstance } from 'axios'
 import { ReduxApi } from 'rematch/rematch-request/types'
 
@@ -40,12 +41,23 @@ const configureAxiosClient = (client: AxiosInstance, reduxApi?: ReduxApi | undef
 }
 
 const networkInterface = buildNetworkInterface(configureAxiosClient)
+
+const defaultNotification = {
+	status: 'info',
+	position: 'tr',
+	dismissible: true,
+	dismissAfter: 2000,
+	allowHTML: true,
+	closeButton: true
+};
+
 export const store = init({
 	models,
 	plugins: [
 		selectPlugin(),
 		subscribePlugin(),
 		routerPlugin("router"),
+		reapopPlugin("notifications", defaultNotification),
 		queryPlugin({ networkInterface, entitiesModelName: "entities", queriesModelName: "queries", mutationsModelName: "mutations" })
 	]
 });
