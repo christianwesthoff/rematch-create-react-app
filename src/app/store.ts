@@ -1,13 +1,13 @@
 import { init } from '@rematch/core'
-import { RematchRootDispatch, RematchRootState } from 'extensions/util'
+import { RematchRootDispatch, RematchRootState } from 'rematch/util'
 import * as models from 'models'
 import selectPlugin from '@rematch/select'
-import queryPlugin from 'extensions/rematch-request'
-import subscribePlugin from 'extensions/rematch-subscribe'
-import buildNetworkInterface from 'extensions/rematch-request/network'
-import routerPlugin from 'extensions/rematch-router'
+import queryPlugin from 'rematch/rematch-request'
+import subscribePlugin from 'rematch/rematch-subscribe'
+import buildNetworkInterface from 'rematch/rematch-request/network'
+import routerPlugin from 'rematch/rematch-router'
 import { AxiosInstance } from 'axios'
-import { ReduxApi } from 'extensions/rematch-request/types'
+import { ReduxApi } from 'rematch/rematch-request/types'
 
 const configureAxiosClient = (client: AxiosInstance, reduxApi?: ReduxApi | undefined): AxiosInstance => {
 	if (!reduxApi) return client;
@@ -49,6 +49,9 @@ export const store = init({
 		queryPlugin({ networkInterface, entitiesModelName: "entities", queriesModelName: "queries", mutationsModelName: "mutations" })
 	]
 });
+
+store.dispatch.auth.init();
+
 export type RootState = RematchRootState<typeof models>
 
 export type RootDispatch = RematchRootDispatch<typeof models>;

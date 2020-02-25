@@ -1,6 +1,6 @@
 import React from 'react'
 
-import useQuery from 'extensions/rematch-request/react/use-query'
+import useQuery from 'rematch/rematch-request/react/use-query'
 import { getIssuesQuery } from 'queries/issues'
 
 interface ILProps {
