@@ -9,19 +9,6 @@ interface AppProps {
   history: History;
 }
 
-const reapopTheme = {
-  smallScreenMin: 0,
-  notificationsSystem: {
-    className: {}
-  },
-  notificationsContainer: {
-    className: {}
-  },
-  notification: {
-    className: {}
-  }
-}
-
 const App = ({ history }: AppProps) => {
   return (
     <>
