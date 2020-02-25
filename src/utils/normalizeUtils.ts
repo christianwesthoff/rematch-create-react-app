@@ -1,6 +1,6 @@
-export const asRecords = <K extends string|number|symbol, T extends any>(list: Array<T>, selector: (elem:T) => K):Record<K, T> => 
-    list.reduce((acc, curr) => {
-        const key = selector(curr);
+export const asRecords = <K extends string|number|symbol, T extends any>(array: Array<T>, keyFn: (elem:T) => K):Record<K, T> => 
+    array.reduce((acc, curr) => {
+        const key = keyFn(curr);
         acc[key] = curr;
         return acc;
-    }, {} as any);
+    }, {} as T);

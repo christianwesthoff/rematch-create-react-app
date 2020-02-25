@@ -1,4 +1,4 @@
-import AuthService from 'services/auth'
+import authService from 'services/auth'
 import { RootDispatch, RootState } from 'app/store';
 import * as ls from 'local-storage'
 
@@ -21,73 +21,77 @@ export interface UserCredentials {
     password: string
 }
 
-
 export interface Credentials {
     refreshToken?: string | undefined,
-    accessToken?: string | undefined
+    accessToken?: string | undefined,
+    idToken?: string | undefined,
+    expiresIn?: number | undefined,
+    issuedAt?: number | undefined
+
 }
 
-
-const authService = new AuthService();
+const STORAGE_KEY = 'auth';
 export const auth = {  
     state: authInitialState,
     reducers: {
-        setLoading(_: AuthState) {
-            return { isAuthorized: false, isLoading: true, isError: false, isInit: false };
+        setTokenLoading(state: AuthState, loading: boolean) {
+            return { ...state, loading };
         },
-        setError(_: AuthState, error: string) {
+        setTokenError(_: AuthState, error: string) {
             return { isAuthorized: false, isLoading: false, isError: true, isInit: false, error };
         },
         setToken(_: AuthState, credentials: Credentials) {
             return { credentials, isLoading: false, isInit: false
                 , isError: false };
         },
-        reset(_: AuthState) {
+        resetToken(_: AuthState) {
             return authInitialState;
         }
     },
     effects: (dispatch: RootDispatch) => ({
         async init() {
-            const credentials = ls.get<Credentials>("auth");
+            const credentials = ls.get<Credentials>(STORAGE_KEY);
             dispatch.auth.setToken(credentials)
         },
         async login(credentials: UserCredentials) {
             const { userName, password } = credentials;
-            dispatch.auth.setLoading();
+            dispatch.auth.setTokenLoading(true);
             try {
-                const { refreshToken, accessToken } = await authService.makeTokenRequest(userName, password);
-                dispatch.auth.setToken({ refreshToken, accessToken });
-                ls.set<Credentials>("auth", { refreshToken, accessToken });
+                const { refreshToken, accessToken, idToken, expiresIn, issuedAt, } = await authService.makeTokenRequest(userName, password);
+                const credentials = { refreshToken, accessToken, idToken, expiresIn, issuedAt };
+                dispatch.auth.setToken(credentials);
+                ls.set<Credentials>(STORAGE_KEY, credentials);
             } catch (error) {
-                dispatch.auth.setError(error);
+                dispatch.auth.setTokenError(error);
             }
         },
         async refresh(rootState: RootState) {
             const { credentials } = rootState.auth;
-            if (credentials) {
+            if (credentials && credentials.refreshToken) {
                 const { refreshToken } = credentials;
-                dispatch.auth.setLoading();
+                dispatch.auth.setTokenLoading(true);
                 try {
-                    const { accessToken } = await authService.makeRefreshTokenRequest(refreshToken!);
-                    dispatch.auth.setToken({ refreshToken, accessToken });
-                    ls.set<Credentials>("auth", { refreshToken, accessToken });
+                    const { accessToken } = await authService.makeRefreshTokenRequest(refreshToken);
+                    const newCredentials = { ...credentials, accessToken };
+                    dispatch.auth.setToken(newCredentials);
+                    ls.set<Credentials>(STORAGE_KEY, newCredentials);
                 } catch (error) {
-                    dispatch.auth.setError(error);
+                    dispatch.auth.setTokenError(error);
                 }
             }
         },
         async logout(rootState: RootState) {
             const { credentials } = rootState.auth;
-            if (credentials) {
+            if (credentials && credentials.refreshToken) {
                 const { refreshToken } = credentials;
-                dispatch.auth.setLoading();
+                dispatch.auth.setTokenLoading(true);
                 try {
-                    await authService.makeRevokeTokenRequest(refreshToken!);
-                    dispatch.auth.reset();
+                    await authService.makeRevokeTokenRequest(refreshToken);
+                    dispatch.auth.resetToken();
                 } catch (error) {
-                    dispatch.auth.setError(error);
+                    dispatch.auth.setTokenError(error);
                 }
-                ls.remove("auth");
+                ls.remove(STORAGE_KEY);
             }
         }
     })
