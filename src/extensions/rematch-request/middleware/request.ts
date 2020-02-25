@@ -189,7 +189,7 @@ const queryMiddleware = (
                 body,
                 headers: { ...options.headers, ...config.defaultHeaders, ...additionalHeaders },
                 credentials: options.credentials,
-              });
+              }, { dispatch, getState });
 
               networkHandlersByRequestKey[requestKey] = networkHandler;
 
@@ -334,7 +334,7 @@ const queryMiddleware = (
                 body,
                 headers: { ...options.headers, ...config.defaultHeaders, ...additionalHeaders },
                 credentials: options.credentials,
-              });
+              }, { dispatch, getState });
 
               networkHandlersByRequestKey[requestKey] = networkHandler;
 

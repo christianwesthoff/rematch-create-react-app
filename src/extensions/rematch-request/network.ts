@@ -1,4 +1,4 @@
-import { NetworkInterface, RequestHeaders } from "./types";
+import { NetworkInterface, RequestHeaders, ReduxApi } from "./types";
 import HttpMethods, { HttpMethod } from './constants/http-methods';
 import axios, { AxiosInstance, CancelToken } from 'axios';
 
@@ -25,7 +25,7 @@ const getRequest = (instance: AxiosInstance, url: string, method: HttpMethod, bo
         throw new Error(`Unsupported HTTP method: ${method}`);
     }
   };
-  
+
 const getInstance = (headers?: RequestHeaders, withCredentials?: boolean, cancelToken?: CancelToken, baseUrl?: string): AxiosInstance => axios.create({
     baseURL: baseUrl,
     withCredentials,
@@ -33,15 +33,16 @@ const getInstance = (headers?: RequestHeaders, withCredentials?: boolean, cancel
     cancelToken
 });
 
-const axiosInterface = (configure?: ((instance:AxiosInstance) => AxiosInstance) | undefined): NetworkInterface => (
+const axiosInterface = (configure?: ((instance:AxiosInstance, reduxApi?: ReduxApi) => AxiosInstance) | undefined): NetworkInterface => (
     url,
     method,
     { body, headers, credentials } = {},
+    reduxApi,
 ) => {
 
     const { token, cancel } = getCancelToken();
     const instance = getInstance(headers, credentials === 'include', token);
-    const configured = configure ? configure(instance) : instance;
+    const configured = configure ? configure(instance, reduxApi) : instance;
     const request = getRequest(configured, url, method, body);
 
     const execute = (cb: any) =>

@@ -1,5 +1,5 @@
 import { createBrowserHistory as createHistory } from 'history'
-import { connectRouter, routerMiddleware, push } from 'connected-react-router'
+import { connectRouter, routerMiddleware, push, replace, go, goBack, goForward } from 'connected-react-router'
 import { Plugin } from '@rematch/core'
 import { bindActionCreators } from 'redux'
 
@@ -9,7 +9,11 @@ const getRouterModel = ():any => {
 	return {
 		baseReducer: connectRouter(history),
 		effects: (dispatch: any) => bindActionCreators({
-			push
+			push,
+			replace,
+			go,
+			goBack,
+			goForward
 		}, dispatch)
 	};
 }

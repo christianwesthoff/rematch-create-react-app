@@ -141,10 +141,16 @@ export type NetworkOptions = {
   credentials?: CredentialOption | undefined;
 };
 
+export interface ReduxApi {
+  dispatch: any ,
+  getState: () => any
+}
+
 export type NetworkInterface = (
   url: Url,
   method: HttpMethod,
-  networkOptions: NetworkOptions
+  networkOptions: NetworkOptions,
+  reduxApi?: ReduxApi | undefined
 ) => NetworkHandler;
 
 export type AdditionalHeadersSelector = (state: any) => { [key: string]: string };

@@ -7,10 +7,12 @@ import subscribePlugin from 'extensions/rematch-subscribe'
 import buildNetworkInterface from 'extensions/rematch-request/network'
 import routerPlugin from 'extensions/rematch-router'
 import { AxiosInstance } from 'axios'
+import { ReduxApi } from 'extensions/rematch-request/types'
 
-const configureAxiosClient = (client: AxiosInstance): AxiosInstance => {
+const configureAxiosClient = (client: AxiosInstance, reduxApi?: ReduxApi | undefined): AxiosInstance => {
+	if (!reduxApi) return client;
 	client.interceptors.request.use(config => {
-		const { getState } = store;
+		const { getState } = reduxApi;
 		const { auth } = getState();
 		if (auth && auth.credentials) {
 			config.headers.authorization = `Bearer ${auth.credentials.accessToken}`;
@@ -20,7 +22,7 @@ const configureAxiosClient = (client: AxiosInstance): AxiosInstance => {
 	client.interceptors.response.use(
 		res => res,
 		async err => {
-		  const { dispatch, getState } = store;
+		  const { dispatch, getState } = reduxApi;
 		  if (err.config && err.response && err.response.status === 401) {
 			  await dispatch.auth.refresh();
 			  const { auth } = getState();
