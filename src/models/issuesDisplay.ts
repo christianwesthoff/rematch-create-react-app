@@ -18,11 +18,11 @@ const issuesDisplayInitialState: CurrentDisplayState = {
 export const issuesDisplay = {  
     state: issuesDisplayInitialState,
     reducers: {
-        displayRepo(state: CurrentDisplayState, payload: CurrentRepo) {
+        displayRepo(state: CurrentDisplayState, payload: CurrentRepo): CurrentDisplayState {
             const { org, repo } = payload;
             return { ...state, org, repo };
         },
-        setCurrentPage(state: CurrentDisplayState, page: number) {
+        setCurrentPage(state: CurrentDisplayState, page: number): CurrentDisplayState {
             return { ...state, page };
         }
     }

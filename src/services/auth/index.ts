@@ -8,12 +8,11 @@ import {
     StringMap,
     TokenRequest,
     BaseTokenRequestHandler,
-    FetchRequestor,
     RevokeTokenRequest,
     GRANT_TYPE_REFRESH_TOKEN,
     // AuthorizationRequest,
   } from '@openid/appauth';
-  
+import { AxiosRequestor } from './axiosRequestor'
   
 const GRANT_TYPE_PASSWORD = 'password';
 
@@ -56,7 +55,7 @@ export class AuthService {
       new LocalStorageBackend(),
       new StringUtils()
     );
-    this.tokenHandler = new CustomTokenRequestHandler(new FetchRequestor());
+    this.tokenHandler = new CustomTokenRequestHandler(new AxiosRequestor());
     this.config = new AuthorizationServiceConfiguration({
       authorization_endpoint: `${process.env.REACT_APP_OAUTH_AUTHORIZATION_ENDPOINT}`,
       token_endpoint: `${process.env.REACT_APP_OAUTH_TOKEN_ENDPOINT}`,
