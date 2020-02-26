@@ -1,24 +1,22 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
-
 import store from './app/store'
+import { history } from 'rematch/rematch-react-router'
+import App from './app'
 
-import './index.css'
 
 const render = () => {
-  const App = require('./app/App').default
-
   ReactDOM.render(
-    <Provider store={store}>
-      <App />
-    </Provider>,
+      <Provider store={store}>
+        <App history={history} />
+      </Provider>,
     document.getElementById('root')
   )
-}
+};
 
-render()
+render();
 
 if (process.env.NODE_ENV === 'development' && module.hot) {
-  module.hot.accept('./app/App', render)
+  module.hot.accept('./app', render);
 }
