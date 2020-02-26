@@ -51,7 +51,10 @@ export const auth = {
     effects: (dispatch: RootDispatch) => ({
         async init() {
             const credentials = ls.get<Credentials>(STORAGE_KEY);
-            dispatch.auth.setToken(credentials)
+            if (credentials && credentials.accessToken) {
+                await dispatch.userInfo.fetch(credentials.accessToken);
+            }
+            dispatch.auth.setToken(credentials);
         },
         async login(credentials: UserCredentials) {
             const { userName, password } = credentials;
@@ -59,8 +62,11 @@ export const auth = {
             try {
                 const { refreshToken, accessToken, idToken, expiresIn, issuedAt, } = await authService.makeTokenRequest(userName, password);
                 const credentials = { refreshToken, accessToken, idToken, expiresIn, issuedAt };
-                dispatch.auth.setToken(credentials);
+                if (credentials && credentials.accessToken) {
+                    await dispatch.userInfo.fetch(credentials.accessToken);
+                }
                 ls.set<Credentials>(STORAGE_KEY, credentials);
+                dispatch.auth.setToken(credentials);
             } catch (error) {
                 dispatch.auth.setTokenError(error);
             }
@@ -88,6 +94,7 @@ export const auth = {
                 try {
                     await authService.makeRevokeTokenRequest(refreshToken);
                     dispatch.auth.resetToken();
+                    dispatch.userInfo.resetClaims();
                 } catch (error) {
                     dispatch.auth.setTokenError(error);
                 }

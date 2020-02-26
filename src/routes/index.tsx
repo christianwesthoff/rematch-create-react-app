@@ -1,9 +1,9 @@
 import React from 'react'
 import { Route, Switch } from 'react-router'
-import Home from 'components/Home'
-import NavBar from 'components/NavBar'
-import NoMatch from 'components/NoMatch'
-import Query from 'components/GithubIssues'
+import Home from 'features/Home'
+import NavBar from 'routes/NavBar'
+import NoMatch from 'features/Error'
+import Query from 'features/Issues'
 
 const routes = (
   <div>

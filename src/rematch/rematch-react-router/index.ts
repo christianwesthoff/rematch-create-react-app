@@ -20,7 +20,6 @@ const getRouterModel = ():any => {
 
 const routerPlugin = (name: string): Plugin => {
 	const middleware = routerMiddleware(history)
-
 	return {
 		config: {
 			models: {

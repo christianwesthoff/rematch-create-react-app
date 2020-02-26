@@ -9,7 +9,7 @@ type CurrentDisplayState = {
 } & 
 CurrentRepo
 
-let issuesDisplayInitialState: CurrentDisplayState = {
+const issuesDisplayInitialState: CurrentDisplayState = {
     org: 'dotnet',
     repo: 'core',
     page: 1

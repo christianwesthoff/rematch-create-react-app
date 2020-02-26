@@ -19,7 +19,7 @@ const configureAxiosClient = (client: AxiosInstance, reduxApi?: ReduxApi | undef
 			config.headers.authorization = `Bearer ${auth.credentials.accessToken}`;
 		}
 		return config;
-	})
+	});
 	client.interceptors.response.use(
 		res => res,
 		async err => {

@@ -3,11 +3,11 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from 'app/store';
 
-const PrivateRoute = ({ children, ...rest }: any) => {
+const ProtectedRoute = ({ children, ...props }: any) => {
   const isAuthorized = useSelector((state: RootState) => state.auth.isAuthorized);
   return (
     <Route
-      {...rest}
+      { ...props }
       render={() =>
         isAuthorized ? (
           children
@@ -23,4 +23,4 @@ const PrivateRoute = ({ children, ...rest }: any) => {
   );
 };
 
-export default PrivateRoute;
+export default ProtectedRoute;

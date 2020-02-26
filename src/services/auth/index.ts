@@ -11,6 +11,7 @@ import {
     FetchRequestor,
     RevokeTokenRequest,
     GRANT_TYPE_REFRESH_TOKEN,
+    // AuthorizationRequest,
   } from '@openid/appauth';
   
   
@@ -151,5 +152,4 @@ export class AuthService {
   }
 }
 
-const instance = new AuthService();
-export default instance;
+export default new AuthService();

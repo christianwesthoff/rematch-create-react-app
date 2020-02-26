@@ -3,7 +3,7 @@ import { History } from 'history'
 import { ConnectedRouter } from 'connected-react-router'
 import routes from 'routes'
 import NotificationsSystem from 'reapop';
-import theme from './default-reapop-theme'
+import theme from '../configs/default-reapop-theme'
 
 interface AppProps {
   history: History;
