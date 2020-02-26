@@ -35,17 +35,17 @@ const STORAGE_KEY = 'auth';
 export const auth = {  
     state: authInitialState,
     reducers: {
-        setTokenLoading(state: AuthState, loading: boolean) {
-            return { ...state, loading };
+        setTokenLoading(state: AuthState, isLoading: boolean): AuthState {
+            return { ...state, isLoading };
         },
-        setTokenError(_: AuthState, error: string) {
+        setTokenError(_: AuthState, error: string): AuthState {
             return { isAuthorized: false, isLoading: false, isError: true, isInit: false, error };
         },
-        setToken(_: AuthState, credentials: Credentials) {
-            return { credentials,  isAuthorized: true, iisLoading: false, isInit: false, isError: false };
+        setToken(_: AuthState, credentials?: Credentials | undefined) : AuthState {
+            return { credentials,  isAuthorized: !!credentials, isLoading: false, isInit: false, isError: false };
         },
-        resetToken(_: AuthState) {
-            return { isLoading: false, isInit: false, isError: false };
+        resetToken(_: AuthState) : AuthState {
+            return { isLoading: false, isInit: false, isError: false, isAuthorized: false };
         }
     },
     effects: (dispatch: RootDispatch) => ({

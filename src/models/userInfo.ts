@@ -20,16 +20,16 @@ const claimsInitialState: UserInfoState = {
 export const userInfo = {  
     state: claimsInitialState,
     reducers: {
-        setClaimsLoading(state: UserInfoState, loading: boolean) {
-            return { ...state, loading };
+        setClaimsLoading(state: UserInfoState, isLoading: boolean): UserInfoState {
+            return { ...state, isLoading };
         },
-        setClaimsError(_: UserInfoState, error: string) {
+        setClaimsError(_: UserInfoState, error: string): UserInfoState {
             return { claims: {}, isLoading: false, isError: true, error };
         },
-        setClaims(_: UserInfoState, claims: Claims) {
+        setClaims(_: UserInfoState, claims: Claims): UserInfoState {
             return { claims, isLoading: false, isError: false };
         },
-        resetClaims(_: UserInfoState) {
+        resetClaims(_: UserInfoState): UserInfoState {
             return claimsInitialState;
         }
     },
