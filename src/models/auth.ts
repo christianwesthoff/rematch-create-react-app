@@ -39,18 +39,18 @@ export const auth = {
             return { ...state, isLoading };
         },
         setTokenError(_: AuthState, error: string): AuthState {
-            return { isAuthorized: false, isLoading: false, isError: true, isInit: false, error };
+            return { isAuthorized: false, isLoading: false, isError: true, isInit: true, error };
         },
         setToken(_: AuthState, credentials?: Credentials | undefined) : AuthState {
-            return { credentials,  isAuthorized: !!credentials, isLoading: false, isInit: false, isError: false };
+            return { credentials, isAuthorized: !!credentials, isLoading: false, isInit: true, isError: false };
         },
         resetToken(_: AuthState) : AuthState {
-            return { isLoading: false, isInit: false, isError: false, isAuthorized: false };
+            return { isLoading: false, isInit: true, isError: false, isAuthorized: false };
         }
     },
     effects: (dispatch: RootDispatch) => ({
         async init() {
-            const credentials = ls.get<Credentials>(STORAGE_KEY);
+            const credentials = ls.get<Credentials>(STORAGE_KEY) || undefined;
             if (credentials && credentials.accessToken) {
                 await dispatch.userInfo.fetch(credentials.accessToken);
             }
