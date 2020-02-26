@@ -46,7 +46,7 @@ export class AxiosRequestor extends Requestor {
           if (isJsonDataType || (contentType && contentType.indexOf('application/json') !== -1)) {
             return response.data();
           }
-          return "";
+          return undefined;
         } else {
           return Promise.reject(new AppAuthError(response.status.toString(), response.statusText));
         }
