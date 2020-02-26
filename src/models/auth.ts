@@ -3,6 +3,7 @@ import { RootDispatch, RootState } from 'app/store';
 import * as ls from 'local-storage'
 
 export interface AuthState {
+    isAuthorized: boolean,
     isInit: boolean,
     isLoading: boolean,
     isError: boolean,
@@ -11,7 +12,8 @@ export interface AuthState {
 }
 
 let authInitialState: AuthState = {
-    isInit: true,
+    isInit: false,
+    isAuthorized: false,
     isLoading: false,
     isError: false
 }
@@ -27,7 +29,6 @@ export interface Credentials {
     idToken?: string | undefined,
     expiresIn?: number | undefined,
     issuedAt?: number | undefined
-
 }
 
 const STORAGE_KEY = 'auth';
@@ -41,11 +42,10 @@ export const auth = {
             return { isAuthorized: false, isLoading: false, isError: true, isInit: false, error };
         },
         setToken(_: AuthState, credentials: Credentials) {
-            return { credentials, isLoading: false, isInit: false
-                , isError: false };
+            return { credentials,  isAuthorized: true, iisLoading: false, isInit: false, isError: false };
         },
         resetToken(_: AuthState) {
-            return authInitialState;
+            return { isLoading: false, isInit: false, isError: false };
         }
     },
     effects: (dispatch: RootDispatch) => ({

@@ -57,9 +57,9 @@ export class AuthService {
     );
     this.tokenHandler = new CustomTokenRequestHandler(new FetchRequestor());
     this.config = new AuthorizationServiceConfiguration({
-      authorization_endpoint: `https://localhost:5001/connect/authorize`,
-      token_endpoint: `https://localhost:5001/connect/token`,
-      revocation_endpoint: `https://localhost:5001/connect/revocation `,
+      authorization_endpoint: `${process.env.REACT_APP_OAUTH_AUTHORIZATION_ENDPOINT}`,
+      token_endpoint: `${process.env.REACT_APP_OAUTH_TOKEN_ENDPOINT}`,
+      revocation_endpoint: `${process.env.REACT_APP_OAUTH_REVOCATION_ENDPOINT}`,
     });
 
     this.handler.setAuthorizationNotifier(this.notifier);
@@ -88,16 +88,16 @@ export class AuthService {
     }
 
     const request = new TokenRequest({
-      client_id: `resourceownerclient`,
+      client_id: `${process.env.REACT_APP_OAUTH_CLIENT_ID}`,
       redirect_uri: ``,
       grant_type: GRANT_TYPE_PASSWORD,
       code: undefined,
       refresh_token: undefined,
       extras: Object.assign({}, 
-        { "username": userName }, 
-        { "password": password }, 
-        { "scope": "email openid dataEventRecords offline_access" }, 
-        { "client_secret": "dataEventRecordsSecret" }),
+        { 'username': userName }, 
+        { 'password': password }, 
+        { 'scope': 'email openid dataEventRecords offline_access' }, 
+        { 'client_secret': `${process.env.REACT_APP_OAUTH_CLIENT_SECRET}` }),
     });
 
     return this.tokenHandler.performTokenRequest(this.config, request);
@@ -119,9 +119,9 @@ export class AuthService {
   makeRevokeTokenRequest(token: string) {
     const request = new RevokeTokenRequest({
       token,
-      token_type_hint: "refresh_token",
-      client_id: `resourceownerclient`,
-      client_secret: "dataEventRecordsSecret",
+      token_type_hint: 'refresh_token',
+      client_id: `${process.env.REACT_APP_OAUTH_CLIENT_ID}`,
+      client_secret: `${process.env.REACT_APP_OAUTH_CLIENT_SECRET}`,
     });
 
     return this.tokenHandler.performRevokeTokenRequest(this.config, request);

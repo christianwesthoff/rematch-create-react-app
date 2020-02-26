@@ -29,7 +29,7 @@ var notificationClassName = {
   meta: 'notification-meta',
   title: 'notification-title',
   message: 'notification-message',
-  icon: 'fa ' + 'notification-icon',
+  icon: 'fa notification-icon',
   imageContainer: 'notification-image-container',
   image: 'notification-image',
   status: function status(_status: any) {
@@ -53,8 +53,8 @@ var notificationClassName = {
   buttonText: 'notification-button-text'
 };
 
-export default {
-  smallScreenMin: smallScreenMin,
+const theme = {
+  smallScreenMin,
   notificationsSystem: {
     className: notificationsSystemClassName
   },
@@ -66,3 +66,5 @@ export default {
     className: notificationClassName
   }
 };
+
+export default theme;

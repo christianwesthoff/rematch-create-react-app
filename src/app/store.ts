@@ -1,7 +1,7 @@
 import { init } from '@rematch/core'
-import { RematchRootDispatch, RematchRootState } from 'rematch/util'
+import { RematchRootDispatch, RematchRootState, RematchRootSelect } from 'rematch/util'
 import * as models from 'models'
-import selectPlugin from '@rematch/select'
+import selectPlugin, { ModelSelectors } from '@rematch/select'
 import queryPlugin from 'rematch/rematch-request'
 import subscribePlugin from 'rematch/rematch-subscribe'
 import buildNetworkInterface from 'rematch/rematch-request/network'
@@ -64,8 +64,10 @@ export const store = init({
 
 store.dispatch.auth.init();
 
-export type RootState = RematchRootState<typeof models>
+export type RootState = RematchRootState<typeof models> & ModelSelectors<typeof models>
 
 export type RootDispatch = RematchRootDispatch<typeof models>;
+
+export type RootSelect = RematchRootSelect<typeof models>;
 
 export default store;

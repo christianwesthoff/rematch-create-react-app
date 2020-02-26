@@ -1,6 +1,6 @@
 {
-  "name": "github-issues-example",
-  "version": "0.1.0",
+  "name": "rematch-github-issues-example",
+  "version": "0.0.1",
   "private": true,
   "dependencies": {
     "@openid/appauth": "^1.2.6",

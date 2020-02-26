@@ -30,7 +30,7 @@ const Issues: React.FC = () => {
 
   const setInvalidateQuery = (page: number) =>  invalidateQuery([`https://api.github.com/repos/${org}/${repo}/issues?per_page=25&page=${page}`])
 
-  const setInvalidateRepo = () => invalidateQuery([`${org}/${repo}/issues`])
+  const setInvalidateRepo = () => invalidateQuery([`api.github.com`])
 
 
   let content = (

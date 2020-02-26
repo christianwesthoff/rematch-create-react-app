@@ -3,7 +3,7 @@ import { History } from 'history'
 import { ConnectedRouter } from 'connected-react-router'
 import routes from 'routes'
 import NotificationsSystem from 'reapop';
-import theme from './reapop-theme'
+import theme from './default-reapop-theme'
 
 interface AppProps {
   history: History;
@@ -12,7 +12,7 @@ interface AppProps {
 const App = ({ history }: AppProps) => {
   return (
     <>
-    <NotificationsSystem theme={theme}/>
+    <NotificationsSystem theme={theme} />
     <ConnectedRouter history={history}>
       { routes }
     </ConnectedRouter>
