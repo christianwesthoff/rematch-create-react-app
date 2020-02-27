@@ -13,7 +13,8 @@ const mapDispatch = (dispatch: RootDispatch) => ({
 })
 
 const Issues: React.FC = () => {
-  const dispatch: RootDispatch = useDispatch()
+  const dispatch: RootDispatch = useDispatch();
+  
   const { displayRepo, setCurrentPage, invalidateQuery } = mapDispatch(dispatch);
   
   const { org, repo, page } = useSelector(

@@ -40,7 +40,7 @@ export const userInfo = {
                 const response = await axios.get<Claims>(`${process.env.REACT_APP_OAUTH_CLIENT_ID}`, { headers: { authorization: `Bearer ${accessToken}` } });
                 dispatch.userInfo.setClaims(response.data);
             } catch (error) {
-                dispatch.userInfo.setClaimsError(error);
+                dispatch.userInfo.setClaimsError(error.toString());
             }
         }
     })

@@ -58,7 +58,7 @@ export const auth = {
                 }
                 dispatch.auth.setToken(credentials);
             } catch (error) {
-                dispatch.auth.setTokenError(error);
+                dispatch.auth.setTokenError(error.toString());
             }
         },
         async refresh(rootState: RootState) {
@@ -71,7 +71,7 @@ export const auth = {
                     const newCredentials = { ...credentials, accessToken };
                     dispatch.auth.setToken(newCredentials);
                 } catch (error) {
-                    dispatch.auth.setTokenError(error);
+                    dispatch.auth.setTokenError(error.toString());
                 }
             }
         },
@@ -85,7 +85,7 @@ export const auth = {
                     dispatch.auth.resetToken();
                     dispatch.userInfo.resetClaims();
                 } catch (error) {
-                    dispatch.auth.setTokenError(error);
+                    dispatch.auth.setTokenError(error.toString());
                 }
             }
         }

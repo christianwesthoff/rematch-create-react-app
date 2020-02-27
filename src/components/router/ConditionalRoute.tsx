@@ -8,23 +8,14 @@ export type CRProps = {
   filter: (claims: Claims) => boolean
 } & any;
 
-const ConditionalRoute = ({ children, filter, ...props }: CRProps) => {
+const ConditionalRoute = ({component: Component, filter, ...props }: CRProps) => {
   const isAuthorized = useSelector((state: RootState) => filter(state.userInfo.claims || {}));
   return (
-    <Route
-      { ...props }
-      render={() =>
-        isAuthorized ? (
-          children
-        ) : (
-          <Redirect
-            to={{
-              pathname: '/',
-            }}
-          />
-        )
-      }
-    />
+    <Route {...props} render={props => (
+      isAuthorized ?
+          <Component {...props} />
+      : <Redirect to="/login" />
+    )} />
   );
 };
 
