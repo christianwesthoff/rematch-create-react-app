@@ -42,9 +42,9 @@ export class AxiosRequestor extends Requestor {
   
       return axios(url.toString(), requestInit).then(response => {
         if (response.status >= 200 && response.status < 300) {
-          const contentType = response.headers.get('content-type');
+          const contentType = response.headers['content-type'];
           if (isJsonDataType || (contentType && contentType.indexOf('application/json') !== -1)) {
-            return response.data();
+            return response.data;
           }
           return undefined;
         } else {

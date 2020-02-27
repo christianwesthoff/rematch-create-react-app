@@ -1,7 +1,7 @@
 import { Route, Redirect } from 'react-router-dom';
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { RootState } from 'app/store';
+import { RootState } from 'store';
 
 const ProtectedRoute = ({ children, ...props }: any) => {
   const isAuthorized = useSelector((state: RootState) => state.auth.isAuthorized);

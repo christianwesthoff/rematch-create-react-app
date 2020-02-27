@@ -1,7 +1,7 @@
 import { Route, Redirect } from 'react-router-dom';
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { RootState } from 'app/store';
+import { RootState } from 'store';
 import { Claims } from 'models/userInfo';
 
 export type CRProps = {

@@ -1,6 +1,5 @@
 import authService from 'services/auth'
-import { RootDispatch, RootState } from 'app/store';
-import * as ls from 'local-storage'
+import { RootDispatch, RootState } from 'store';
 
 export interface AuthState {
     isAuthorized: boolean,
@@ -31,7 +30,6 @@ export interface Credentials {
     issuedAt?: number | undefined
 }
 
-const STORAGE_KEY = 'auth';
 export const auth = {  
     state: authInitialState,
     reducers: {
@@ -49,13 +47,6 @@ export const auth = {
         }
     },
     effects: (dispatch: RootDispatch) => ({
-        async init() {
-            const credentials = ls.get<Credentials>(STORAGE_KEY) || undefined;
-            if (credentials && credentials.accessToken) {
-                await dispatch.userInfo.fetch(credentials.accessToken);
-            }
-            dispatch.auth.setToken(credentials);
-        },
         async login(credentials: UserCredentials) {
             const { userName, password } = credentials;
             dispatch.auth.setTokenLoading(true);
@@ -65,7 +56,6 @@ export const auth = {
                 if (credentials && credentials.accessToken) {
                     await dispatch.userInfo.fetch(credentials.accessToken);
                 }
-                ls.set<Credentials>(STORAGE_KEY, credentials);
                 dispatch.auth.setToken(credentials);
             } catch (error) {
                 dispatch.auth.setTokenError(error);
@@ -80,7 +70,6 @@ export const auth = {
                     const { accessToken } = await authService.makeRefreshTokenRequest(refreshToken);
                     const newCredentials = { ...credentials, accessToken };
                     dispatch.auth.setToken(newCredentials);
-                    ls.set<Credentials>(STORAGE_KEY, newCredentials);
                 } catch (error) {
                     dispatch.auth.setTokenError(error);
                 }
@@ -98,7 +87,6 @@ export const auth = {
                 } catch (error) {
                     dispatch.auth.setTokenError(error);
                 }
-                ls.remove(STORAGE_KEY);
             }
         }
     })

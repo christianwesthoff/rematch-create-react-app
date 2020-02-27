@@ -1,4 +1,4 @@
-import { RootDispatch } from 'app/store';
+import { RootDispatch } from 'store';
 import axios from 'axios';
 
 export interface Claims {
