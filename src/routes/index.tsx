@@ -1,7 +1,7 @@
 import React from 'react'
 import { Route, Switch } from 'react-router'
 import Home from 'features/Home'
-import NavBar from 'routes/NavBar'
+import NavBar from 'routes/Nav'
 import NoMatch from 'features/Error'
 import Query from 'features/Issues'
 import Login from 'features/Login'

@@ -2,7 +2,7 @@ import React from 'react'
 import get from 'utils/get'
 
 import useQuery from 'rematch/rematch-request/react/use-query'
-import { getIssuesQuery } from 'queries/issues'
+import { getIssues } from 'queries/issues'
 
 interface ILProps {
   org: string
@@ -16,7 +16,7 @@ export const IssuesListPage = ({
   page = 1,
 }: ILProps) => {
 
-  const [query, entities] = useQuery(getIssuesQuery(org, repo, page));
+  const [query, entities] = useQuery(getIssues(org, repo, page));
 
   return (
     <div id="issue-list-page">
