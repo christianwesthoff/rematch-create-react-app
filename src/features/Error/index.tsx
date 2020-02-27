@@ -2,7 +2,7 @@ import React from 'react'
 
 const NoMatch = () => (
   <div>
-    Not Found:(
+    Not Found :(
   </div>
 )
 
