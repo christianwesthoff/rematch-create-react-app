@@ -26,10 +26,6 @@ export interface Credentials {
     expiresIn?: number | undefined,
 }
 
-export type UserLogin = UserCredentials & {
-    redirect?: boolean | undefined
-}
-
 export const auth = {  
     state: authInitialState,
     reducers: {
@@ -47,8 +43,8 @@ export const auth = {
         }
     },
     effects: (dispatch: RootDispatch) => ({
-        async login(login: UserLogin) {
-            const { userName, password, redirect } = login;
+        async login(login: UserCredentials, rootState: RootState) {
+            const { userName, password } = login;
             dispatch.auth.setTokenLoading(true);
             try {
                 const { refreshToken, accessToken, expiresIn } = await authService.makeTokenRequest(userName, password, 'email openid offline_access');
@@ -57,8 +53,9 @@ export const auth = {
                     await dispatch.userInfo.fetch(credentials.accessToken);
                 }
                 dispatch.auth.setToken(credentials);
-                if (redirect) {
-                    (dispatch as any).router.goBack();
+                const { action, location } = (rootState as any).router;
+                if (action === "REPLACE" && location.state && location.state.from) {
+                    (dispatch as any).router.replace(location.state.from);
                 }
             } catch (error) {
                 dispatch.auth.setTokenError(error.toString());
