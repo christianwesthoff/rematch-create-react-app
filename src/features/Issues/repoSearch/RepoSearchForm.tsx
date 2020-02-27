@@ -1,9 +1,6 @@
 import React, { useState, ChangeEvent } from 'react'
 
-import './pure-forms.css'
-import './pure-buttons.css'
-
-interface Props {
+interface RSFProps {
   org: string
   repo: string
   setOrgAndRepo: (org: string, repo: string) => void
@@ -22,7 +19,7 @@ export const RepoSearchForm = ({
   setJumpToPage,
   setInvalidateQuery,
   setInvalidateRepo
-}: Props) => {
+}: RSFProps) => {
   const [currentOrg, setCurrentOrg] = useState(org)
   const [currentRepo, setCurrentRepo] = useState(repo)
   const [currentPageText, setCurrentPageText] = useState('1')

@@ -10,7 +10,6 @@ import {
     BaseTokenRequestHandler,
     RevokeTokenRequest,
     GRANT_TYPE_REFRESH_TOKEN,
-    // AuthorizationRequest,
   } from '@openid/appauth';
 import { AxiosRequestor } from './axiosRequestor'
   

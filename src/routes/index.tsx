@@ -4,13 +4,16 @@ import Home from 'features/Home'
 import NavBar from 'routes/NavBar'
 import NoMatch from 'features/Error'
 import Query from 'features/Issues'
+import Login from 'features/Login'
+import PrivateRoute from 'components/router/PrivateRoute'
 
 const routes = (
   <div>
     <NavBar />
     <Switch>
       <Route exact path="/" component={Home} />
-      <Route path="/query" component={Query} />
+      <PrivateRoute path="/query" component={Query} />
+      <Route path="/login" component={Login} />
       <Route component={NoMatch} />
     </Switch>
   </div>

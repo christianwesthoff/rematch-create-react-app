@@ -1,4 +1,4 @@
-import { asRecords } from "utils/normalizeUtils";
+import asRecord from "utils/asRecord";
 
 export interface Label {
   id: number
@@ -31,7 +31,7 @@ export const getIssuesQuery = (
       return {
         url: `https://api.github.com/repos/${org}/${repo}/issues?per_page=25&page=${page}`,
         transform: (response: any, headers: any) => {
-          const issues = asRecords<number, Issue>(response, t => t.id);
+          const issues = asRecord<number, Issue>(response, t => t.id);
           return {
             issues,
           };

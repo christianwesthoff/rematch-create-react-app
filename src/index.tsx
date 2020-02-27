@@ -7,7 +7,7 @@ import App from './containers/App'
 import { getPersistor } from '@rematch/persist'
 import { PersistGate } from 'redux-persist/integration/react'
 
-const persistor = getPersistor()
+const persistor = getPersistor();
 
 const render = () => {
   ReactDOM.render(
