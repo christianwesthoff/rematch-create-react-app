@@ -3,7 +3,6 @@ import { RootDispatch, RootState } from 'store';
 
 export interface AuthState {
     isAuthorized: boolean,
-    isInit: boolean,
     isLoading: boolean,
     isError: boolean,
     error?: string | undefined,
@@ -11,7 +10,6 @@ export interface AuthState {
 }
 
 let authInitialState: AuthState = {
-    isInit: false,
     isAuthorized: false,
     isLoading: false,
     isError: false
@@ -25,38 +23,43 @@ export interface UserCredentials {
 export interface Credentials {
     refreshToken?: string | undefined,
     accessToken?: string | undefined,
-    idToken?: string | undefined,
     expiresIn?: number | undefined,
-    issuedAt?: number | undefined
+}
+
+export type UserLogin = UserCredentials & {
+    redirect?: boolean | undefined
 }
 
 export const auth = {  
     state: authInitialState,
     reducers: {
-        setTokenLoading(state: AuthState, isLoading: boolean): AuthState {
-            return { ...state, isLoading };
+        setTokenLoading(_: AuthState, isLoading: boolean): AuthState {
+            return { isError: true, isLoading, isAuthorized: false };
         },
         setTokenError(_: AuthState, error: string): AuthState {
-            return { isAuthorized: false, isLoading: false, isError: true, isInit: true, error };
+            return { isAuthorized: false, isLoading: false, isError: true, error };
         },
         setToken(_: AuthState, credentials?: Credentials | undefined) : AuthState {
-            return { credentials, isAuthorized: !!credentials, isLoading: false, isInit: true, isError: false };
+            return { credentials, isAuthorized: !!credentials, isLoading: false, isError: false };
         },
         resetToken(_: AuthState) : AuthState {
-            return { isLoading: false, isInit: true, isError: false, isAuthorized: false };
+            return { isLoading: false, isError: false, isAuthorized: false };
         }
     },
     effects: (dispatch: RootDispatch) => ({
-        async login(credentials: UserCredentials) {
-            const { userName, password } = credentials;
+        async login(login: UserLogin) {
+            const { userName, password, redirect } = login;
             dispatch.auth.setTokenLoading(true);
             try {
-                const { refreshToken, accessToken, idToken, expiresIn, issuedAt, } = await authService.makeTokenRequest(userName, password);
-                const credentials = { refreshToken, accessToken, idToken, expiresIn, issuedAt };
+                const { refreshToken, accessToken, expiresIn } = await authService.makeTokenRequest(userName, password, 'email openid offline_access');
+                const credentials = { refreshToken, accessToken, expiresIn };
                 if (credentials && credentials.accessToken) {
                     await dispatch.userInfo.fetch(credentials.accessToken);
                 }
                 dispatch.auth.setToken(credentials);
+                if (redirect) {
+                    (dispatch as any).router.goBack();
+                }
             } catch (error) {
                 dispatch.auth.setTokenError(error.toString());
             }

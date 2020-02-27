@@ -56,6 +56,16 @@ export const store = init({
 		createSelect(),
 		createPersist({
 			whitelist: ['auth', 'userInfo'],
+			transforms: [{ in: ((state: any) => {
+				return Object.keys(state).reduce((acc, cur) => {
+					if (!['isError', 'error', 'isLoading'].includes(cur)) {
+						acc[cur] = state[cur];
+					}
+					return acc;
+				}, {} as any);
+			}), out: ((state: any) => {
+				return state;
+			}) }],
 			throttle: 5000,
 			version: 1,
 		}),

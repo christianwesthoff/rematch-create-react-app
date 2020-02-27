@@ -37,7 +37,7 @@ export const userInfo = {
         async fetch(accessToken: string) {
             dispatch.userInfo.setClaimsLoading(true);
             try {
-                const response = await axios.get<Claims>(`${process.env.REACT_APP_OAUTH_CLIENT_ID}`, { headers: { authorization: `Bearer ${accessToken}` } });
+                const response = await axios.get<Claims>(`${process.env.REACT_APP_OAUTH_CLIENT_USER_INFO}`, { headers: { authorization: `Bearer ${accessToken}` } });
                 dispatch.userInfo.setClaims(response.data);
             } catch (error) {
                 dispatch.userInfo.setClaimsError(error.toString());
