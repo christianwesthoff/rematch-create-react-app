@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { RepoSearchForm } from 'features/Issues/repoSearch/RepoSearchForm'
 import { IssuesListPage } from 'features/Issues/issuesList/IssuesListPage'
 import { CurrentRepo } from 'models/issuesDisplay'
-import { RootDispatch, RootState } from 'app/store'
+import { RootDispatch, RootState } from 'store'
 
 const mapDispatch = (dispatch: RootDispatch) => ({
   displayRepo: (payload:CurrentRepo) => dispatch.issuesDisplay.displayRepo(payload),

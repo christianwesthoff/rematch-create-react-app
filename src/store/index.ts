@@ -1,16 +1,17 @@
 import { init } from '@rematch/core'
 import { RematchRootDispatch, RematchRootState, RematchRootSelect } from 'rematch/util'
 import * as models from 'models'
-import selectPlugin, { ModelSelectors } from '@rematch/select'
-import queryPlugin from 'rematch/rematch-request'
-import subscribePlugin from 'rematch/rematch-subscribe'
+import createSelect, { ModelSelectors } from '@rematch/select'
+import createQuery from 'rematch/rematch-request'
+import createSubscribe from 'rematch/rematch-subscribe'
 import buildNetworkInterface from 'rematch/rematch-request/network'
-import routerPlugin from 'rematch/rematch-react-router'
-import reapopPlugin from 'rematch/rematch-reapop'
+import createRouter from 'rematch/rematch-react-router'
+import createReapop from 'rematch/rematch-reapop'
+import createPersist from '@rematch/persist'
 import { AxiosInstance } from 'axios'
 import { ReduxApi } from 'rematch/rematch-request/types'
 
-const configureAxiosClient = (client: AxiosInstance, reduxApi?: ReduxApi | undefined): AxiosInstance => {
+const networkInterface = buildNetworkInterface((client: AxiosInstance, reduxApi?: ReduxApi | undefined): AxiosInstance => {
 	if (!reduxApi) return client;
 	client.interceptors.request.use(config => {
 		const { getState } = reduxApi;
@@ -38,9 +39,7 @@ const configureAxiosClient = (client: AxiosInstance, reduxApi?: ReduxApi | undef
 		}
 	);
 	return client;
-}
-
-const networkInterface = buildNetworkInterface(configureAxiosClient)
+});
 
 const defaultNotification = {
 	status: 'info',
@@ -54,15 +53,20 @@ const defaultNotification = {
 export const store = init({
 	models,
 	plugins: [
-		selectPlugin(),
-		subscribePlugin(),
-		routerPlugin("router"),
-		reapopPlugin("notifications", defaultNotification),
-		queryPlugin({ networkInterface, entitiesModelName: "entities", queriesModelName: "queries", mutationsModelName: "mutations" })
+		createSelect(),
+		createPersist({
+			whitelist: ['auth', 'userInfo'],
+			throttle: 5000,
+			version: 1,
+		}),
+		createSubscribe(),
+		createRouter("router"),
+		createReapop("notifications", defaultNotification),
+		createQuery({ networkInterface, entitiesModelName: "entities", queriesModelName: "queries", mutationsModelName: "mutations" })
 	]
 });
 
-store.dispatch.auth.init();
+// store.dispatch.auth.init();
 
 export type RootState = RematchRootState<typeof models> & ModelSelectors<typeof models>
 

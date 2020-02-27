@@ -1,4 +1,4 @@
-import { RootDispatch } from 'app/store';
+import { RootDispatch } from 'store';
 import axios from 'axios';
 
 export interface Claims {
@@ -24,7 +24,7 @@ export const userInfo = {
             return { ...state, isLoading };
         },
         setClaimsError(_: UserInfoState, error: string): UserInfoState {
-            return { claims: {}, isLoading: false, isError: true, error };
+            return { isLoading: false, isError: true, error };
         },
         setClaims(_: UserInfoState, claims: Claims): UserInfoState {
             return { claims, isLoading: false, isError: false };
