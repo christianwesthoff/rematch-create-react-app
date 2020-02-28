@@ -3,7 +3,6 @@ import { RematchRootDispatch, RematchRootState, RematchRootSelect } from 'rematc
 import * as models from 'models'
 import createSelect from '@rematch/select'
 import createQuery from 'rematch/rematch-request'
-import createSubscribe from 'rematch/rematch-subscribe'
 import buildNetworkInterface from 'rematch/rematch-request/network'
 import createRouter from 'rematch/rematch-react-router'
 import createReapop from 'rematch/rematch-reapop'
@@ -12,6 +11,7 @@ import { AxiosInstance } from 'axios'
 import { ReduxApi, RequestState, RequestDispatch } from 'rematch/rematch-request/types'
 import { ReapopState, ReapopDispatch } from 'rematch/rematch-reapop/types'
 import { RouterState, RouterDispatch } from 'rematch/rematch-react-router/types'
+import { createTransform } from 'redux-persist'
 
 const networkInterface = buildNetworkInterface((client: AxiosInstance, reduxApi?: ReduxApi<RootDispatch, RootState> | undefined): AxiosInstance => {
 	if (!reduxApi) return client;
@@ -33,7 +33,7 @@ const networkInterface = buildNetworkInterface((client: AxiosInstance, reduxApi?
 			  if (auth && auth.credentials) {
 				return client.request(err.config);
 			  }
-			  (dispatch as any).router.push("/");
+			  dispatch.router.push("/");
 			  return Promise.reject(err);
 		  } else {
 			return Promise.reject(err);
@@ -52,20 +52,25 @@ const defaultNotification = {
 	closeButton: true
 };
 
+const createFilter = (reducer: string, properties: Array<string>) => {
+	const filter = (state: any, key: any) => {
+		if (reducer !== key) return state;
+		return Object.keys(state)
+			.filter(key => properties.includes(key))
+			.reduce((obj: any, key: any) => {
+				obj[key] = state[key];
+				return obj;
+			}, {}) };
+	return createTransform(filter, filter);
+}
+
 const persistConfig = {
 	whitelist: ['auth', 'userInfo'],
-	transforms: [{ in: ((state: any) => {
-		return Object.keys(state).reduce((acc, cur) => {
-			// ignore state properties when writing to local storage
-			if (!['isError', 'error', 'isLoading'].includes(cur)) {
-				acc[cur] = state[cur];
-			}
-			return acc;
-		}, {} as any);
-	}), out: ((state: any) => {
-		return state;
-	}) }],
-	throttle: 5000,
+	transforms: [
+		createFilter('auth', ['isAuthorized', 'credentials']), 
+		createFilter('userInfo', ['claims'])
+	],
+	throttle: 1000,
 	version: 1,
 };
 
@@ -94,7 +99,7 @@ export const store = init({
 	models,
 	plugins: [
 		createSelect(),
-		createSubscribe(),
+		// createSubscribe(),
 		createPersist(persistConfig),
 		createRouter("router"),
 		createReapop("notifications", defaultNotification),
@@ -105,14 +110,14 @@ export const store = init({
 
 // store.dispatch.auth.init();
 export type RootState = RematchRootState<typeof models> & 
-						ReapopState<{ "notifications": never }> & 
-						RouterState<{ "router": never }> & 
-						RequestState<{ "queries": never }, { "entities": never }, { "mutations": never }>
+						ReapopState<["notifications"]> & 
+						RouterState<["router"]> & 
+						RequestState<["queries"], ["entities"], ["mutations"]>
 
 export type RootDispatch = RematchRootDispatch<typeof models> & 
-						   ReapopDispatch<{ "notifications": never }> & 
-						   RouterDispatch<{ "router": never }> &
-						   RequestDispatch<{ "queries": never }, { "entities": never }, { "mutations": never }>;
+						   ReapopDispatch<["notifications"]> & 
+						   RouterDispatch<["router"]> &
+						   RequestDispatch<["queries"], ["entities"], ["mutations"]>;
 
 export type RootSelect = RematchRootSelect<typeof models>;
 

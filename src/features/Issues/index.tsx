@@ -9,7 +9,7 @@ import { RootDispatch, RootState } from 'store'
 const mapDispatch = (dispatch: RootDispatch) => ({
   displayRepo: (payload:CurrentRepo) => dispatch.issuesDisplay.displayRepo(payload),
   setCurrentPage: (page:number) => dispatch.issuesDisplay.setCurrentPage(page),
-  invalidateQuery:(payload:Array<any>) => (dispatch as any).queries.invalidateQuery(payload)
+  invalidateQuery:(payload:Array<any>) => dispatch.queries.invalidateQuery(payload)
 })
 
 const Issues: React.FC = () => {
@@ -29,7 +29,7 @@ const Issues: React.FC = () => {
     setCurrentPage(page);
   }
 
-  const setInvalidateQuery = (page: number) =>  invalidateQuery([`https://api.github.com/repos/${org}/${repo}/issues?per_page=25&page=${page}`])
+  const setInvalidateQuery = (page: number) => invalidateQuery([`https://api.github.com/repos/${org}/${repo}/issues?per_page=25&page=${page}`])
 
   const setInvalidateRepo = () => invalidateQuery([`api.github.com`])
 
