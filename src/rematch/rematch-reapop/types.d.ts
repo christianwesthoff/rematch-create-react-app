@@ -2,11 +2,11 @@ import { Notification } from 'reapop'
 
 export type valuesOf<T extends any[]>= T[number];
 
-export type ReapopState<K> = {
+export type ReapopState<T extends Array<string>> = {
     [P in valuesOf<T>]: Array<Notification>;
 }
 
-export type ReapopDispatch<K> = {
+export type ReapopDispatch<T extends Array<string>> = {
     [P in valuesOf<T>]: {
         addNotification(notification: Notification): Notification;
         updateNotification(notification: Notification): Notification;

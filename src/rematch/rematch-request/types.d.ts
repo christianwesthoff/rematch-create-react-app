@@ -16,7 +16,7 @@ export type RequestState<T1, T2, T3> = {
 export type valuesOf<T extends any[]>= T[number];
 
 
-export type RequestDispatch<T1, T2, T3> = {
+export type RequestDispatch<T1 extends Array<string>, T2 extends Array<string>, T3 extends Array<string>> = {
   [P in valuesOf<T1>]: {
     invalidateQuery: (_:Array<string>|string) => Promise<void>
   }
