@@ -6,17 +6,19 @@ import { RootState } from 'store';
 export type CRProps = {
   when: (claims: RootState) => boolean
   redirect: string
+  meta?: any | undefined
 } & any;
 
-const ConditionalRoute = ({component: Component, when, redirect, ...props }: CRProps) => {
+const ConditionalRoute = ({component: Component, when, redirect, meta, ...props }: CRProps) => {
   const isTrue = useSelector((state: RootState) => when(state));
   return (
     <Route {...props} render={props => (
       isTrue ?
           <Component {...props} />
       : <Redirect to={{
-        pathname: redirect
-      }} />
+        pathname: redirect,
+        state: meta
+      }}/>
     )} />
   );
 };
