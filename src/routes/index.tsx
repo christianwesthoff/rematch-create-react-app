@@ -6,6 +6,8 @@ import NoMatch from 'features/Error'
 import Query from 'features/Issues'
 import Login from 'features/Login'
 import PrivateRoute from 'components/router/PrivateRoute'
+import ConditionalRoute from 'components/router/ConditionalRoute'
+import { RootState } from 'store'
 
 const routes = (
   <div>
@@ -13,7 +15,7 @@ const routes = (
     <Switch>
       <Route exact path="/" component={Home} />
       <PrivateRoute path="/query" component={Query} />
-      <Route path="/login" component={Login} />
+      <ConditionalRoute path="/login" component={Login} when={(state: RootState) => !state.auth.isAuthorized} else="/" />
       <Route component={NoMatch} />
     </Switch>
   </div>

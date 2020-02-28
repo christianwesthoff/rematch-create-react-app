@@ -1,25 +1,15 @@
-import { Route, Redirect, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import React from 'react';
-import { useSelector } from 'react-redux';
 import { RootState } from 'store';
-import { Claims } from 'models/userInfo';
+import ConditionalRoute from './ConditionalRoute';
 
-export type CRProps = {
-  filter?: ((claims: Claims) => boolean) | undefined
+export type PRProps = {
 } & any;
 
-const PrivateRoute = ({component: Component, filter, ...props }: CRProps) => {
-  const isAuthorized = useSelector((state: RootState) => state.auth.isAuthorized && (!filter || filter(state.userInfo.claims || {})));
+const PrivateRoute = (props: PRProps) => {
   const location = useLocation();
   return (
-    <Route {...props} render={props => (
-      isAuthorized ?
-          <Component {...props} />
-      : <Redirect to={{
-        pathname: "/login",
-        state: { from: location }
-      }} />
-    )} />
+    <ConditionalRoute {...props} when={(state: RootState) => state.auth.isAuthorized} redirect="/login" meta={{ from: location }} />
   );
 };
 
