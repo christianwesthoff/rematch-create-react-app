@@ -5,16 +5,15 @@ import { State as EntitiesState } from './reducers/entities';
 import { State as MutationsState } from './reducers/mutations';
 import { RootDispatch, RootState } from 'store';
 
-export type RequestState<T1, T2, T3> = {
-  [P in keyof T1]: QueriesState
-} &  {
-  [P in keyof T2]: EntitiesState
-} & {
-  [P in keyof T3]: MutationsState
-};
-
 export type valuesOf<T extends any[]>= T[number];
 
+export type RequestState<T1 extends Array<string>, T2 extends Array<string>, T3 extends Array<string>> = {
+  [P in valuesOf<T1>]: QueriesState
+} &  {
+  [P in valuesOf<T2>]: EntitiesState
+} & {
+  [P in valuesOf<T3>]: MutationsState
+};
 
 export type RequestDispatch<T1 extends Array<string>, T2 extends Array<string>, T3 extends Array<string>> = {
   [P in valuesOf<T1>]: {
