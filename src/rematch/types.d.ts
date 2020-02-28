@@ -43,9 +43,9 @@ type ExtractReducer<R extends Function> = R extends (
 
 type ExtractEffect<E extends Function> = E extends () => infer S
 	? () => Promise<S>
-	// : E extends (arg: any) => infer S
-	// ? () => Promise<S>
-	: E extends (payload: infer P, ...args: any[]) => infer S
+	: E extends (arg: any) => infer S
+	? () => Promise<S>
+	: E extends (_: any, payload: infer P) => infer S
 	? (payload: P) => Promise<S>
 	: () => Promise<any>
 

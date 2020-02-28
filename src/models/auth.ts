@@ -43,7 +43,7 @@ export const auth = {
         }
     },
     effects: (dispatch: RootDispatch) => ({
-        async login(login: UserCredentials, rootState: RootState) {
+        async login(rootState: RootState, login: UserCredentials) {
             const { userName, password } = login;
             dispatch.auth.setTokenLoading(true);
             try {
@@ -63,7 +63,7 @@ export const auth = {
                 dispatch.auth.setTokenError(error.toString());
             }
         },
-        async refresh(_: any, rootState: RootState) {
+        async refresh(rootState: RootState) {
             const { credentials } = rootState.auth;
             if (credentials && credentials.refreshToken) {
                 const { refreshToken } = credentials;
@@ -80,7 +80,7 @@ export const auth = {
                 }
             }
         },
-        async logout(_: any, rootState: RootState) {
+        async logout(rootState: RootState) {
             const { credentials } = rootState.auth;
             if (credentials && credentials.refreshToken) {
                 const { refreshToken } = credentials;

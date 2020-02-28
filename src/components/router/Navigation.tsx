@@ -10,7 +10,7 @@ const Navigation = () => {
   const dispatch: RootDispatch = useDispatch();
   const handleClick:  ChangeHandler = e => {
     e.preventDefault();
-    dispatch.auth.logout(0);
+    dispatch.auth.logout();
   }
 
   return (<div>

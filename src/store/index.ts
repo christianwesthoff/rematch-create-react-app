@@ -28,7 +28,7 @@ const networkInterface = buildNetworkInterface((client: AxiosInstance, reduxApi?
 		async err => {
 		  const { dispatch, getState } = reduxApi;
 		  if (err.config && err.response && err.response.status === 401) {
-			  await dispatch.auth.refresh(0);
+			  await dispatch.auth.refresh();
 			  const { auth } = getState();
 			  if (auth && auth.credentials) {
 				return client.request(err.config);
@@ -69,6 +69,27 @@ const persistConfig = {
 	version: 1,
 };
 
+// monkey patch models
+Object.keys(models).forEach(key => {
+	const model = (models as any)[key];
+	if (typeof model.effects === "function") {
+		const effectsFunc = model.effects;
+		model.effects = (dispatch: any) => {
+			const effects = effectsFunc(dispatch);
+			Object.keys(effects).forEach(key => {
+				const effect = effects[key];
+				effects[key] = (payload: any, state: any) => effect(state, payload);
+			});
+			return effects;
+		}
+	} else if (typeof model.effects === "object") {
+		model.effects.forEach((key: string) => {
+			const effect = model.effects[key];
+			model.effects[key] = (payload: any, state: any) => effect(state, payload);
+		})
+	}
+});
+
 export const store = init({
 	models,
 	plugins: [
@@ -81,16 +102,17 @@ export const store = init({
 	]
 });
 
+
 // store.dispatch.auth.init();
 export type RootState = RematchRootState<typeof models> & 
-						ReapopState<{ "notifications": undefined }> & 
-						RouterState<{ "router": undefined }> & 
-						RequestState<{ "queries": undefined }, { "entities": undefined }, { "mutations": undefined }>
+						ReapopState<{ "notifications": never }> & 
+						RouterState<{ "router": never }> & 
+						RequestState<{ "queries": never }, { "entities": never }, { "mutations": never }>
 
 export type RootDispatch = RematchRootDispatch<typeof models> & 
-						   ReapopDispatch<{ "notifications": undefined }> & 
-						   RouterDispatch<{ "router": undefined }> &
-						   RequestDispatch<{ "queries": undefined }, { "entities": undefined }, { "mutations": undefined }>;
+						   ReapopDispatch<{ "notifications": never }> & 
+						   RouterDispatch<{ "router": never }> &
+						   RequestDispatch<{ "queries": never }, { "entities": never }, { "mutations": never }>;
 
 export type RootSelect = RematchRootSelect<typeof models>;
 
