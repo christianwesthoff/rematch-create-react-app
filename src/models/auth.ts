@@ -56,6 +56,8 @@ export const auth = {
                 const { action, location } = (rootState as any).router;
                 if (action === "REPLACE" && location.state && location.state.from) {
                     dispatch.router.replace(location.state.from);
+                } else {
+                    dispatch.router.push("/");
                 }
             } catch (error) {
                 dispatch.auth.setTokenError(error.toString());
