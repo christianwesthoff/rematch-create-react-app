@@ -13,14 +13,17 @@ export type RequestState<T1, T2, T3> = {
   [P in keyof T3]: MutationsState
 };
 
-export type RequestDispatch<T1, T2, T3> = {
-  [P in keyof T1]: {
+export type valuesOf<T extends any[]>= T[number];
+
+
+export type RequestDispatch<T1 extends Array<string>, T2 extends Array<string>, T3 extends Array<string>> = {
+  [P in valuesOf<T1>]: {
     invalidateQuery: (_:Array<string>|string) => Promise<void>
   }
 } &  {
-  [P in keyof T2]: {}
+  [P in valuesOf<T2>]: {}
 } & {
-  [P in keyof T3]: {}
+  [P in valuesOf<T3>]: {}
 };
 
 export type ExtractNormalizedStateFromQueryConfig<T> = T extends QueryConfig & {

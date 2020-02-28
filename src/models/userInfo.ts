@@ -1,4 +1,4 @@
-import { RootDispatch } from 'store';
+import { RootDispatch, RootState } from 'store';
 import axios from 'axios';
 
 export interface Claims {
@@ -34,7 +34,7 @@ export const userInfo = {
         }
     },
     effects: (dispatch: RootDispatch) => ({
-        async fetchClaims(accessToken: string) {
+        async fetchClaims(_: RootState, accessToken: string) {
             dispatch.userInfo.setClaimsLoading(true);
             try {
                 const response = await axios.get<Claims>(`${process.env.REACT_APP_OAUTH_CLIENT_USER_INFO}`, { headers: { authorization: `Bearer ${accessToken}` } });
