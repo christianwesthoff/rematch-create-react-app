@@ -28,21 +28,23 @@ export type SelectFromModel<S extends ModelSelect> = {
 	[selectKey in keyof S]: ReturnType<ReturnType<S[selectKey]>>
 }
 export type ReducerFromModel<R extends ModelReducers> = {
-	[reducerKey in keyof R]: Reducer2connect<R[reducerKey]>
+	[reducerKey in keyof R]: ExtractReducer<R[reducerKey]>
 }
 export type EffectFromModel<E extends ModelEffects> = {
-	[effectKey in keyof E]: Effect2connect<E[effectKey]>
+	[effectKey in keyof E]: ExtractEffect<E[effectKey]>
 }
 
-type Reducer2connect<R extends Function> = R extends (
+type ExtractReducer<R extends Function> = R extends (
 	state: infer S,
 	...payload: infer P
 ) => any
 	? (...payload: P) => S
 	: () => void
 
-type Effect2connect<E extends Function> = E extends () => infer S
+type ExtractEffect<E extends Function> = E extends () => infer S
 	? () => Promise<S>
+	// : E extends (arg: any) => infer S
+	// ? () => Promise<S>
 	: E extends (payload: infer P, ...args: any[]) => infer S
 	? (payload: P) => Promise<S>
 	: () => Promise<any>

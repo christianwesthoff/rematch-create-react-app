@@ -50,18 +50,18 @@ export const auth = {
                 const { refreshToken, accessToken, expiresIn } = await authService.makeTokenRequest(userName, password, 'email openid offline_access');
                 const credentials = { refreshToken, accessToken, expiresIn };
                 if (credentials && credentials.accessToken) {
-                    await dispatch.userInfo.fetch(credentials.accessToken);
+                    await dispatch.userInfo.fetchClaims(credentials.accessToken);
                 }
                 dispatch.auth.setToken(credentials);
                 const { action, location } = (rootState as any).router;
                 if (action === "REPLACE" && location.state && location.state.from) {
-                    (dispatch as any).router.replace(location.state.from);
+                    dispatch.router.replace(location.state.from);
                 }
             } catch (error) {
                 dispatch.auth.setTokenError(error.toString());
             }
         },
-        async refresh(rootState: RootState) {
+        async refresh(_: any, rootState: RootState) {
             const { credentials } = rootState.auth;
             if (credentials && credentials.refreshToken) {
                 const { refreshToken } = credentials;
@@ -69,21 +69,24 @@ export const auth = {
                 try {
                     const { accessToken } = await authService.makeRefreshTokenRequest(refreshToken);
                     const newCredentials = { ...credentials, accessToken };
+                    if (newCredentials && newCredentials.accessToken) {
+                        await dispatch.userInfo.fetchClaims(newCredentials.accessToken);
+                    }
                     dispatch.auth.setToken(newCredentials);
                 } catch (error) {
                     dispatch.auth.setTokenError(error.toString());
                 }
             }
         },
-        async logout(rootState: RootState) {
+        async logout(_: any, rootState: RootState) {
             const { credentials } = rootState.auth;
             if (credentials && credentials.refreshToken) {
                 const { refreshToken } = credentials;
                 dispatch.auth.setTokenLoading(true);
                 try {
                     await authService.makeRevokeTokenRequest(refreshToken);
-                    dispatch.auth.resetToken();
                     dispatch.userInfo.resetClaims();
+                    dispatch.auth.resetToken();
                 } catch (error) {
                     dispatch.auth.setTokenError(error.toString());
                 }
