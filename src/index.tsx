@@ -25,3 +25,8 @@ render();
 if (process.env.NODE_ENV === 'development' && module.hot) {
   module.hot.accept('./containers/App', render);
 }
+
+if (process.env.NODE_ENV === 'development' && process.env.REACT_APP_API_MOCK === 'true') {
+  const configureApi = require('./tests/axios').default;
+  configureApi();
+}

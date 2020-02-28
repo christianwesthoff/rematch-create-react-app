@@ -33,7 +33,7 @@ const getInstance = (headers?: RequestHeaders, withCredentials?: boolean, cancel
     cancelToken
 });
 
-const axiosInterface = (configure?: ((instance:AxiosInstance, reduxApi?: ReduxApi) => AxiosInstance) | undefined): NetworkInterface => (
+const axiosInterface = (configure?: ((instance:AxiosInstance, reduxApi?: ReduxApi<any, any>) => AxiosInstance) | undefined): NetworkInterface => (
     url,
     method,
     { body, headers, credentials } = {},

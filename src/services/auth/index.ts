@@ -95,7 +95,7 @@ export class AuthService {
       extras: Object.assign({}, 
         { 'username': userName }, 
         { 'password': password }, 
-        { 'scope': 'email openid dataEventRecords offline_access' }, 
+        { 'scope': scope }, 
         { 'client_secret': `${process.env.REACT_APP_OAUTH_CLIENT_SECRET}` }),
     });
 

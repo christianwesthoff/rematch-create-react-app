@@ -1,17 +1,14 @@
-import React, { useState, ChangeEvent } from 'react'
+import React, { useState } from 'react'
 import { RootDispatch, RootState } from 'store'
 import { useDispatch, useSelector } from 'react-redux'
 import { UserCredentials } from 'models/auth'
-
-type InputEvent = ChangeEvent<HTMLInputElement>
-type ChangeHandler = (e: InputEvent) => void
+import { ChangeHandler } from 'types/dom';
 
 const mapDispatch = (dispatch: RootDispatch) => ({
     login: (credentials: UserCredentials) => dispatch.auth.login(credentials),
 });
 
 const Login = () => {
-
   const dispatch: RootDispatch = useDispatch();
   const { error, isLoading } = useSelector((state: RootState) => state.auth);
 

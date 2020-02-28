@@ -23,7 +23,7 @@ export interface Issue {
   comments: number
 }
 
-export const getIssuesQuery = (
+export const getIssues = (
     org: string,
     repo: string,
     page = 1

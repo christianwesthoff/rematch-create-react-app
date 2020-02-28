@@ -3,7 +3,6 @@ import { RootDispatch, RootState } from 'store';
 
 export interface AuthState {
     isAuthorized: boolean,
-    isInit: boolean,
     isLoading: boolean,
     isError: boolean,
     error?: string | undefined,
@@ -11,7 +10,6 @@ export interface AuthState {
 }
 
 let authInitialState: AuthState = {
-    isInit: false,
     isAuthorized: false,
     isLoading: false,
     isError: false
@@ -25,43 +23,45 @@ export interface UserCredentials {
 export interface Credentials {
     refreshToken?: string | undefined,
     accessToken?: string | undefined,
-    idToken?: string | undefined,
     expiresIn?: number | undefined,
-    issuedAt?: number | undefined
 }
 
 export const auth = {  
     state: authInitialState,
     reducers: {
-        setTokenLoading(state: AuthState, isLoading: boolean): AuthState {
-            return { ...state, isLoading };
+        setTokenLoading(_: AuthState, isLoading: boolean): AuthState {
+            return { isError: true, isLoading, isAuthorized: false };
         },
         setTokenError(_: AuthState, error: string): AuthState {
-            return { isAuthorized: false, isLoading: false, isError: true, isInit: true, error };
+            return { isAuthorized: false, isLoading: false, isError: true, error };
         },
         setToken(_: AuthState, credentials?: Credentials | undefined) : AuthState {
-            return { credentials, isAuthorized: !!credentials, isLoading: false, isInit: true, isError: false };
+            return { credentials, isAuthorized: !!credentials, isLoading: false, isError: false };
         },
         resetToken(_: AuthState) : AuthState {
-            return { isLoading: false, isInit: true, isError: false, isAuthorized: false };
+            return { isLoading: false, isError: false, isAuthorized: false };
         }
     },
     effects: (dispatch: RootDispatch) => ({
-        async login(credentials: UserCredentials) {
-            const { userName, password } = credentials;
+        async login(login: UserCredentials, rootState: RootState) {
+            const { userName, password } = login;
             dispatch.auth.setTokenLoading(true);
             try {
-                const { refreshToken, accessToken, idToken, expiresIn, issuedAt, } = await authService.makeTokenRequest(userName, password);
-                const credentials = { refreshToken, accessToken, idToken, expiresIn, issuedAt };
+                const { refreshToken, accessToken, expiresIn } = await authService.makeTokenRequest(userName, password, 'email openid offline_access');
+                const credentials = { refreshToken, accessToken, expiresIn };
                 if (credentials && credentials.accessToken) {
-                    await dispatch.userInfo.fetch(credentials.accessToken);
+                    await dispatch.userInfo.fetchClaims(credentials.accessToken);
                 }
                 dispatch.auth.setToken(credentials);
+                const { action, location } = (rootState as any).router;
+                if (action === "REPLACE" && location.state && location.state.from) {
+                    dispatch.router.replace(location.state.from);
+                }
             } catch (error) {
                 dispatch.auth.setTokenError(error.toString());
             }
         },
-        async refresh(rootState: RootState) {
+        async refresh(_: any, rootState: RootState) {
             const { credentials } = rootState.auth;
             if (credentials && credentials.refreshToken) {
                 const { refreshToken } = credentials;
@@ -69,21 +69,24 @@ export const auth = {
                 try {
                     const { accessToken } = await authService.makeRefreshTokenRequest(refreshToken);
                     const newCredentials = { ...credentials, accessToken };
+                    if (newCredentials && newCredentials.accessToken) {
+                        await dispatch.userInfo.fetchClaims(newCredentials.accessToken);
+                    }
                     dispatch.auth.setToken(newCredentials);
                 } catch (error) {
                     dispatch.auth.setTokenError(error.toString());
                 }
             }
         },
-        async logout(rootState: RootState) {
+        async logout(_: any, rootState: RootState) {
             const { credentials } = rootState.auth;
             if (credentials && credentials.refreshToken) {
                 const { refreshToken } = credentials;
                 dispatch.auth.setTokenLoading(true);
                 try {
                     await authService.makeRevokeTokenRequest(refreshToken);
-                    dispatch.auth.resetToken();
                     dispatch.userInfo.resetClaims();
+                    dispatch.auth.resetToken();
                 } catch (error) {
                     dispatch.auth.setTokenError(error.toString());
                 }

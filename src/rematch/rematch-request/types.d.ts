@@ -3,6 +3,25 @@ import { PublicAction } from './actions';
 import { State as QueriesState } from './reducers/queries';
 import { State as EntitiesState } from './reducers/entities';
 import { State as MutationsState } from './reducers/mutations';
+import { RootDispatch, RootState } from 'store';
+
+export type RequestState<T1, T2, T3> = {
+  [P in keyof T1]: QueriesState
+} &  {
+  [P in keyof T2]: EntitiesState
+} & {
+  [P in keyof T3]: MutationsState
+};
+
+export type RequestDispatch<T1, T2, T3> = {
+  [P in keyof T1]: {
+    invalidateQuery: (_:Array<string>|string) => Promise<void>
+  }
+} &  {
+  [P in keyof T2]: {}
+} & {
+  [P in keyof T3]: {}
+};
 
 export type ExtractNormalizedStateFromQueryConfig<T> = T extends QueryConfig & {
   transform?: (...args: any[]) => infer O
@@ -141,16 +160,16 @@ export type NetworkOptions = {
   credentials?: CredentialOption | undefined;
 };
 
-export interface ReduxApi {
-  dispatch: any ,
-  getState: () => any
+export interface ReduxApi<RD, RS> {
+  dispatch: RD ,
+  getState: () => RS
 }
 
 export type NetworkInterface = (
   url: Url,
   method: HttpMethod,
   networkOptions: NetworkOptions,
-  reduxApi?: ReduxApi | undefined
+  reduxApi?: ReduxApi<any, any> | undefined
 ) => NetworkHandler;
 
 export type AdditionalHeadersSelector = (state: any) => { [key: string]: string };
