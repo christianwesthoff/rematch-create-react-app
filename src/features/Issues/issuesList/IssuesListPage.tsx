@@ -1,5 +1,5 @@
 import React from 'react'
-import get from 'utils/get'
+import idx from 'utils/idx'
 
 import useQuery from 'rematch/rematch-request/react/use-query'
 import { getIssues } from 'queries/issues'
@@ -25,7 +25,7 @@ export const IssuesListPage = ({
       <br/>
       <strong>Query Data</strong>
       <div>
-      {query.isFinished && !query.isError ? get(entities, _ => _.issues,  []).map((issue, key) => (
+      {query.isFinished && !query.isError ? idx(entities, _ => _.issues,  []).map((issue, key) => (
         <div key={key}>
         <div><strong>{issue.id} </strong><span>{issue.body}</span></div>
       </div>)) : query.isPending ? <strong>Loading...</strong> : query.isError ? <strong>{JSON.stringify(query.error)}</strong> : <></>}</div>
