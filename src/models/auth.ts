@@ -48,11 +48,10 @@ export const auth = {
             dispatch.auth.setTokenLoading(true);
             try {
                 const { refreshToken, accessToken, expiresIn } = await authService.makeTokenRequest(userName, password, 'email openid offline_access');
-                const credentials = { refreshToken, accessToken, expiresIn };
-                if (credentials && credentials.accessToken) {
-                    dispatch.userInfo.fetchClaims(credentials.accessToken);
+                if (accessToken) {
+                    dispatch.userInfo.fetchClaims(accessToken);
                 }
-                dispatch.auth.setToken(credentials);
+                dispatch.auth.setToken({ refreshToken, accessToken, expiresIn });
                 const { action, location } = (rootState as any).router;
                 if (action === 'REPLACE' && location.state && location.state.from) {
                     dispatch.router.replace(location.state.from);
@@ -69,12 +68,11 @@ export const auth = {
                 const { refreshToken } = credentials;
                 dispatch.auth.setTokenLoading(true);
                 try {
-                    const { accessToken } = await authService.makeRefreshTokenRequest(refreshToken);
-                    const newCredentials = { ...credentials, accessToken };
-                    if (newCredentials && newCredentials.accessToken) {
-                        dispatch.userInfo.fetchClaims(newCredentials.accessToken);
+                    const { accessToken, expiresIn } = await authService.makeRefreshTokenRequest(refreshToken);
+                    if (accessToken) {
+                        dispatch.userInfo.fetchClaims(accessToken);
                     }
-                    dispatch.auth.setToken(newCredentials);
+                    dispatch.auth.setToken({ ...credentials, accessToken, expiresIn });
                 } catch (error) {
                     dispatch.auth.setTokenError(error.toString());
                 }
