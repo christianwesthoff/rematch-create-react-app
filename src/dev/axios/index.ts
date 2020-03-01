@@ -17,7 +17,7 @@ const configureMockApi = () => {
         }, { 'content-type': 'application/json' })
         .onPost(`${process.env.REACT_APP_OAUTH_REVOCATION_ENDPOINT}`).reply(200)
         .onAny().reply((config: AxiosRequestConfig) => {
-            // pipe but delete fake authorization header
+            // pipe but remove fake authorization header
             const headers: any = { ...config.headers };
             delete headers['authorization'];
             return (mock as any).originalAdapter({ ...config, headers });
