@@ -293,7 +293,7 @@ export const mutateAsync = ({
   options,
   requestKey,
   url,
-  triggerPatterns
+  trigger
 }: MutationConfig): MutateAsyncAction => {
   return {
     type: actionTypes.MUTATE_ASYNC,
@@ -302,7 +302,7 @@ export const mutateAsync = ({
     options,
     requestKey,
     url,
-    triggerPatterns
+    trigger
   };
 };
 

@@ -86,7 +86,7 @@ export type MutationConfig = {
   retry?: boolean;
   preDispatchCallback?: () => void | undefined;
   url: Url;
-  triggerPatterns?: Array<string> | undefined,
+  trigger?: Trigger | undefined,
 };
 
 export type QueryConfig = {
@@ -128,6 +128,12 @@ export type Duration = number;
 export type Maps = { [key: string]: Array<string|number|symbol> };
 
 export type Entities = { [key: string]: any };
+
+export type Trigger = (
+  body?: ResponseBody | undefined,
+  // text?: ResponseText | undefined,
+  headers?: ResponseHeaders | undefined,
+) => Array<string>;
 
 export type Transform = (
   body?: ResponseBody | undefined,

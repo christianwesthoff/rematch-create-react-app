@@ -148,7 +148,7 @@ const queryMiddleware = (
           body,
           options = {},
           meta,
-          triggerPatterns
+          trigger
         } = action;
 
         if (!url) {
@@ -256,9 +256,9 @@ const queryMiddleware = (
                       url,
                     }),
                   );
-                  if (triggerPatterns) {
+                  if (trigger) {
                       dispatch(
-                        invalidateQuery(triggerPatterns),
+                        invalidateQuery(trigger(responseBody, responseHeaders)),
                       );
                   }
 
