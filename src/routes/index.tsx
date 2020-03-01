@@ -15,7 +15,7 @@ const routes = (
     <Switch>
       <Route exact path="/" component={Home} />
       <PrivateRoute path="/query" component={Query} />
-      <ConditionalRoute path="/login" component={Login} when={(state: RootState) => !state.auth.isAuthorized} else="/" />
+      <ConditionalRoute path="/login" component={Login} when={(state: RootState) => !state.auth.isAuthorized} redirect="/" />
       <Route component={NoMatch} />
     </Switch>
   </div>
