@@ -12,6 +12,7 @@ import { ReduxApi, RequestState, RequestDispatch } from 'rematch/rematch-request
 import { ReapopState, ReapopDispatch } from 'rematch/rematch-reapop/types'
 import { RouterState, RouterDispatch } from 'rematch/rematch-react-router/types'
 import { createTransform } from 'redux-persist'
+import patch from 'rematch/patch'
 
 const networkInterface = buildNetworkInterface((client: AxiosInstance, reduxApi?: ReduxApi<RootDispatch, RootState> | undefined): AxiosInstance => {
 	if (!reduxApi) return client;
@@ -74,26 +75,7 @@ const persistConfig = {
 	version: 1,
 };
 
-// monkey patch models
-Object.keys(models).forEach(key => {
-	const model = (models as any)[key];
-	if (typeof model.effects === "function") {
-		const effectsFunc = model.effects;
-		model.effects = (dispatch: any) => {
-			const effects = effectsFunc(dispatch);
-			Object.keys(effects).forEach(key => {
-				const effect = effects[key];
-				effects[key] = (payload: any, state: any) => effect(state, payload);
-			});
-			return effects;
-		}
-	} else if (typeof model.effects === "object") {
-		model.effects.forEach((key: string) => {
-			const effect = model.effects[key];
-			model.effects[key] = (payload: any, state: any) => effect(state, payload);
-		})
-	}
-});
+patch(models);
 
 export const store = init({
 	models,
