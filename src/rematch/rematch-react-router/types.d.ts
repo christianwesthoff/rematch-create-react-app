@@ -4,7 +4,7 @@ import { CallHistoryMethodAction } from 'connected-react-router';
 export type valuesOf<T extends Array<any>>= T[number];
 
 export type RouterState<T extends string> = {
-    [P in valuesOf<Array<T>>]: LocationState
+    [P in valuesOf<Array<T>>]: LocationState & { location: Location<LocationState>, action: Action }
 }
 
 export type RouterDispatch<T extends string> = {

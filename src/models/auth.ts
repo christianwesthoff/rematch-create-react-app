@@ -52,7 +52,7 @@ export const auth = {
                     dispatch.userInfo.fetchClaims(accessToken);
                 }
                 dispatch.auth.setToken({ refreshToken, accessToken, expiresIn });
-                const { action, location } = (rootState as any).router;
+                const { action, location } = rootState.router;
                 if (action === 'REPLACE' && location.state && location.state.from) {
                     dispatch.router.replace(location.state.from);
                 } else {
