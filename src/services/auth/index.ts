@@ -16,7 +16,7 @@ import { AxiosRequestor } from './axiosRequestor'
 const GRANT_TYPE_PASSWORD = 'password';
 
 class StringUtils extends BasicQueryStringUtils {
-  parse(input: LocationLike, useHash?: boolean): StringMap {
+  parse(input: LocationLike, useHash?: boolean | undefined): StringMap {
     return super.parse(input, false);
   }
 }
@@ -77,7 +77,7 @@ export class AuthService {
   //   this.handler.performAuthorizationRequest(this.config, request);
   // }
 
-  makeTokenRequest(userName: string, password: string, scope?: string) {
+  makeTokenRequest(userName: string, password: string, scope?: string | undefined) {
     if (!userName) {
       return Promise.reject(new Error('Missing userName'));
     }
