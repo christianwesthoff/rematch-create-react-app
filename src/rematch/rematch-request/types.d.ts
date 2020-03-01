@@ -5,7 +5,7 @@ import { State as EntitiesState } from './reducers/entities';
 import { State as MutationsState } from './reducers/mutations';
 import { RootDispatch, RootState } from 'store';
 
-export type valuesOf<T extends any[]>= T[number];
+export type valuesOf<T extends Array<any>>= T[number];
 
 export type RequestState<T1 extends string, T2 extends string, T3 extends string> = {
   [P in valuesOf<Array<T1>>]: QueriesState
@@ -26,19 +26,19 @@ export type RequestDispatch<T1 extends string, T2 extends string, T3 extends str
 };
 
 export type ExtractNormalizedStateFromQueryConfig<T> = T extends QueryConfig & {
-  transform?: (...args: any[]) => infer O
+  transform?: (...args: Array<any>) => infer O
 } ? {
   [P in keyof O]: O[P]
 } : never
 
 export type ExtractStateFromQueryConfig<T> = T extends QueryConfig & {
-    transform?: (...args: any[]) => infer O
+    transform?: (...args: Array<any>) => infer O
 } ? {
     [P in keyof O]: O[P] extends Record<any, infer T> ? Array<T> : never
 } : never
 
 export type ExtractKeyFromQueryConfig<T> = T extends QueryConfig & {
-    transform?: (...args: any[]) => infer O
+    transform?: (...args: Array<any>) => infer O
 } ? {
     [P in keyof O]: O[P] extends Record<infer T, any> ? Array<T> : never
 } : never
