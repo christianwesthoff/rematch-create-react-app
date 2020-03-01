@@ -1,8 +1,8 @@
-import { mutateAsync } from "../actions";
-import React from "react";
-import useMutationState from "./use-mutation-state";
-import { MutationState, MutationConfig } from "../types";
-import { useDispatch } from "react-redux";
+import { mutateAsync } from '../actions';
+import React from 'react';
+import useMutationState from './use-mutation-state';
+import { MutationState, MutationConfig } from '../types';
+import { useDispatch } from 'react-redux';
 
 const useMutation = <TMutationConfig extends MutationConfig, TParams extends Array<any>>(
   makeMutationConfig: (...args: TParams) => TMutationConfig,

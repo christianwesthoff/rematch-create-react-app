@@ -1,5 +1,5 @@
-import { Plugin } from '@rematch/core'
-import { bindActionCreators } from 'redux'
+import { Plugin } from '@rematch/core';
+import { bindActionCreators } from 'redux';
 import { reducer as notificationsReducer, Notification, addNotification, updateNotification, removeNotification, removeNotifications } from 'reapop';
 
 const getReapopModel = (defaultNotification?: Notification | undefined): any => {

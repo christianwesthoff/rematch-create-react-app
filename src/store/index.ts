@@ -1,18 +1,18 @@
-import { init } from '@rematch/core'
-import { RematchRootDispatch, RematchRootState, RematchRootSelect } from 'rematch/types'
-import * as models from 'models'
-import createSelect from '@rematch/select'
-import createQuery from 'rematch/rematch-request'
-import buildNetworkInterface from 'rematch/rematch-request/network'
-import createRouter from 'rematch/rematch-react-router'
-import createReapop from 'rematch/rematch-reapop'
-import createPersist from '@rematch/persist'
-import { AxiosInstance } from 'axios'
-import { ReduxApi, RequestState, RequestDispatch } from 'rematch/rematch-request/types'
-import { ReapopState, ReapopDispatch } from 'rematch/rematch-reapop/types'
-import { RouterState, RouterDispatch } from 'rematch/rematch-react-router/types'
-import { createTransform } from 'redux-persist'
-import patch from 'rematch/patch'
+import { init } from '@rematch/core';
+import { RematchRootDispatch, RematchRootState, RematchRootSelect } from 'rematch/types';
+import * as models from 'models';
+import createSelect from '@rematch/select';
+import createQuery from 'rematch/rematch-request';
+import buildNetworkInterface from 'rematch/rematch-request/network';
+import createRouter from 'rematch/rematch-react-router';
+import createReapop from 'rematch/rematch-reapop';
+import createPersist from '@rematch/persist';
+import { AxiosInstance } from 'axios';
+import { ReduxApi, RequestState, RequestDispatch } from 'rematch/rematch-request/types';
+import { ReapopState, ReapopDispatch } from 'rematch/rematch-reapop/types';
+import { RouterState, RouterDispatch } from 'rematch/rematch-react-router/types';
+import { createTransform } from 'redux-persist';
+import patch from 'rematch/patch';
 
 const networkInterface = buildNetworkInterface((client: AxiosInstance, reduxApi?: ReduxApi<RootDispatch, RootState> | undefined): AxiosInstance => {
 	if (!reduxApi) return client;
@@ -34,7 +34,7 @@ const networkInterface = buildNetworkInterface((client: AxiosInstance, reduxApi?
 			  if (auth && auth.credentials) {
 				return client.request(err.config);
 			  }
-			  dispatch.router.push("/");
+			  dispatch.router.push('/');
 			  return Promise.reject(err);
 		  } else {
 			return Promise.reject(err);
@@ -83,21 +83,21 @@ export const store = init({
 		createSelect(),
 		// createSubscribe(),
 		createPersist(persistConfig),
-		createRouter("router"),
-		createReapop("notifications", defaultNotification),
-		createQuery({ networkInterface, entitiesModelName: "entities", queriesModelName: "queries", mutationsModelName: "mutations" })
+		createRouter('router'),
+		createReapop('notifications', defaultNotification),
+		createQuery({ networkInterface, entitiesModelName: 'entities', queriesModelName: 'queries', mutationsModelName: 'mutations' })
 	]
 });
 
 export type RootState = RematchRootState<typeof models> & 
-						ReapopState<"notifications"> & 
-						RouterState<"router"> & 
-						RequestState<"queries", "entities", "mutations">
+						ReapopState<'notifications'> & 
+						RouterState<'router'> & 
+						RequestState<'queries', 'entities', 'mutations'>
 
 export type RootDispatch = RematchRootDispatch<typeof models> & 
-						   ReapopDispatch<"notifications"> & 
-						   RouterDispatch<"router"> &
-						   RequestDispatch<"queries", "entities", "mutations">;
+						   ReapopDispatch<'notifications'> & 
+						   RouterDispatch<'router'> &
+						   RequestDispatch<'queries', 'entities', 'mutations'>;
 
 export type RootSelect = RematchRootSelect<typeof models>;
 

@@ -1,12 +1,12 @@
-import { NetworkInterface, RequestConfig, AdditionalHeadersSelector } from "./types";
-import queryMiddleware from "./middleware/request"
-import { Plugin, Middleware } from '@rematch/core'
-import queriesReducer from "./reducers/queries";
-import entitiesReducer from "./reducers/entities";
-import mutationsReducer from "./reducers/mutations";
-import { bindActionCreators } from 'redux'
-import { queryAsync, mutateAsync, invalidateQuery } from './actions'
-import Config from './config'
+import { NetworkInterface, RequestConfig, AdditionalHeadersSelector } from './types';
+import queryMiddleware from './middleware/request';
+import { Plugin, Middleware } from '@rematch/core';
+import queriesReducer from './reducers/queries';
+import entitiesReducer from './reducers/entities';
+import mutationsReducer from './reducers/mutations';
+import { bindActionCreators } from 'redux';
+import { queryAsync, mutateAsync, invalidateQuery } from './actions';
+import Config from './config';
 
 const getMutationsSelector = (mutationsModelName: string) => (state: any) => state[mutationsModelName];
 const getMutationsModel = (): any => { 

@@ -1,4 +1,4 @@
-import { Entities, QueryState } from "../types";
+import { Entities, QueryState } from '../types';
 
 export const getEntitiesFromQuery = (
       entities: Entities,

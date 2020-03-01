@@ -1,4 +1,4 @@
-import { NetworkInterface, RequestHeaders, ReduxApi } from "./types";
+import { NetworkInterface, RequestHeaders, ReduxApi } from './types';
 import HttpMethods, { HttpMethod } from './constants/http-methods';
 import axios, { AxiosInstance, CancelToken } from 'axios';
 

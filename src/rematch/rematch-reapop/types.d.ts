@@ -1,4 +1,4 @@
-import { Notification } from 'reapop'
+import { Notification } from 'reapop';
 
 export type valuesOf<T extends any[]>= T[number];
 

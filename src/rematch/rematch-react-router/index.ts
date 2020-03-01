@@ -1,7 +1,7 @@
-import { createBrowserHistory as createHistory } from 'history'
-import { connectRouter, routerMiddleware, push, replace, go, goBack, goForward } from 'connected-react-router'
-import { Plugin } from '@rematch/core'
-import { bindActionCreators } from 'redux'
+import { createBrowserHistory as createHistory } from 'history';
+import { connectRouter, routerMiddleware, push, replace, go, goBack, goForward } from 'connected-react-router';
+import { Plugin } from '@rematch/core';
+import { bindActionCreators } from 'redux';
 
 export const history = createHistory();
 

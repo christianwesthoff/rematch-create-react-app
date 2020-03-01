@@ -1,5 +1,5 @@
-import { LocationState, Path, LocationDescriptorObject } from "history";
-import { CallHistoryMethodAction } from "connected-react-router";
+import { LocationState, Path, LocationDescriptorObject } from 'history';
+import { CallHistoryMethodAction } from 'connected-react-router';
 
 export type valuesOf<T extends Array<any>>= T[number];
 

@@ -1,11 +1,11 @@
-import React from 'react'
-import ReactDOM from 'react-dom'
-import { Provider } from 'react-redux'
-import store from './store'
-import { history } from 'rematch/rematch-react-router'
-import App from './containers/App'
-import { getPersistor } from '@rematch/persist'
-import { PersistGate } from 'redux-persist/integration/react'
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux';
+import store from './store';
+import { history } from 'rematch/rematch-react-router';
+import App from './containers/App';
+import { getPersistor } from '@rematch/persist';
+import { PersistGate } from 'redux-persist/integration/react';
 
 const persistor = getPersistor();
 

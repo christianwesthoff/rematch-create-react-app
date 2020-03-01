@@ -1,4 +1,4 @@
-import asRecord from "utils/asRecord";
+import asRecord from 'utils/asRecord';
 
 export interface Label {
   id: number
@@ -19,7 +19,7 @@ export interface Issue {
   body: string
   labels: Label[]
   comments_url: string
-  state: 'open' | 'closed'
+  state: 'open' | 'closed';
   comments: number
 }
 

@@ -1,7 +1,7 @@
-import React, { useState } from 'react'
-import { RootDispatch, RootState } from 'store'
-import { useDispatch, useSelector } from 'react-redux'
-import { UserCredentials } from 'models/auth'
+import React, { useState } from 'react';
+import { RootDispatch, RootState } from 'store';
+import { useDispatch, useSelector } from 'react-redux';
+import { UserCredentials } from 'models/auth';
 import { ChangeHandler } from 'types/dom';
 
 const mapDispatch = (dispatch: RootDispatch) => ({
@@ -14,7 +14,7 @@ const Login = () => {
 
   const { login } = mapDispatch(dispatch);
 
-  const [{ userName, password }, setLogin] = useState({ userName: "", password: "" });
+  const [{ userName, password }, setLogin] = useState({ userName: '', password: '' });
 
   const onPasswordChange: ChangeHandler = e => {
     e.persist();
@@ -51,8 +51,8 @@ const Login = () => {
         >
           Login
         </button><br />
-        {isLoading ? "Loading..." : ""}
-        {error ? error: ""}
+        {isLoading ? 'Loading...' : ''}
+        {error ? error: ''}
       </div>
     </form>
   )

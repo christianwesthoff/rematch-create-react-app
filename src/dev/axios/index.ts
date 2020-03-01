@@ -1,5 +1,5 @@
-import axios, { AxiosRequestConfig } from 'axios'
-import MockApiAdapter from 'axios-mock-adapter'
+import axios, { AxiosRequestConfig } from 'axios';
+import MockApiAdapter from 'axios-mock-adapter';
 
 const configureMockApi = () => {
     const mock = new MockApiAdapter(axios, { delayResponse: 100 });

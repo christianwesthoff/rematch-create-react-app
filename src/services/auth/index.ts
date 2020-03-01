@@ -11,8 +11,8 @@ import {
     RevokeTokenRequest,
     GRANT_TYPE_REFRESH_TOKEN,
   } from '@openid/appauth';
-import { AxiosRequestor } from './axiosRequestor'
-  
+import { AxiosRequestor } from './axiosRequestor';
+
 const GRANT_TYPE_PASSWORD = 'password';
 
 class StringUtils extends BasicQueryStringUtils {

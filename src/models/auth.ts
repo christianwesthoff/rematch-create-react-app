@@ -1,4 +1,4 @@
-import authService from 'services/auth'
+import authService from 'services/auth';
 import { RootDispatch, RootState } from 'store';
 
 export interface AuthState {

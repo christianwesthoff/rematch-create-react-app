@@ -1,7 +1,7 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
-import { useSelector, useDispatch } from 'react-redux'
-import { RootState, RootDispatch } from 'store'
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState, RootDispatch } from 'store';
 import { ChangeHandler } from 'types/dom';
 import { Claims } from 'models/userInfo';
 

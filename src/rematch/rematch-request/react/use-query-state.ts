@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import * as querySelectors from '../selectors/query';
 import { QueryState } from '../types';
 import { QueryConfig } from '../types';
-import Config from '../config'
+import Config from '../config';
 
 const useQueryState = (queryConfig?: QueryConfig | undefined): QueryState => {
 

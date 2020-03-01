@@ -1,8 +1,8 @@
-import React from 'react'
-import idx from 'utils/idx'
+import React from 'react';
+import idx from 'utils/idx';
 
-import useQuery from 'rematch/rematch-request/react/use-query'
-import { getIssues } from 'queries/issues'
+import useQuery from 'rematch/rematch-request/react/use-query';
+import { getIssues } from 'queries/issues';
 
 interface ILProps {
   org: string

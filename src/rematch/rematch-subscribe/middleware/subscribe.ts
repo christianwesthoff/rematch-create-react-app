@@ -1,5 +1,5 @@
 import { Middleware, Dispatch, MiddlewareAPI, Action } from 'redux';
-import { ActionType, Listener } from '../types'
+import { ActionType, Listener } from '../types';
 
 type ActionListenerContainer = {
     action: ActionType;
