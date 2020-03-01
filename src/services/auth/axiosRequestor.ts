@@ -1,5 +1,5 @@
-import { Requestor, AppAuthError } from "@openid/appauth";
-import axios, { AxiosRequestConfig, Method } from "axios"
+import { Requestor, AppAuthError } from '@openid/appauth';
+import axios, { AxiosRequestConfig, Method } from 'axios'
 
 export class AxiosRequestor extends Requestor {
     xhr<T>(settings: JQueryAjaxSettings): Promise<T> {

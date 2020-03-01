@@ -54,10 +54,10 @@ export const auth = {
                 }
                 dispatch.auth.setToken(credentials);
                 const { action, location } = (rootState as any).router;
-                if (action === "REPLACE" && location.state && location.state.from) {
+                if (action === 'REPLACE' && location.state && location.state.from) {
                     dispatch.router.replace(location.state.from);
                 } else {
-                    dispatch.router.push("/");
+                    dispatch.router.push('/');
                 }
             } catch (error) {
                 dispatch.auth.setTokenError(error.toString());
