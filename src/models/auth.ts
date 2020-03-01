@@ -50,7 +50,7 @@ export const auth = {
                 const { refreshToken, accessToken, expiresIn } = await authService.makeTokenRequest(userName, password, 'email openid offline_access');
                 const credentials = { refreshToken, accessToken, expiresIn };
                 if (credentials && credentials.accessToken) {
-                    await dispatch.userInfo.fetchClaims(credentials.accessToken);
+                    dispatch.userInfo.fetchClaims(credentials.accessToken);
                 }
                 dispatch.auth.setToken(credentials);
                 const { action, location } = (rootState as any).router;
@@ -72,7 +72,7 @@ export const auth = {
                     const { accessToken } = await authService.makeRefreshTokenRequest(refreshToken);
                     const newCredentials = { ...credentials, accessToken };
                     if (newCredentials && newCredentials.accessToken) {
-                        await dispatch.userInfo.fetchClaims(newCredentials.accessToken);
+                        dispatch.userInfo.fetchClaims(newCredentials.accessToken);
                     }
                     dispatch.auth.setToken(newCredentials);
                 } catch (error) {
