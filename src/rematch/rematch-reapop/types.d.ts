@@ -1,6 +1,6 @@
 import { Notification } from 'reapop';
 
-export type valuesOf<T extends any[]>= T[number];
+export type valuesOf<T extends Array<any>>= T[number];
 
 export type ReapopState<T extends string> = {
     [P in valuesOf<Array<T>>]: Array<Notification>;
