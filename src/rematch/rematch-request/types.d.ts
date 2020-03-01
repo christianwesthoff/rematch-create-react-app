@@ -7,22 +7,22 @@ import { RootDispatch, RootState } from 'store';
 
 export type valuesOf<T extends any[]>= T[number];
 
-export type RequestState<T1 extends Array<string>, T2 extends Array<string>, T3 extends Array<string>> = {
-  [P in valuesOf<T1>]: QueriesState
+export type RequestState<T1 extends string, T2 extends string, T3 extends string> = {
+  [P in valuesOf<Array<T1>>]: QueriesState
 } &  {
-  [P in valuesOf<T2>]: EntitiesState
+  [P in valuesOf<Array<T2>>]: EntitiesState
 } & {
-  [P in valuesOf<T3>]: MutationsState
+  [P in valuesOf<Array<T3>>]: MutationsState
 };
 
-export type RequestDispatch<T1 extends Array<string>, T2 extends Array<string>, T3 extends Array<string>> = {
-  [P in valuesOf<T1>]: {
+export type RequestDispatch<T1 extends string, T2 extends string, T3 extends string> = {
+  [P in valuesOf<Array<T1>>]: {
     invalidateQuery: (_:Array<string>|string) => Promise<void>
   }
 } &  {
-  [P in valuesOf<T2>]: {}
+  [P in valuesOf<Array<T2>>]: {}
 } & {
-  [P in valuesOf<T3>]: {}
+  [P in valuesOf<Array<T3>>]: {}
 };
 
 export type ExtractNormalizedStateFromQueryConfig<T> = T extends QueryConfig & {

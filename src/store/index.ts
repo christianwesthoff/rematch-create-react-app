@@ -107,17 +107,15 @@ export const store = init({
 	]
 });
 
-
-// store.dispatch.auth.init();
 export type RootState = RematchRootState<typeof models> & 
-						ReapopState<["notifications"]> & 
-						RouterState<["router"]> & 
-						RequestState<["queries"], ["entities"], ["mutations"]>
+						ReapopState<"notifications"> & 
+						RouterState<"router"> & 
+						RequestState<"queries", "entities", "mutations">
 
 export type RootDispatch = RematchRootDispatch<typeof models> & 
-						   ReapopDispatch<["notifications"]> & 
-						   RouterDispatch<["router"]> &
-						   RequestDispatch<["queries"], ["entities"], ["mutations"]>;
+						   ReapopDispatch<"notifications"> & 
+						   RouterDispatch<"router"> &
+						   RequestDispatch<"queries", "entities", "mutations">;
 
 export type RootSelect = RematchRootSelect<typeof models>;
 
