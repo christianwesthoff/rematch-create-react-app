@@ -72,7 +72,7 @@ const persistConfig = {
 		createFilter('userInfo', ['claims'])
 	],
 	throttle: 1000,
-	version: 1,
+	version: 1
 };
 
 patch(models);
