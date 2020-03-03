@@ -19,11 +19,12 @@ const useQueriesState = (queryConfigs?: Array<QueryConfig | undefined> | undefin
         querySelectors.isFinished(queriesState, queryConfig),
     ) ?? false;
 
-    const queryStates: { [key: string]: QueryState } = queryConfigs?.reduce((acc, curr) => {
+    const queryStates = queryConfigs?.reduce((acc, curr) => {
         const queryKey = getQueryKey(curr);
-        if (!queryKey) return;
+        if (!queryKey) return acc;
         acc[queryKey] = useQueryState(curr);
-    }, {} as any)
+        return acc;
+    }, {} as any) ?? {}
 
     const queryState = React.useMemo(
     () => ({

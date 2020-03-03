@@ -4,11 +4,12 @@ import * as React from 'react';
 import { useDispatch } from 'react-redux';
 import { queryAsync, cancelQuery } from '../actions';
 
-import { ActionPromiseValue, QueryConfig, RequestKey } from '../types';
+import { QueryConfig, RequestKey, ExtractStateFromQueryConfig } from '../types';
 
 import useConstCallback from './use-const-callback';
 import useMemoizedQueryConfigs from './use-memoized-query-configs';
 import useQueriesState from './use-queries-state';
+import useEntityState from './use-entity-state';
 
 import { QueriesState } from '../types';
 import { getQueryKey } from '../lib/keys';
@@ -44,9 +45,9 @@ const diffQueryConfigs = (
   return { cancelKeys, requestQueryConfigs };
 };
 
-const useQueries = (
-  providedQueryConfigs?: Array<QueryConfig | undefined> | undefined,
-): [QueriesState, () => void] => {
+const useQueries = <TQueryConfig extends QueryConfig>(
+  providedQueryConfigs?: Array<TQueryConfig | undefined> | undefined,
+): [QueriesState, { [key: string]: ExtractStateFromQueryConfig<TQueryConfig> }, () => void] => {
   const reduxDispatch = useDispatch();
 
   const previousQueryConfigs = React.useRef<Array<QueryConfig | undefined> | undefined>([]);
@@ -154,7 +155,12 @@ const useQueries = (
     };
   }, [dispatchCancelToRedux]);
 
-  return [queriesState, refresh];
+  const entityStates = Object.keys(queriesState.queryStates).reduce((acc, cur) => {
+      acc[cur] = useEntityState(queriesState.queryStates[cur]);
+      return acc;
+  }, {} as any);
+
+  return [queriesState, entityStates, refresh];
 };
 
 export default useQueries;
