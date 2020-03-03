@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { getQueryKey } from '../lib/request-key';
+import { getQueryKey } from '../lib/keys';
 import { QueryConfig } from '../types';
 
 const identity = (x: any):any => x;

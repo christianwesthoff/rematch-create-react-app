@@ -1,7 +1,7 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { queryAsync, cancelQuery } from '../actions';
-import { getQueryKey } from '../lib/request-key';
+import { getQueryKey } from '../lib/keys';
 import { QueryConfig, RequestKey, ExtractStateFromQueryConfig } from '../types';
 
 import useConstCallback from './use-const-callback';

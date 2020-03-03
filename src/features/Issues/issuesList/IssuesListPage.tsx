@@ -1,7 +1,7 @@
 import React from 'react';
 import idx from 'utils/idx';
 
-import useQuery from 'rematch/rematch-request/react/use-query';
+import useQuery from 'rematch/rematch-request/hooks/use-query';
 import { getIssues } from 'queries/issues';
 
 interface ILProps {

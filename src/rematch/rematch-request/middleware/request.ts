@@ -13,7 +13,7 @@ import {
 import * as actionTypes from '../constants/action-types';
 import httpMethods, { HttpMethod } from '../constants/http-methods';
 import * as statusCodes from '../constants/status-codes';
-import { getQueryKey, getMutationKey } from '../lib/request-key';
+import { getQueryKey, getMutationKey } from '../lib/keys';
 import { updateEntities, updateMaps } from '../lib/update';
 import { PublicAction } from '../actions';
 import {

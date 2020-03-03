@@ -1,7 +1,7 @@
 import idx from 'idx';
 
 import { State as QueriesState } from '../reducers/queries';
-import { getQueryKey } from '../lib/request-key';
+import { getQueryKey } from '../lib/keys';
 import { QueryConfig, Maps } from '../types';
 
 export const isFinished = (

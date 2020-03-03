@@ -1,7 +1,7 @@
 import idx from 'idx';
 
 import { State as MutationsState } from '../reducers/mutations';
-import { getMutationKey } from '../lib/request-key';
+import { getMutationKey } from '../lib/keys';
 import { MutationConfig } from '../types';
 
 export const isFinished = (

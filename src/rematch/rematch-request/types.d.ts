@@ -69,6 +69,14 @@ export type QueryState = {
   maps?: Maps
 };
 
+export type QueriesState = {
+  isFinished: boolean,
+  isPending: boolean,
+  queryStates: {
+    [key: string]: QueryState
+  }
+};
+
 export type CredentialOption = 'include' | 'same-origin' | 'omit';
 
 export type RequestOptions = {
