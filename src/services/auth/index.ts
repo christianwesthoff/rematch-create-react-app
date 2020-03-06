@@ -1,11 +1,5 @@
 import {
-    AuthorizationNotifier,
     AuthorizationServiceConfiguration,
-    LocalStorageBackend,
-    LocationLike,
-    RedirectRequestHandler,
-    BasicQueryStringUtils,
-    StringMap,
     TokenRequest,
     BaseTokenRequestHandler,
     RevokeTokenRequest,
