@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useSelector } from 'react-redux';
 import * as querySelectors from '../selectors/query';
-import { QueriesState, QueryConfig, QueryState } from '../types';
+import { QueriesState, QueryConfig } from '../types';
 import Config from '../config';
 import useQueryState from './use-query-state';
 import { getQueryKey } from '../lib/keys';

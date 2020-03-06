@@ -15,11 +15,11 @@ import { AxiosRequestor } from './axiosRequestor';
 
 const GRANT_TYPE_PASSWORD = 'password';
 
-class StringUtils extends BasicQueryStringUtils {
-  parse(input: LocationLike, useHash?: boolean | undefined): StringMap {
-    return super.parse(input, false);
-  }
-}
+// class StringUtils extends BasicQueryStringUtils {
+//   parse(input: LocationLike, useHash?: boolean | undefined): StringMap {
+//     return super.parse(input, false);
+//   }
+// }
 
 class CustomTokenRequestHandler extends BaseTokenRequestHandler {
   performRevokeTokenRequest(
@@ -43,17 +43,17 @@ class CustomTokenRequestHandler extends BaseTokenRequestHandler {
 }
 
 export class AuthService {
-  notifier: AuthorizationNotifier;
-  handler: RedirectRequestHandler;
+  // notifier: AuthorizationNotifier;
+  // handler: RedirectRequestHandler;
   config: AuthorizationServiceConfiguration;
   tokenHandler: CustomTokenRequestHandler;
 
   constructor() {
-    this.notifier = new AuthorizationNotifier();
-    this.handler = new RedirectRequestHandler(
-      new LocalStorageBackend(),
-      new StringUtils()
-    );
+    // this.notifier = new AuthorizationNotifier();
+    // this.handler = new RedirectRequestHandler(
+    //   new LocalStorageBackend(),
+    //   new StringUtils()
+    // );
     this.tokenHandler = new CustomTokenRequestHandler(new AxiosRequestor());
     this.config = new AuthorizationServiceConfiguration({
       authorization_endpoint: `${process.env.REACT_APP_OAUTH_AUTHORIZATION_ENDPOINT}`,
@@ -61,7 +61,7 @@ export class AuthService {
       revocation_endpoint: `${process.env.REACT_APP_OAUTH_REVOCATION_ENDPOINT}`,
     });
 
-    this.handler.setAuthorizationNotifier(this.notifier);
+    // this.handler.setAuthorizationNotifier(this.notifier);
   }
 
   // makeAuthorizationRequest() {
@@ -126,28 +126,28 @@ export class AuthService {
     return this.tokenHandler.performRevokeTokenRequest(this.config, request);
   }
 
-  checkForAuthorizationResponse() {
-    return this.handler.completeAuthorizationRequestIfPossible();
-  }
+  // checkForAuthorizationResponse() {
+  //   return this.handler.completeAuthorizationRequestIfPossible();
+  // }
 
-  getAuthorizationResponse() {
-    return new Promise((resolve, reject) => {
-      this.notifier.setAuthorizationListener((request, response, error) => {
-        if (error) {
-          reject(error);
-        }
+  // getAuthorizationResponse() {
+  //   return new Promise((resolve, reject) => {
+  //     this.notifier.setAuthorizationListener((request, response, error) => {
+  //       if (error) {
+  //         reject(error);
+  //       }
 
-        if (response && response.code) {
-          resolve({
-            code: response.code,
-            verifier: request?.internal?.code_verifier || '',
-          });
-        }
+  //       if (response && response.code) {
+  //         resolve({
+  //           code: response.code,
+  //           verifier: request?.internal?.code_verifier || '',
+  //         });
+  //       }
 
-        reject(null);
-      });
-    });
-  }
+  //       reject(null);
+  //     });
+  //   });
+  // }
 }
 
 export default new AuthService();
