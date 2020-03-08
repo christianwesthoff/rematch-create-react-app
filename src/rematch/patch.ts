@@ -1,4 +1,5 @@
-// monkey patch models; we switch parameter order of effects because default doesn't allow parameterless functions
+// monkey patch models; we switch parameter order of effects 
+// because the default order doesn't allow parameterless functions
 const patch = (models: any):void => Object.keys(models).forEach(key => {
 	const model = (models as any)[key];
 	if (typeof model.effects === 'function') {
