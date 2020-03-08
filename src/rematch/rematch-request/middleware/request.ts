@@ -155,7 +155,7 @@ const queryMiddleware = (
           throw new Error('Missing required url field for request');
         }
 
-        const requestKey = getQueryKey({
+        const requestKey = getMutationKey({
           body: action.body,
           requestKey: action.requestKey,
           url: action.url,
@@ -298,7 +298,7 @@ const queryMiddleware = (
           throw new Error('Missing required url field for request');
         }
 
-        const requestKey = getMutationKey({
+        const requestKey = getQueryKey({
           body: action.body,
           requestKey: action.requestKey,
           url: action.url,
