@@ -10,6 +10,7 @@ import {
   mutateSuccess,
   invalidateQuery
 } from '../actions';
+import equal from 'fast-deep-equal';
 import * as actionTypes from '../constants/action-types';
 import httpMethods, { HttpMethod } from '../constants/http-methods';
 import * as statusCodes from '../constants/status-codes';
@@ -174,7 +175,7 @@ const queryMiddleware = (
 
         const additionalHeaders = !!additionalHeadersSelector ? additionalHeadersSelector(state) : {};
 
-        if (!isPending && payload !== action.body) {
+        if (!isPending && !equal(payload, action.body)) {
           returnValue = new Promise<ActionPromiseValue>(resolve => {
             const start = new Date();
             const { method = httpMethods.POST as HttpMethod } = options;
@@ -230,7 +231,6 @@ const queryMiddleware = (
                       responseBody,
                       responseHeaders,
                       status,
-                      // responseText,
                       url,
                     }),
                   );
@@ -239,7 +239,6 @@ const queryMiddleware = (
                     body: responseBody,
                     duration,
                     status: status,
-                    // text: responseText,
                     headers: responseHeaders,
                   });
                 } else {
@@ -252,7 +251,6 @@ const queryMiddleware = (
                       responseBody,
                       responseHeaders,
                       status,
-                      // responseText,
                       url,
                     }),
                   );
@@ -266,7 +264,6 @@ const queryMiddleware = (
                     body: responseBody,
                     duration,
                     status,
-                    // text: responseText,
                     headers: responseHeaders,
                   });
                 }
@@ -378,7 +375,6 @@ const queryMiddleware = (
                       responseBody,
                       responseHeaders,
                       status,
-                      // responseText,
                       url,
                     }),
                   );
@@ -387,7 +383,6 @@ const queryMiddleware = (
                     body: responseBody,
                     duration,
                     status: status,
-                    // text: responseText,
                     headers: responseHeaders,
                   });
                 } else {
@@ -406,7 +401,6 @@ const queryMiddleware = (
                       responseBody,
                       responseHeaders,
                       status,
-                      // responseText,
                       url,
                       maps
                     }),
