@@ -9,11 +9,11 @@ import useMemoizedQueryConfig from './use-memoized-query-config';
 import useQueryState from './use-query-state';
 
 import { QueryState } from '../types';
-import useEntityState from './use-entity-state';
+import { reselectEntityStateFromQueryState } from '../lib/reselect';
 
 const useQuery = <TQueryConfig extends QueryConfig>(
   providedQueryConfig?: TQueryConfig | undefined,
-): [QueryState, ExtractStateFromQueryConfig<TQueryConfig>, () => void] => {
+): [QueryState, () => void, (state: any) => ExtractStateFromQueryConfig<TQueryConfig>] => {
   const reduxDispatch = useDispatch();
 
   // This hook manually tracks the pending state, which is synchronized as precisely as possible
@@ -105,8 +105,9 @@ const useQuery = <TQueryConfig extends QueryConfig>(
   
   }, [dispatchCancelToRedux, dispatchRequestToRedux, queryConfig, invalidCount]);
 
-  const entityState = useEntityState(queryState) as ExtractStateFromQueryConfig<TQueryConfig>;
-  return [queryState, entityState, refresh];
+  const reselect = reselectEntityStateFromQueryState(maps);
+  const entityStateSelector = (state: any) => (reselect ? reselect(state) : {}) as ExtractStateFromQueryConfig<TQueryConfig>;
+  return [queryState, refresh, entityStateSelector];
 };
 
 export default useQuery;
