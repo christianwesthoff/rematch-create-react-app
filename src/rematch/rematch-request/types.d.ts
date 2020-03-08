@@ -44,37 +44,31 @@ export type ExtractKeyFromQueryConfig<T> = T extends QueryConfig & {
 } : never
 
 export type MutationState = {
-  headers?: ResponseHeaders | undefined;
   isFinished: boolean;
   isPending: boolean;
   isError: boolean;
   error?: any;
-  lastUpdated?: number;
-  requestCount: number;
-  status?: Status;
   payload?: any;
 };
 
 export type QueryState = {
-  headers?: ResponseHeaders | undefined;
   isFinished: boolean;
   isPending: boolean;
   isError: boolean;
   error?: any;
   isInvalid: boolean;
   invalidCount: number;
-  lastUpdated?: number;
-  requestCount: number;
-  status?: Status;
   maps?: Maps
 };
 
 export type QueriesState = {
   isFinished: boolean,
   isPending: boolean,
-  queryStates: {
-    [key: string]: QueryState
-  }
+  isError: boolean,
+  errors?: Array<any> | undefined;
+  invalidCount: number,
+  invalidState: Array<RequestKey | undefined>,
+  combinedMaps?: Maps
 };
 
 export type CredentialOption = 'include' | 'same-origin' | 'omit';

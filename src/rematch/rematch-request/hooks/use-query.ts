@@ -82,12 +82,11 @@ const useQuery = <TQueryConfig extends QueryConfig>(
   const queryState = useQueryState(queryConfig);
 
   // The invalid count of the query is used to determine if a change should be triggered
-  const invalidCount = queryState ? queryState.invalidCount : 0;
+  const { invalidCount, maps } = queryState
 
   React.useEffect(() => {
     // Dispatch `queryAsync` actions whenever the query config (note: memoized based on query
     // key) changes.
-
     if (queryConfig) {
       dispatchRequestToRedux(queryConfig);
     }

@@ -1,9 +1,8 @@
 import * as React from 'react';
 import { useSelector } from 'react-redux';
 import * as querySelectors from '../selectors/query';
-import { QueriesState, QueryConfig } from '../types';
+import { QueriesState, QueryConfig, Maps } from '../types';
 import Config from '../config';
-import useQueryState from './use-query-state';
 import { getQueryKey } from '../lib/keys';
 
 const useQueriesState = (queryConfigs?: Array<QueryConfig | undefined> | undefined): QueriesState => {
@@ -19,20 +18,42 @@ const useQueriesState = (queryConfigs?: Array<QueryConfig | undefined> | undefin
         querySelectors.isFinished(queriesState, queryConfig),
     ) ?? false;
 
-    const queryStates = queryConfigs?.reduce((acc, curr) => {
-        const queryKey = getQueryKey(curr);
-        if (!queryKey) return acc;
-        acc[queryKey] = useQueryState(curr);
+    const isError = queryConfigs?.some(queryConfig =>
+        querySelectors.isError(queriesState, queryConfig),
+    ) ?? false;
+
+    const errors = queryConfigs?.map(queryConfig =>
+        querySelectors.error(queriesState, queryConfig),
+    ).filter(error => !!error) ?? [];
+
+    const invalidCount = queryConfigs?.reduce((acc, cur) => {
+        acc += querySelectors.invalidCount(queriesState, cur);
         return acc;
-    }, {} as any) ?? {}
+    }, 0) ?? 0;
+
+    const invalidState = queryConfigs?.filter(queryConfig =>  querySelectors.isInvalid(queriesState, queryConfig))
+        .map(queryConfig => getQueryKey(queryConfig)) || [];
+    
+    const combinedMaps = queryConfigs?.reduce((acc, queryConfig) => {
+        const map = querySelectors.maps(queriesState, queryConfig);
+        if (!map) return acc;
+        Object.keys(map).forEach(key => {
+            acc[key] = (acc[key] || []).concat(map[key])
+        })
+        return acc;
+    }, {} as Maps) ?? {}
 
     const queryState = React.useMemo(
-    () => ({
-        isPending,
-        isFinished,
-        queryStates
-    }),
-    [isFinished, isPending, queryStates],
+        () => ({
+            isPending,
+            isFinished,
+            isError,
+            errors,
+            invalidCount,
+            invalidState,
+            combinedMaps
+        }),
+        [isFinished, isPending, isError, errors, invalidCount, invalidState, combinedMaps],
     );
 
     return queryState;
