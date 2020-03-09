@@ -28,7 +28,7 @@ export const IssuesListPage = ({
       <br/>
       <strong>Query Data</strong>
       <div>
-      {query.isFinished && !query.isError ? get(entities!, _ => _.issues, []).map((issue, key) => (
+      {query.isFinished && !query.isError ? get(entities, _ => _.issues, []).map((issue, key) => (
         <div key={key}>
         <div><strong>{issue.id} </strong><span>{issue.body}</span></div>
       </div>)) : query.isPending ? <strong>Loading...</strong> : query.isError ? <strong>{JSON.stringify(query.errors)}</strong> : <></>}</div>

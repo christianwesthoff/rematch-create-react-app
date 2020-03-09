@@ -1,6 +1,6 @@
 import idx from 'idx';
 
-const get = <T1 extends NonNullable<any>, T2 extends NonNullable<any>>(
+const get = <T1 extends any, T2 extends any>(
     prop: T1,
     accessor: (prop: T1) => T2 | null | undefined, 
     defaultVal: T2
