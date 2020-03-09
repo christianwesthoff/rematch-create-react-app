@@ -8,7 +8,8 @@ import {
   mutateStart,
   mutateFailure,
   mutateSuccess,
-  invalidateQuery
+  invalidateQuery,
+  validateQuery
 } from '../actions';
 import equal from 'fast-deep-equal';
 import * as actionTypes from '../constants/action-types';
@@ -289,6 +290,7 @@ const queryMiddleware = (
           map,
           options = {},
           meta,
+          trigger
         } = action;
 
         if (!url) {
@@ -406,6 +408,12 @@ const queryMiddleware = (
                     }),
                   );
 
+                  if (trigger) {
+                      dispatch(
+                        validateQuery(trigger(responseBody, responseHeaders)),
+                      );
+                  }
+
                   resolve({
                     body: responseBody,
                     duration,
@@ -471,6 +479,7 @@ const queryMiddleware = (
 
         break;
       }
+      case actionTypes.VALIDATE_QUERY:
       case actionTypes.INVALIDATE_QUERY: {
         const { queryPatterns } = action;
 

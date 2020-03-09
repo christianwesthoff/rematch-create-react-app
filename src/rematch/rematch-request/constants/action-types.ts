@@ -5,6 +5,7 @@ export const QUERY_FAILURE = '@@request/QUERY_FAILURE';
 export const CANCEL_QUERY = '@@request/CANCEL_QUERY';
 
 export const INVALIDATE_QUERY = '@@request/INVALIDATE_QUERY';
+export const VALIDATE_QUERY = '@@request/VALIDATE_QUERY';
 
 export const MUTATE_ASYNC = '@@request/MUTATE_ASYNC';
 export const MUTATE_START = '@@request/MUTATE_START';

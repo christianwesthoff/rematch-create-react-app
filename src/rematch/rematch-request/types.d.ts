@@ -109,6 +109,7 @@ export type QueryConfig = {
   retry?: boolean;
   preDispatchCallback?: () => void | undefined;
   url: Url;
+  trigger?: Trigger | undefined
 };
 
 export type Url = string;
@@ -139,13 +140,11 @@ export type Entities = { [key: string]: any };
 
 export type Trigger = (
   body?: ResponseBody | undefined,
-  // text?: ResponseText | undefined,
   headers?: ResponseHeaders | undefined,
 ) => Array<string>;
 
 export type Transform = (
   body?: ResponseBody | undefined,
-  // text?: ResponseText | undefined,
   headers?: ResponseHeaders | undefined,
 ) => { [key: string]: any };
 
@@ -164,7 +163,6 @@ export type NetworkHandler = {
       error: any,
       status: Status,
       responseBody?: ResponseBody | undefined,
-      // responseText?: ResponseText | undefined,
       responseHeaders?: ResponseHeaders | undefined,
     ) => void,
   ) => void;
