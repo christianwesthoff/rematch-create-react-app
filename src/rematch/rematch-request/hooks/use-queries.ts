@@ -1,16 +1,15 @@
-// @flow
-
 import * as React from 'react';
 import { useDispatch } from 'react-redux';
 import { queryAsync, cancelQuery } from '../actions';
 
-import { QueryConfig, RequestKey } from '../types';
+import { QueryConfig, RequestKey, ExtractStateFromQueriesConfig } from '../types';
 
 import useConstCallback from './use-const-callback';
 import useMemoizedQueryConfigs from './use-memoized-query-configs';
 import useQueriesState from './use-queries-state';
 import { QueriesState } from '../types';
 import { getQueryKey } from '../lib/keys';
+import { reselectEntityStateFromQueryState } from '../lib/reselect';
 
 const diff = <T>(a: Array<T>, b: Array<T>): Array<T> => {
   const bSet = new Set(b);
@@ -46,9 +45,9 @@ const calcUpDownQueryConfigs = (
     return { cancelKeys, requestQueryConfigs };
 };
 
-const useQueries = <TQueryConfig extends QueryConfig>(
-  providedQueryConfigs?: Array<TQueryConfig | undefined> | undefined,
-): [QueriesState, () => void] => {
+const useQueries = <TQueryConfigs extends Array<QueryConfig>>(
+  providedQueryConfigs?: TQueryConfigs | undefined,
+): [QueriesState, () => void, (state: any) => ExtractStateFromQueriesConfig<TQueryConfigs>] => {
   const reduxDispatch = useDispatch();
 
   const previousQueryConfigs = React.useRef<Array<QueryConfig | undefined> | undefined>([]);
@@ -126,15 +125,18 @@ const useQueries = <TQueryConfig extends QueryConfig>(
     }
   }, [dispatchRequestToRedux, queryConfigs]);
 
+  const invalidStateRef = React.useRef<Array<string | undefined>>([]);
+  invalidStateRef.current = invalidState;
+
   React.useEffect(() => {
     // Whenever the list of query configs change, we need to manually diff the query configs
     // against the previous list of query configs. Whatever was there and is no longer, will be
     // cancelled. Whatever is new, will turn into a request.
     const upDownDiff = calcUpDownQueryConfigs(
-        invalidState,
-        previousQueryConfigs.current,
-        queryConfigs,
-      );
+      invalidStateRef.current,
+      previousQueryConfigs.current,
+      queryConfigs,
+    );
 
     if (!upDownDiff) return;
     const { cancelKeys, requestQueryConfigs } = upDownDiff;
@@ -149,12 +151,14 @@ const useQueries = <TQueryConfig extends QueryConfig>(
 
   // When the component unmounts, cancel all pending requests
   React.useEffect(() => {
+    const dep = pendingRequests.current;
     return () => {
-        Array.from(pendingRequests.current).forEach(dispatchCancelToRedux);
+        Array.from(dep).forEach(dispatchCancelToRedux);
     };
   }, [dispatchCancelToRedux]);
 
-  return [queriesState, refresh];
+  const reselect = reselectEntityStateFromQueryState<any, ExtractStateFromQueriesConfig<TQueryConfigs>>(combinedMaps);
+  return [queriesState, refresh, reselect];
 };
 
 export default useQueries;

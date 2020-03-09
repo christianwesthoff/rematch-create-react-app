@@ -1,10 +1,10 @@
 import React from 'react';
-import idx from 'utils/idx';
+import get from 'utils/get';
 
-import useQuery from 'rematch/rematch-request/hooks/use-query';
 import { getIssues } from 'queries/issues';
 import { useSelector } from 'react-redux';
 import { RootState } from 'store';
+import useQueries from 'rematch/rematch-request/hooks/use-queries';
 
 interface ILProps {
   org: string
@@ -18,7 +18,7 @@ export const IssuesListPage = ({
   page = 1,
 }: ILProps) => {
 
-  const [query,,querySelector] = useQuery(getIssues(org, repo, page));
+  const [query,,querySelector] = useQueries([getIssues(org, repo, page)]);
   const entities = useSelector((state: RootState) => querySelector(state));
 
   return (
@@ -28,10 +28,10 @@ export const IssuesListPage = ({
       <br/>
       <strong>Query Data</strong>
       <div>
-      {query.isFinished && !query.isError ? idx(entities!, _ => _.issues, []).map((issue, key) => (
+      {query.isFinished && !query.isError ? get(entities!, _ => _.issues, []).map((issue, key) => (
         <div key={key}>
         <div><strong>{issue.id} </strong><span>{issue.body}</span></div>
-      </div>)) : query.isPending ? <strong>Loading...</strong> : query.isError ? <strong>{JSON.stringify(query.error)}</strong> : <></>}</div>
+      </div>)) : query.isPending ? <strong>Loading...</strong> : query.isError ? <strong>{JSON.stringify(query.errors)}</strong> : <></>}</div>
     </div>
   )
 }

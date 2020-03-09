@@ -9,4 +9,4 @@ const get = <T1 extends NonNullable<any>, T2 extends NonNullable<any>>(
   return idx(prop, accessor) || defaultVal;
 }
 
-export default idx;
+export default get;

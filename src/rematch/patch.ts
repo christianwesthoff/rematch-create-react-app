@@ -20,7 +20,7 @@ const patch = (models: any):void => Object.keys(models).forEach(key => {
 			const effect = model.effects[key];
 			model.effects[key] = (...args: any) => { 
 				const [payload, state, ...rest] = args;
-				effect(payload, state, ...rest);
+				effect(state, payload, ...rest);
 			}
 		})
 	}

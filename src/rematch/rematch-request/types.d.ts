@@ -5,7 +5,7 @@ import { State as EntitiesState } from './reducers/entities';
 import { State as MutationsState } from './reducers/mutations';
 import { RootDispatch, RootState } from 'store';
 
-export type valuesOf<T extends Array<any>>= T[number];
+type valuesOf<T extends Array<any>>= T[number];
 
 export type RequestState<T1 extends string, T2 extends string, T3 extends string> = {
   [P in valuesOf<Array<T1>>]: QueriesState
@@ -43,11 +43,17 @@ export type ExtractKeyFromQueryConfig<T> = T extends QueryConfig & {
     [P in keyof O]: O[P] extends Record<infer T, any> ? Array<T> : never
 } : never
 
+type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends ((k: infer I) => void) ? I : never
+
+export type ExtractStateFromQueriesConfig<T extends Array<any>> = UnionToIntersection<ExtractStateFromQueryConfig<T[number]>>
+export type ExtractKeyFromQueriesConfig<T extends Array<any>> = UnionToIntersection<ExtractKeyFromQueryConfig<T[number]>>
+export type ExtractNormalizedStateFromQueriesConfig<T extends Array<any>> = UnionToIntersection<ExtractStaExtractNormalizedStateFromQueryConfigeFromQueryConfig<T[number]>>
+
 export type MutationState = {
   isFinished: boolean;
   isPending: boolean;
   isError: boolean;
-  error?: any;
+  error?: string;
   payload?: any;
 };
 
@@ -55,7 +61,7 @@ export type QueryState = {
   isFinished: boolean;
   isPending: boolean;
   isError: boolean;
-  error?: any;
+  error?: string;
   isInvalid: boolean;
   invalidCount: number;
   maps?: Maps
@@ -65,7 +71,7 @@ export type QueriesState = {
   isFinished: boolean,
   isPending: boolean,
   isError: boolean,
-  errors?: Array<any> | undefined;
+  errors?: Array<string> | undefined;
   invalidCount: number,
   invalidState: Array<RequestKey | undefined>,
   combinedMaps?: Maps
