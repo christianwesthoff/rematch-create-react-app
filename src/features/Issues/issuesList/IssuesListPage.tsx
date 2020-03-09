@@ -18,8 +18,8 @@ export const IssuesListPage = ({
   page = 1,
 }: ILProps) => {
 
-  const [query,,querySelect] = useQuery(getIssues(org, repo, page));
-  const entities = useSelector((state: RootState) => querySelect(state));
+  const [query,,querySelector] = useQuery(getIssues(org, repo, page));
+  const entities = useSelector((state: RootState) => querySelector(state));
 
   return (
     <div id="issue-list-page">
