@@ -62,7 +62,7 @@ const useQueries = <TQueryConfigs extends Array<QueryConfig>>(
   // guarantees memoization, which is relied upon elsewhere in this hook to explicitly control when
   // certain side effects occur.
   const dispatchRequestToRedux = useConstCallback((queryConfig?: QueryConfig | undefined) => {
-      if (!queryConfig) return undefined;
+      if (!queryConfig) return;
 
       const promise = reduxDispatch(queryAsync(queryConfig));
 
@@ -75,14 +75,16 @@ const useQueries = <TQueryConfigs extends Array<QueryConfig>>(
       }
   });
 
-  const dispatchCancelToRedux = useConstCallback((queryKey: RequestKey) => {
+  const dispatchCancelToRedux = useConstCallback((queryKey: RequestKey | undefined) => {
+    if (!queryKey) return;
       if (pendingRequests.current.has(queryKey)) {
         reduxDispatch(cancelQuery(queryKey));
         pendingRequests.current.delete(queryKey);
       }
   });
 
-  const finishedCallback = useConstCallback((queryKey: RequestKey) => {
+  const finishedCallback = useConstCallback((queryKey: RequestKey | undefined) => {
+        if (!queryKey) return;
       return () => {
         if (queryKey != null) {
           pendingRequests.current.delete(queryKey);
@@ -143,7 +145,7 @@ const useQueries = <TQueryConfigs extends Array<QueryConfig>>(
       if (!requestQueryConfigs) return;
 
       requestQueryConfigs.forEach(r => dispatchRequestToRedux(r));
-      unloadQueryConfigs.forEach((queryKey: any) => dispatchCancelToRedux(queryKey));
+      unloadQueryConfigs.forEach(k => dispatchCancelToRedux(k));
 
       previousQueryConfigs.current = queryConfigs;
   }, [dispatchCancelToRedux, dispatchRequestToRedux, queryConfigs, invalidCount]);
