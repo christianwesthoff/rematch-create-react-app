@@ -18,20 +18,20 @@ export const IssuesListPage = ({
   page = 1,
 }: ILProps) => {
 
-  const [query,,querySelector] = useQueries([getIssues(org, repo, page)]);
-  const entities = useSelector((state: RootState) => querySelector(state));
+  const [queries,,queriesSelector] = useQueries([getIssues(org, repo, page)]);
+  const entities = useSelector((state: RootState) => queriesSelector(state));
 
   return (
     <div id="issue-list-page">
       <strong>Query Information</strong>
-      <div>{JSON.stringify(query)}</div>
+      <div>{JSON.stringify(queries)}</div>
       <br/>
       <strong>Query Data</strong>
       <div>
-      {query.isFinished && !query.isError ? get(entities, _ => _.issues, []).map((issue, key) => (
+      {queries.isFinished && !queries.isError ? get(entities, _ => _.issues, []).map((issue, key) => (
         <div key={key}>
         <div><strong>{issue.id} </strong><span>{issue.body}</span></div>
-      </div>)) : query.isPending ? <strong>Loading...</strong> : query.isError ? <strong>{JSON.stringify(query.errors)}</strong> : <></>}</div>
+      </div>)) : queries.isPending ? <strong>Loading...</strong> : queries.isError ? <strong>{JSON.stringify(queries.errors)}</strong> : <></>}</div>
     </div>
   )
 }
