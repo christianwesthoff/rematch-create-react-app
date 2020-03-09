@@ -5,6 +5,7 @@ import createQuery from 'rematch/rematch-request';
 import buildNetworkInterface from 'rematch/rematch-request/network';
 import createRouter from 'rematch/rematch-react-router';
 import createReapop from 'rematch/rematch-reapop';
+import createSubscribe from 'rematch/rematch-subscribe';
 import createPersist from '@rematch/persist';
 import { AxiosInstance } from 'axios';
 import { ReduxApi, RequestState, RequestDispatch } from 'rematch/rematch-request/types';
@@ -79,8 +80,7 @@ patch(models);
 export const store = init({
 	models,
 	plugins: [
-		// createSelect(),
-		// createSubscribe(),
+		createSubscribe(),
 		createPersist(persistConfig),
 		createRouter('router'),
 		createReapop('notifications', defaultNotification),
@@ -97,7 +97,4 @@ export type RootDispatch = RematchRootDispatch<typeof models> &
 						   ReapopDispatch<'notifications'> & 
 						   RouterDispatch<'router'> &
 						   RequestDispatch<'queries', 'entities', 'mutations'>;
-
-// export type RootSelect = RematchRootSelect<typeof models>;
-
 export default store;

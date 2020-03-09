@@ -6,7 +6,6 @@
     "@openid/appauth": "^1.2.6",
     "@rematch/core": "^1.4.0",
     "@rematch/persist": "^1.1.6",
-    "@rematch/select": "^2.0.5",
     "axios": "^0.19.2",
     "backo2": "^1.0.2",
     "classnames": "^2.2.6",
