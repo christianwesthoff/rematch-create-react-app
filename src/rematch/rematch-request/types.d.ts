@@ -5,24 +5,24 @@ import { State as EntitiesState } from './reducers/entities';
 import { State as MutationsState } from './reducers/mutations';
 import { RootDispatch, RootState } from 'store';
 
-type valuesOf<T extends Array<any>>= T[number];
+type ValuesOf<T extends Array<any>>= T[number];
 
 export type RequestState<T1 extends string, T2 extends string, T3 extends string> = {
-  [P in valuesOf<Array<T1>>]: QueriesState
+  [P in ValuesOf<Array<T1>>]: QueriesState
 } &  {
-  [P in valuesOf<Array<T2>>]: EntitiesState
+  [P in ValuesOf<Array<T2>>]: EntitiesState
 } & {
-  [P in valuesOf<Array<T3>>]: MutationsState
+  [P in ValuesOf<Array<T3>>]: MutationsState
 };
 
 export type RequestDispatch<T1 extends string, T2 extends string, T3 extends string> = {
-  [P in valuesOf<Array<T1>>]: {
+  [P in ValuesOf<Array<T1>>]: {
     invalidateQuery: (_:Array<string>|string) => Promise<void>
   }
 } &  {
-  [P in valuesOf<Array<T2>>]: {}
+  [P in ValuesOf<Array<T2>>]: {}
 } & {
-  [P in valuesOf<Array<T3>>]: {}
+  [P in ValuesOf<Array<T3>>]: {}
 };
 
 export type ExtractNormalizedStateFromQueryConfig<T> = T extends QueryConfig & {
@@ -73,8 +73,8 @@ export type QueriesState = {
   isError: boolean,
   errors?: Array<string> | undefined;
   invalidCount: number,
-  invalidState: Array<RequestKey | undefined>,
-  combinedMaps?: Maps
+  isInvalid: Array<RequestKey | undefined>,
+  maps?: Maps
 };
 
 export type CredentialOption = 'include' | 'same-origin' | 'omit';

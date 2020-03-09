@@ -49,12 +49,11 @@ export default (config: RematchQueryConfig): Plugin => {
 	const { networkInterface, customConfig, additionalHeadersSelector, entitiesModelName, queriesModelName, mutationsModelName } = config;
 	
 	const queriesSelector = getQueriesSelector(queriesModelName);
-	Config.queriesSelector = queriesSelector;
-	
 	const entitiesSelector = getEntitiesSelector(entitiesModelName);
-	Config.entitiesSelector = entitiesSelector;
-
 	const mutationsSelector = getMutationsSelector(mutationsModelName);
+
+	Config.queriesSelector = queriesSelector;
+	Config.entitiesSelector = entitiesSelector;
 	Config.mutationsSelector = mutationsSelector;
 	
 	const middleware = queryMiddleware(networkInterface, 

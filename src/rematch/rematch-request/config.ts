@@ -8,10 +8,11 @@ type RematchRequestConfig = {
 	mutationsSelector: (state:any) => MutationsState 
 }
 
+// Config values are set during plugin initalization
 const config: RematchRequestConfig = {
-	queriesSelector: () => ({}),
-	entitiesSelector: () => ({}),
-	mutationsSelector: () => ({})
+	queriesSelector: () => { throw new Error("Queries selector was not initialized."); },
+	entitiesSelector: () => { throw new Error("Entities selector was not initialized."); },
+	mutationsSelector: () => { throw new Error("Mutatitons selector was not initialized."); }
 }
 
 export default config;
