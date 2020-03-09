@@ -20,22 +20,6 @@ const useMutationState = (queryConfig?: MutationConfig | undefined): MutationSta
     mutationSelectors.isInvalid(mutationsSelector(state), queryConfig),
   );
 
-  const status = useSelector(state => 
-    mutationSelectors.status(mutationsSelector(state), queryConfig)
-  );
-
-  const headers = useSelector(state => 
-    mutationSelectors.headers(mutationsSelector(state), queryConfig)
-  );
-
-  const lastUpdated = useSelector(state =>
-    mutationSelectors.lastUpdated(mutationsSelector(state), queryConfig)
-  );
-
-  const requestCount = useSelector(state =>
-    mutationSelectors.requestCount(mutationsSelector(state), queryConfig)
-  );
-
   const isError = useSelector(state =>
     mutationSelectors.isError(mutationsSelector(state), queryConfig)
   );
@@ -54,14 +38,10 @@ const useMutationState = (queryConfig?: MutationConfig | undefined): MutationSta
       isFinished,
       isInvalid,
       isError,
-      status,
-      headers,
-      lastUpdated,
-      requestCount,
       error,
       payload
     }),
-    [headers, payload, isFinished, isPending, isInvalid, isError, lastUpdated, status, error],
+    [payload, isFinished, isPending, isInvalid, isError, status, error],
   );
 
   return mutationState;

@@ -1,53 +1,53 @@
-// @flow
-
 import * as React from 'react';
 import { useDispatch } from 'react-redux';
 import { queryAsync, cancelQuery } from '../actions';
 
-import { QueryConfig, RequestKey, ExtractStateFromQueryConfig } from '../types';
+import { QueryConfig, RequestKey, ExtractStateFromQueriesConfig } from '../types';
 
 import useConstCallback from './use-const-callback';
 import useMemoizedQueryConfigs from './use-memoized-query-configs';
 import useQueriesState from './use-queries-state';
-import useEntityState from './use-entity-state';
-
 import { QueriesState } from '../types';
 import { getQueryKey } from '../lib/keys';
+import { reselectEntityStateFromQueryState } from '../lib/reselect';
 
-const difference = <T>(a: Array<T>, b: Array<T>): Array<T> => {
-  const bSet = new Set(b);
-  return a.filter(x => !bSet.has(x));
+const diff = <T>(a: Array<T>, b: Array<T>): Array<T> => {
+    const bSet = new Set(b);
+    return a.filter(x => !bSet.has(x));
 };
 
-const diffQueryConfigs = (
+const calcUpDownQueryConfigs = (
+  invalidQueryConfigs?: Array<RequestKey | undefined> | undefined,
   prevQueryConfigs?: Array<QueryConfig | undefined> | undefined,
   queryConfigs?: Array<QueryConfig | undefined> | undefined,
 ) => {
-    if (!prevQueryConfigs || !queryConfigs) return undefined;
+    if (!prevQueryConfigs || !queryConfigs || !invalidQueryConfigs) return undefined;
     const prevQueryKeys = prevQueryConfigs.map(config => getQueryKey(config));
     const queryKeys = queryConfigs.map(config => getQueryKey(config));
     const queryConfigByQueryKey = queryKeys.reduce((acc, curr, i) => {
-    const queryConfig = queryConfigs[i];
+        const queryConfig = queryConfigs[i];
         if (queryConfig) {
             acc.set(curr, queryConfig);
         }
         return acc;
     }, new Map());
 
-  // Keys that existed before that no longer exist, should be subject to cancellation
-  const cancelKeys = difference(prevQueryKeys, queryKeys);
+    // Keys that existed before that no longer exist, should be subject to cancellation
+    const unloadQueryConfigs = diff(prevQueryKeys, queryKeys);
 
-  // Keys that are new, should be subject to a new request
-  const requestKeys = difference(queryKeys, prevQueryKeys);
-  const requestQueryConfigs = requestKeys
-    .map(queryKey => queryConfigByQueryKey.get(queryKey)) as Array<QueryConfig | undefined> | undefined;
+    const prevInvalidKeys = prevQueryKeys.filter(key => !invalidQueryConfigs.includes(key));
 
-  return { cancelKeys, requestQueryConfigs };
+    // Keys that are new or invalid, should be subject to a new request
+    const requestKeys = diff(queryKeys, prevInvalidKeys);
+    const requestQueryConfigs = requestKeys
+      .map(queryKey => queryConfigByQueryKey.get(queryKey)) as Array<QueryConfig | undefined> | undefined;
+
+    return { unloadQueryConfigs, requestQueryConfigs };
 };
 
-const useQueries = <TQueryConfig extends QueryConfig>(
-  providedQueryConfigs?: Array<TQueryConfig | undefined> | undefined,
-): [QueriesState, { [key: string]: ExtractStateFromQueryConfig<TQueryConfig> }, () => void] => {
+const useQueries = <TQueryConfigs extends Array<QueryConfig>>(
+    providedQueryConfigs?: TQueryConfigs | undefined,
+): [QueriesState, () => void, (state: any) => ExtractStateFromQueriesConfig<TQueryConfigs>] => {
   const reduxDispatch = useDispatch();
 
   const previousQueryConfigs = React.useRef<Array<QueryConfig | undefined> | undefined>([]);
@@ -62,105 +62,102 @@ const useQueries = <TQueryConfig extends QueryConfig>(
   // guarantees memoization, which is relied upon elsewhere in this hook to explicitly control when
   // certain side effects occur.
   const dispatchRequestToRedux = useConstCallback((queryConfig?: QueryConfig | undefined) => {
-    
-    if (!queryConfig) return undefined;
+      if (!queryConfig) return undefined;
 
-    const promise = reduxDispatch(queryAsync(queryConfig));
+      const promise = reduxDispatch(queryAsync(queryConfig));
 
-    if (promise) {
-      const queryKey = getQueryKey(queryConfig);
+      if (promise) {
+        const queryKey = getQueryKey(queryConfig);
 
-      if (queryKey) {
-        pendingRequests.current.add(queryKey);
+        if (queryKey) {
+          pendingRequests.current.add(queryKey);
+        }
       }
-    }
   });
 
   const dispatchCancelToRedux = useConstCallback((queryKey: RequestKey) => {
-    if (pendingRequests.current.has(queryKey)) {
-      reduxDispatch(cancelQuery(queryKey));
-      pendingRequests.current.delete(queryKey);
-    }
+      if (pendingRequests.current.has(queryKey)) {
+        reduxDispatch(cancelQuery(queryKey));
+        pendingRequests.current.delete(queryKey);
+      }
   });
 
   const finishedCallback = useConstCallback((queryKey: RequestKey) => {
-    return () => {
-      if (queryKey != null) {
-        pendingRequests.current.delete(queryKey);
-      }
-    };
+      return () => {
+        if (queryKey != null) {
+          pendingRequests.current.delete(queryKey);
+        }
+      };
   });
 
   const transformQueryConfig = useConstCallback(
-    (queryConfig?: QueryConfig | undefined): QueryConfig | undefined => {
-        if (!queryConfig) return undefined;
-        const queryKey = getQueryKey(queryConfig);
-        if (!queryKey) return undefined;
-        return {
-            ...queryConfig,
-            preDispatchCallback: finishedCallback(queryKey),
-            retry: true,
-        };
-    }
+      (queryConfig?: QueryConfig | undefined): QueryConfig | undefined => {
+          if (!queryConfig) return undefined;
+          const queryKey = getQueryKey(queryConfig);
+          if (!queryKey) return undefined;
+          return {
+              ...queryConfig,
+              preDispatchCallback: finishedCallback(queryKey),
+              retry: true,
+          };
+      }
   );
 
   // Query configs are memoized based on query key. As long as the query keys in the list don't
   // change, the query config list won't change.
   const queryConfigs = useMemoizedQueryConfigs(providedQueryConfigs, transformQueryConfig);
 
-  // This is an object containing two variables, isPending and isFinished, these apply to all queries.
-  // If any queries are pending, isPending is true, and
-  // unless all queries are finished, isFinished will be false.
   const queriesState = useQueriesState(queryConfigs);
 
-  const invalidCounts = queriesState ? Object.keys(queriesState.queryStates).map(key => queriesState.queryStates[key].invalidCount) : [];
+  const { invalidCount, isInvalid, maps } = queriesState;
 
   const refresh = React.useCallback(() => {
-    if (queryConfigs) {
-        queryConfigs.forEach(requestReduxAction => {
-            if (requestReduxAction) {
-                dispatchRequestToRedux({
-                    ...requestReduxAction,
-                    force: true,
-                });
-            }
-        });
-    }
+      if (queryConfigs) {
+          queryConfigs.forEach(requestReduxAction => {
+              if (requestReduxAction) {
+                  dispatchRequestToRedux({
+                      ...requestReduxAction,
+                      force: true,
+                  });
+              }
+          });
+      }
   }, [dispatchRequestToRedux, queryConfigs]);
 
+  const isInvalidRef = React.useRef<Array<string | undefined>>([]);
+  isInvalidRef.current = isInvalid;
+
   React.useEffect(() => {
-    // Whenever the list of query configs change, we need to manually diff the query configs
-    // against the previous list of query configs. Whatever was there and is no longer, will be
-    // cancelled. Whatever is new, will turn into a request.
-    const diff = diffQueryConfigs(
+      // Whenever the list of query configs change, we need to manually diff the query configs
+      // against the previous list of query configs. Whatever was there and is no longer, will be
+      // cancelled. Whatever is new, will turn into a request.
+      const upDownDiff = calcUpDownQueryConfigs(
+        isInvalidRef.current,
         previousQueryConfigs.current,
         queryConfigs,
       );
 
-    if (!diff) return undefined;
-    const { cancelKeys, requestQueryConfigs } = diff;
-    
-    if (!requestQueryConfigs) return undefined;
+      if (!upDownDiff) return;
+      const { unloadQueryConfigs, requestQueryConfigs } = upDownDiff;
+      
+      if (!requestQueryConfigs) return;
 
-    requestQueryConfigs.forEach(r => dispatchRequestToRedux(r));
-    cancelKeys.forEach((queryKey: any) => dispatchCancelToRedux(queryKey));
+      requestQueryConfigs.forEach(r => dispatchRequestToRedux(r));
+      unloadQueryConfigs.forEach((queryKey: any) => dispatchCancelToRedux(queryKey));
 
-    previousQueryConfigs.current = queryConfigs;
-  }, [dispatchCancelToRedux, dispatchRequestToRedux, queryConfigs, invalidCounts]);
+      previousQueryConfigs.current = queryConfigs;
+  }, [dispatchCancelToRedux, dispatchRequestToRedux, queryConfigs, invalidCount]);
 
   // When the component unmounts, cancel all pending requests
   React.useEffect(() => {
-    return () => {
-        Array.from(pendingRequests.current).forEach(dispatchCancelToRedux);
-    };
+      const dep = pendingRequests.current;
+      return () => {
+          Array.from(dep).forEach(dispatchCancelToRedux);
+      };
   }, [dispatchCancelToRedux]);
 
-  const entityStates = Object.keys(queriesState.queryStates).reduce((acc, cur) => {
-      acc[cur] = useEntityState(queriesState.queryStates[cur]);
-      return acc;
-  }, {} as any);
-
-  return [queriesState, entityStates, refresh];
+  const reselect = reselectEntityStateFromQueryState<any, ExtractStateFromQueriesConfig<TQueryConfigs>>(maps);
+  return [queriesState, refresh, reselect];
 };
 
 export default useQueries;
