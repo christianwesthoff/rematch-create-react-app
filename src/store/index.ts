@@ -97,4 +97,5 @@ export type RootDispatch = RematchRootDispatch<typeof models> &
 						   ReapopDispatch<'notifications'> & 
 						   RouterDispatch<'router'> &
 						   RequestDispatch<'queries', 'entities', 'mutations'>;
+						   
 export default store;
