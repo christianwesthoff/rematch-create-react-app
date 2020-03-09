@@ -62,7 +62,7 @@ const useQueries = <TQueryConfigs extends Array<QueryConfig>>(
   // guarantees memoization, which is relied upon elsewhere in this hook to explicitly control when
   // certain side effects occur.
   const dispatchRequestToRedux = useConstCallback((queryConfig?: QueryConfig | undefined) => {
-      if (!queryConfig) return undefined;
+      if (!queryConfig) return;
 
       const promise = reduxDispatch(queryAsync(queryConfig));
 
