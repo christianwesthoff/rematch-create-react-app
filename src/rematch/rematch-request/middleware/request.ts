@@ -418,7 +418,6 @@ const queryMiddleware = (
                     body: responseBody,
                     duration,
                     status,
-                    // text: responseText,
                     transformed,
                     entities: newEntities,
                     headers: responseHeaders,
