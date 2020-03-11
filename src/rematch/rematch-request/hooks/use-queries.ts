@@ -33,7 +33,7 @@ const calcUpDownQueryConfigs = (
     }, new Map());
 
     // Keys that existed before that no longer exist, should be subject to cancellation
-    const unloadQueryConfigs = diff(prevQueryKeys, queryKeys);
+    const cancelQueryConfigs = diff(prevQueryKeys, queryKeys);
 
     const prevInvalidKeys = prevQueryKeys.filter(key => !invalidQueryConfigs.includes(key));
 
@@ -42,7 +42,7 @@ const calcUpDownQueryConfigs = (
     const requestQueryConfigs = requestKeys
       .map(queryKey => queryConfigByQueryKey.get(queryKey)) as Array<QueryConfig | undefined> | undefined;
 
-    return { unloadQueryConfigs, requestQueryConfigs };
+    return { cancelQueryConfigs, requestQueryConfigs };
 };
 
 const useQueries = <TQueryConfigs extends Array<QueryConfig>>(
@@ -140,12 +140,12 @@ const useQueries = <TQueryConfigs extends Array<QueryConfig>>(
       );
 
       if (!upDownDiff) return;
-      const { unloadQueryConfigs, requestQueryConfigs } = upDownDiff;
+      const { cancelQueryConfigs, requestQueryConfigs } = upDownDiff;
       
       if (!requestQueryConfigs) return;
 
       requestQueryConfigs.forEach(r => dispatchRequestToRedux(r));
-      unloadQueryConfigs.forEach(k => dispatchCancelToRedux(k));
+      cancelQueryConfigs.forEach(k => dispatchCancelToRedux(k));
 
       previousQueryConfigs.current = queryConfigs;
   }, [dispatchCancelToRedux, dispatchRequestToRedux, queryConfigs, invalidCount]);
