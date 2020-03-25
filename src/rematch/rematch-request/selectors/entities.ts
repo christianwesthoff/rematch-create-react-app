@@ -23,10 +23,10 @@ export const getEntityStateFromQueries = <TQueryConfigs extends Array<QueryConfi
     const { queriesSelector } = Config
     const maps = queryConfigs.reduce((acc, curr) => {
         const queryKey = getQueryKey(curr)
-        if (!queryKey) return acc;
+        if (!queryKey) return acc
         const queryState = queriesSelector(state)[queryKey] as QueryState
-        const map = queryState.maps;
-        if (!map) return acc;
+        const map = queryState.maps
+        if (!map) return acc
         Object.keys(map).forEach(key => {
             acc[key] = Array.from(new Set((acc[key] || []).concat(map[key])))
         })
