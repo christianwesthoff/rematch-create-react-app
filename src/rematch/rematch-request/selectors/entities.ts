@@ -21,6 +21,7 @@ export const getEntityStateFromQueries = <TQueryConfigs extends Array<QueryConfi
     queryConfigs: TQueryConfigs
 ): ExtractStateFromQueriesConfig<TQueryConfigs> => {
     const { queriesSelector } = Config
+    if (queryConfigs.length === 0) return {} as ExtractStateFromQueriesConfig<TQueryConfigs>
     const maps = queryConfigs.reduce((acc, curr) => {
         const queryKey = getQueryKey(curr)
         if (!queryKey) return acc
