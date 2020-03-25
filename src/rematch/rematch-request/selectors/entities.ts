@@ -30,7 +30,7 @@ export const getEntityStateFromQueries = <TQueryConfigs extends Array<QueryConfi
         Object.keys(map).forEach(key => {
             acc[key] = Array.from(new Set((acc[key] || []).concat(map[key])))
         })
-        return acc;
+        return acc
     }, {} as Maps)
     const reselect = reselectEntityStateFromQueryState(maps)
     if (!reselect) return {} as ExtractStateFromQueriesConfig<TQueryConfigs>
