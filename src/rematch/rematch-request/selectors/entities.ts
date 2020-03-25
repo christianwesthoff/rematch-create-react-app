@@ -5,7 +5,7 @@ import Config from '../config';
 
 export const getEntityStateFromQuery = <TQueryConfig extends QueryConfig, TState = any>(
     state: TState,
-    queryConfig: TQueryConfig,
+    queryConfig: TQueryConfig
 ): ExtractStateFromQueryConfig<TQueryConfig> => {
     const { queriesSelector } = Config
     const queryKey = getQueryKey(queryConfig)
@@ -18,7 +18,7 @@ export const getEntityStateFromQuery = <TQueryConfig extends QueryConfig, TState
   
 export const getEntityStateFromQueries = <TQueryConfigs extends Array<QueryConfig>, TState = any>(
     state: TState,
-    queryConfigs: TQueryConfigs,
+    queryConfigs: TQueryConfigs
 ): ExtractStateFromQueriesConfig<TQueryConfigs> => {
     const { queriesSelector } = Config
     const maps = queryConfigs.reduce((acc, curr) => {
