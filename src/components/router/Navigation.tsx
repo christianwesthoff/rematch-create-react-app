@@ -5,7 +5,7 @@ import { RootState, RootDispatch } from 'store';
 import { ChangeHandler } from 'types/dom';
 import { Claims } from 'models/userInfo';
 
-const displayName = (claims?: Claims | undefined) => claims ? `${claims['firstname']} ${claims['lastname']}` : '';
+const displayName = (claims?: Claims | undefined) => claims ? `${claims['given_name']} ${claims['family_name']}` : '';
 
 const Navigation = () => {
   const { isAuthorized } = useSelector((state: RootState) => state.auth)

@@ -47,7 +47,7 @@ export const auth = {
             const { userName, password } = login;
             dispatch.auth.setTokenLoading(true);
             try {
-                const { refreshToken, accessToken, expiresIn } = await authService.makeTokenRequest(userName, password, 'email openid offline_access');
+                const { refreshToken, accessToken, expiresIn } = await authService.makeTokenRequest(userName, password, 'openid profile identity_api offline_access');
                 if (accessToken) {
                     dispatch.userInfo.fetchClaims(accessToken);
                 }
