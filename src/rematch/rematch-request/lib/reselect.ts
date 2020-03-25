@@ -1,6 +1,5 @@
-import { Entities, Maps, QueryConfig, QueryState, ExtractStateFromQueryConfig } from '../types';
+import { Entities, Maps } from '../types';
 import Config from '../config';
-import { getQueryKey } from './keys';
 
 export const reselectEntityStateFromQueryState = <TState = any, TResult = Entities>(
       maps?: Maps | undefined
@@ -13,17 +12,3 @@ export const reselectEntityStateFromQueryState = <TState = any, TResult = Entiti
         return acc;
     }, {});
 }
-
-export const getEntityStateFromQuery = <TQueryConfig extends QueryConfig, TState = any>(
-    state: TState,
-    config: TQueryConfig,
-  ): ExtractStateFromQueryConfig<TQueryConfig> => {
-    const { queriesSelector } = Config
-    const queryKey = getQueryKey(config)
-    if (!queryKey) return {} as ExtractStateFromQueryConfig<TQueryConfig>;
-    const queryState = queriesSelector(state)[queryKey] as QueryState
-    const reselect = reselectEntityStateFromQueryState(queryState.maps)
-    if (!reselect) return {} as ExtractStateFromQueryConfig<TQueryConfig>;
-    return reselect(state) as ExtractStateFromQueryConfig<TQueryConfig>;
-  };
-  
