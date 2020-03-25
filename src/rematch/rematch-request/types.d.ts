@@ -5,24 +5,24 @@ import { State as EntitiesState } from './reducers/entities';
 import { State as MutationsState } from './reducers/mutations';
 import { RootDispatch, RootState } from 'store';
 
-export type valuesOf<T extends Array<any>>= T[number];
+type ValuesOf<T extends Array<any>>= T[number];
 
 export type RequestState<T1 extends string, T2 extends string, T3 extends string> = {
-  [P in valuesOf<Array<T1>>]: QueriesState
+  [P in ValuesOf<Array<T1>>]: QueriesState
 } &  {
-  [P in valuesOf<Array<T2>>]: EntitiesState
+  [P in ValuesOf<Array<T2>>]: EntitiesState
 } & {
-  [P in valuesOf<Array<T3>>]: MutationsState
+  [P in ValuesOf<Array<T3>>]: MutationsState
 };
 
 export type RequestDispatch<T1 extends string, T2 extends string, T3 extends string> = {
-  [P in valuesOf<Array<T1>>]: {
+  [P in ValuesOf<Array<T1>>]: {
     invalidateQuery: (_:Array<string>|string) => Promise<void>
   }
 } &  {
-  [P in valuesOf<Array<T2>>]: {}
+  [P in ValuesOf<Array<T2>>]: {}
 } & {
-  [P in valuesOf<Array<T3>>]: {}
+  [P in ValuesOf<Array<T3>>]: {}
 };
 
 export type ExtractNormalizedStateFromQueryConfig<T> = T extends QueryConfig & {
@@ -43,11 +43,17 @@ export type ExtractKeyFromQueryConfig<T> = T extends QueryConfig & {
     [P in keyof O]: O[P] extends Record<infer T, any> ? Array<T> : never
 } : never
 
+type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends ((k: infer I) => void) ? I : never
+
+export type ExtractStateFromQueriesConfig<T extends Array<any>> = UnionToIntersection<ExtractStateFromQueryConfig<T[number]>>
+export type ExtractKeyFromQueriesConfig<T extends Array<any>> = UnionToIntersection<ExtractKeyFromQueryConfig<T[number]>>
+export type ExtractNormalizedStateFromQueriesConfig<T extends Array<any>> = UnionToIntersection<ExtractStaExtractNormalizedStateFromQueryConfigeFromQueryConfig<T[number]>>
+
 export type MutationState = {
   isFinished: boolean;
   isPending: boolean;
   isError: boolean;
-  error?: any;
+  error?: string;
   payload?: any;
 };
 
@@ -55,7 +61,7 @@ export type QueryState = {
   isFinished: boolean;
   isPending: boolean;
   isError: boolean;
-  error?: any;
+  error?: string;
   isInvalid: boolean;
   invalidCount: number;
   maps?: Maps
@@ -65,10 +71,10 @@ export type QueriesState = {
   isFinished: boolean,
   isPending: boolean,
   isError: boolean,
-  errors?: Array<any> | undefined;
+  errors?: Array<string> | undefined;
   invalidCount: number,
-  invalidState: Array<RequestKey | undefined>,
-  combinedMaps?: Maps
+  isInvalid: Array<RequestKey | undefined>,
+  maps?: Maps
 };
 
 export type CredentialOption = 'include' | 'same-origin' | 'omit';
@@ -103,6 +109,7 @@ export type QueryConfig = {
   retry?: boolean;
   preDispatchCallback?: () => void | undefined;
   url: Url;
+  trigger?: Trigger | undefined
 };
 
 export type Url = string;
@@ -133,13 +140,11 @@ export type Entities = { [key: string]: any };
 
 export type Trigger = (
   body?: ResponseBody | undefined,
-  // text?: ResponseText | undefined,
   headers?: ResponseHeaders | undefined,
 ) => Array<string>;
 
 export type Transform = (
   body?: ResponseBody | undefined,
-  // text?: ResponseText | undefined,
   headers?: ResponseHeaders | undefined,
 ) => { [key: string]: any };
 
@@ -158,7 +163,6 @@ export type NetworkHandler = {
       error: any,
       status: Status,
       responseBody?: ResponseBody | undefined,
-      // responseText?: ResponseText | undefined,
       responseHeaders?: ResponseHeaders | undefined,
     ) => void,
   ) => void;

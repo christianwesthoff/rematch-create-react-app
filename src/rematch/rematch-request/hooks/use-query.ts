@@ -105,9 +105,8 @@ const useQuery = <TQueryConfig extends QueryConfig>(
   
   }, [dispatchCancelToRedux, dispatchRequestToRedux, queryConfig, invalidCount]);
 
-  const reselect = reselectEntityStateFromQueryState(maps);
-  const entityStateSelector = (state: any) => (reselect ? reselect(state) : {}) as ExtractStateFromQueryConfig<TQueryConfig>;
-  return [queryState, refresh, entityStateSelector];
+  const reselect = reselectEntityStateFromQueryState<any, ExtractStateFromQueryConfig<TQueryConfig>>(maps);
+  return [queryState, refresh, reselect];
 };
 
 export default useQuery;

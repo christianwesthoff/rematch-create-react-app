@@ -151,8 +151,8 @@ export const queryAsync = ({
   update,
   map,
   url,
-  // /* eslint-disable-next-line @typescript-eslint/camelcase */
   preDispatchCallback,
+  trigger
 }: QueryConfig): QueryAsyncAction => {
   return {
     type: actionTypes.QUERY_ASYNC,
@@ -166,8 +166,8 @@ export const queryAsync = ({
     update,
     map,
     url,
-    // /* eslint-disable-next-line @typescript-eslint/camelcase */
     preDispatchCallback,
+    trigger
   };
 };
 
@@ -306,6 +306,20 @@ export const mutateAsync = ({
   };
 };
 
+
+type ValidateQueryAction = {
+  type: '@@request/VALIDATE_QUERY';
+  queryPatterns: Array<RequestPattern>;
+};
+
+export const validateQuery = (queryPatterns: Array<RequestPattern>|RequestPattern): ValidateQueryAction => {
+  const prepareQueryPatterns = Array.isArray(queryPatterns) ? queryPatterns : [queryPatterns]
+  return {
+    type: actionTypes.VALIDATE_QUERY,
+    queryPatterns: prepareQueryPatterns,
+  };
+};
+
 type InvalidateQueryAction = {
   type: '@@request/INVALIDATE_QUERY';
   queryPatterns: Array<RequestPattern>;
@@ -378,6 +392,7 @@ export type PublicAction =
   | MutateAsyncAction
   | CancelMutationAction
   | ResetAction
+  | ValidateQueryAction
   | InvalidateQueryAction;
 
 export type Action =
@@ -388,4 +403,3 @@ export type Action =
   | MutateStartAction
   | MutateSuccessAction
   | MutateFailureAction
-  | InvalidateQueryAction;

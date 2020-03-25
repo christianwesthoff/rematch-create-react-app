@@ -1,15 +1,16 @@
 import { Middleware, Dispatch, MiddlewareAPI, Action } from 'redux';
-import { ActionType, Listener } from '../types';
+import { ActionType, Listener, SubscribeAttribute } from '../types';
+
 
 type ActionListenerContainer = {
     action: ActionType;
     listener: Listener;
-  };
+};
 
 const actionsSubscribedBefore: Array<ActionListenerContainer> = [];
 const actionsSubscribedAfter: Array<ActionListenerContainer> = [];
 
-const subscribe = (
+const addActionListener = (
   actionListenerContainer: ActionListenerContainer,
   listenerContainer: Array<ActionListenerContainer>
 ): () => void => {
@@ -27,14 +28,12 @@ const subscribe = (
   };
 };
 
-export const subscribeBefore = (action: ActionType, listener: Listener) => {
+export const subscribe = (action: ActionType, attribute: SubscribeAttribute, listener: Listener) => {
   const actionListenerContainer = { action, listener };
-  return subscribe(actionListenerContainer, actionsSubscribedBefore);
-};
-
-export const subscribeAfter = (action: ActionType, listener: Listener) => {
-  const actionListenerContainer = { action, listener };
-  return subscribe(actionListenerContainer, actionsSubscribedAfter);
+  if (attribute === 'after') {
+    return addActionListener(actionListenerContainer, actionsSubscribedAfter);
+  }
+  return addActionListener(actionListenerContainer, actionsSubscribedBefore);
 };
 
 const callActionListeners = (

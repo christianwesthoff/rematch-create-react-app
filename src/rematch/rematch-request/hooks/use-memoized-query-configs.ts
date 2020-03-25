@@ -25,12 +25,13 @@ const useMemoizedQueryConfigs = (
   const queryConfigs = providedQueryConfigs
     ? providedQueryConfigs
         .map(
-          (queryConfig?: QueryConfig | undefined): QueryConfig | undefined=> {
+          (queryConfig?: QueryConfig | undefined): QueryConfig | undefined => {
             const queryKey = getQueryKey(queryConfig);
 
             if (queryKey) {
               return transform(queryConfig);
             }
+            return undefined;
           },
         )
     : [];

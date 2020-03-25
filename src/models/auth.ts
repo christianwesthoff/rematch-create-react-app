@@ -75,6 +75,7 @@ export const auth = {
                     dispatch.auth.setToken({ ...credentials, accessToken, expiresIn });
                 } catch (error) {
                     dispatch.auth.setTokenError(error.toString());
+                    await dispatch.auth.logout();
                 }
             }
         },

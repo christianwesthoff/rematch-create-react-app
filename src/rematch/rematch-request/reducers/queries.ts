@@ -107,6 +107,30 @@ const queries = (state: State = initialState, action: Action): State => {
 
       return state;
     }
+    case actionTypes.VALIDATE_QUERY: {
+      const { queryPatterns } = action;
+
+      if (queryPatterns) {
+
+        const stateKeys = getStateKeys(state);
+        let newState = { ...state };
+        const filtered = stateKeys.filter(key => queryPatterns.some(pattern => key.includes(pattern)));
+        for(let index in filtered) {
+          let key = filtered[index];
+          newState = { 
+            ...newState, 
+            [key]: {
+              ...state[key],
+              isInvalid: false
+            } 
+          }
+        }
+
+        return newState;
+      }
+
+      return state;
+    }
     case actionTypes.INVALIDATE_QUERY: {
       const { queryPatterns } = action;
 
@@ -122,8 +146,7 @@ const queries = (state: State = initialState, action: Action): State => {
             [key]: {
               ...state[key],
               invalidCount: state[key] ? state[key].invalidCount + 1 : 1,
-              isInvalid: true,
-              maps: {}
+              isInvalid: true
             } 
           }
         }
