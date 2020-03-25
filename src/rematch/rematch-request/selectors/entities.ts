@@ -21,18 +21,19 @@ export const getEntityStateFromQueries = <TQueryConfigs extends Array<QueryConfi
     queryConfigs: TQueryConfigs
 ): ExtractStateFromQueriesConfig<TQueryConfigs> => {
     const { queriesSelector } = Config
-    const maps = queryConfigs.reduce((acc, curr) => {
+    if (queryConfigs.length === 0) return {} as ExtractStateFromQueriesConfig<TQueryConfigs>
+    const combinedMaps = queryConfigs.reduce((acc, curr) => {
         const queryKey = getQueryKey(curr)
         if (!queryKey) return acc
         const queryState = queriesSelector(state)[queryKey] as QueryState
-        const map = queryState.maps
-        if (!map) return acc
-        Object.keys(map).forEach(key => {
-            acc[key] = Array.from(new Set((acc[key] || []).concat(map[key])))
+        const { maps } = queryState
+        if (!maps) return acc
+        Object.keys(maps).forEach(key => {
+            acc[key] = Array.from(new Set((acc[key] || []).concat(maps[key])))
         })
         return acc
     }, {} as Maps)
-    const reselect = reselectEntityStateFromQueryState(maps)
+    const reselect = reselectEntityStateFromQueryState(combinedMaps)
     if (!reselect) return {} as ExtractStateFromQueriesConfig<TQueryConfigs>
     return reselect(state) as ExtractStateFromQueriesConfig<TQueryConfigs>
 }
