@@ -47,7 +47,7 @@ const useQueryState = (queryConfig?: QueryConfig | undefined): QueryState => {
       maps,
       error
     }),
-    [isFinished, isPending, isInvalid, isError, status, invalidCount, error, maps],
+    [isFinished, isPending, isInvalid, isError, invalidCount, error, maps],
   );
 
   return queryState;
